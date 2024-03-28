@@ -1,5 +1,11 @@
 import type { FC, ReactNode } from 'react';
 
+export type AxisDomain =
+  | string[]
+  | number[]
+  | [AxisDomainItem, AxisDomainItem]
+  | (([dataMin, dataMax]: [number, number], allowDataOverflow: boolean) => [number, number]);
+
 export type CurveType =
   | 'basis'
   | 'basisClosed'
@@ -24,6 +30,13 @@ export type ReferenceLine = {
   lineWidth?: number;
   lineColor?: string;
   isDashed?: boolean;
+};
+
+export type SingleBar = {
+  name: string;
+  color?: string;
+  borderColor?: string;
+  data: Array<{ x: number | string; y: number; color?: string }>;
 };
 
 export type SingleLine = {
