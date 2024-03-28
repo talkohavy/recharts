@@ -5,11 +5,11 @@ import SideBarLinkItem from './SideBarLinkItem';
 const routesRaw = [
   {
     to: '/',
-    text: 'Home',
+    text: 'LineChart',
   },
   {
-    to: '/books',
-    text: 'Books',
+    to: '/bar-chart',
+    text: 'BarChart',
   },
   {
     to: '/about',
