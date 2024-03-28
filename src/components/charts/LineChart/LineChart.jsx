@@ -11,8 +11,8 @@ import {
 } from 'recharts';
 
 /**
- * @typedef {import('./types').SingleLine} SingleLine
- * @typedef {import('./types').ReferenceLine} ReferenceLine
+ * @typedef {import('../types').SingleLine} SingleLine
+ * @typedef {import('../types').ReferenceLine} ReferenceLine
  */
 
 /**
@@ -67,7 +67,6 @@ export default function LineChart(props) {
 
         {/* 1. tick        - XAxis can have tick={tickRenderFunction} */}
         {/* 2. domain      - domain={[0, 'dataMax + 100']} */}
-        {/* 3. type        - can be one of: category | number */}
         <XAxis
           dataKey='x'
           stroke='#666'

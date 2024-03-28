@@ -1,9 +1,9 @@
 import LineChart from '../../../components/charts/LineChart';
 
 /**
- * @typedef {import('../../../components/charts/LineChart/types').CurveType} CurveType
- * @typedef {import('../../../components/charts/LineChart/types').SingleLine} SingleLine
- * @typedef {import('../../../components/charts/LineChart/types').ReferenceLine} ReferenceLine
+ * @typedef {import('../../../components/charts/types').CurveType} CurveType
+ * @typedef {import('../../../components/charts/types').SingleLine} SingleLine
+ * @typedef {import('../../../components/charts/types').ReferenceLine} ReferenceLine
  */
 
 /** @type {Array<SingleLine>} */
