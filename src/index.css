@@ -12,7 +12,8 @@
   color: inherit;
   scrollbar-color: rgba(93, 93, 255, 0.9) #7d8784 !important;
   scrollbar-width: thin !important;
-  font-family: Verdana, Geneva, Tahoma, 'arial', 'Times New Roman', tahoma;
+  font-family: inherit;
+  font-weight: inherit;
 }
 
 *::-webkit-scrollbar {
@@ -42,6 +43,8 @@
   html {
     @apply w-full;
     @apply h-full;
+    font-family: Verdana, Geneva, Tahoma, 'arial', 'Times New Roman', tahoma;
+    font-weight: normal;
   }
 
   body {

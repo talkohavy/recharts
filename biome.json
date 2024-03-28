@@ -31,7 +31,8 @@
         "noAutofocus": "off",
         "useKeyWithClickEvents": "off",
         "useKeyWithMouseEvents": "off",
-        "useValidAnchor": "off"
+        "useValidAnchor": "off",
+        "noSvgWithoutTitle": "off"
       },
       "style": {
         "noCommaOperator": "off",
@@ -43,7 +44,7 @@
   },
   "formatter": {
     "enabled": true,
-    "formatWithErrors": false,
+    "formatWithErrors": true,
     "include": ["src"],
     "ignore": ["public", "assets", "__unit_tests_results__", "**/*.html", "**/*.mdx"],
     "indentWidth": 2,

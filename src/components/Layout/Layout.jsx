@@ -1,13 +1,13 @@
-import Header from './Header/index';
-import Main from './Main/index';
-import Sidebar from './Sidebar/index';
+import Header from './Header';
+import Main from './Main';
+import Sidebar from './Sidebar';
 
 export default function Layout({ children }) {
   return (
     <div className='flex h-full flex-col items-start justify-start'>
       <Header />
 
-      <div className='flex w-full flex-grow items-center justify-center'>
+      <div className='flex size-full items-start justify-start'>
         <Sidebar />
 
         <Main>{children}</Main>
