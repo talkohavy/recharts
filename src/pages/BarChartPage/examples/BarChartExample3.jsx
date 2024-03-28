@@ -52,15 +52,7 @@ export default function BarChartExample3() {
       <p>Multiple colorful BarCharts</p>
 
       <div className='size-full max-h-md max-w-lg'>
-        <BarChart
-          bars={bars}
-          showGrid
-          showLegend
-          gapFromTop={{ amount: 20 }}
-          className='rounded-lg border p-6'
-          style={{ fontFamily: 'Hiragino Sans GB,Arial,sans-serif' }}
-          // margin={{ top: 20 }}
-        />
+        <BarChart bars={bars} showGrid showLegend style={{ fontFamily: 'Hiragino Sans GB,Arial,sans-serif' }} />
       </div>
     </div>
   );
