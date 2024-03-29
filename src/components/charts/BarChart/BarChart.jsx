@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import {
   Bar,
   BarChart as BarChartBase,
+  Brush,
   CartesianGrid,
   Cell,
   LabelList,
@@ -25,6 +26,7 @@ const DEFAULT_BAR_COLOR = '#355cff';
  *   bars: Array<SingleBar>,
  *   showGrid?: boolean | {showHorizontalLines?: boolean, showVerticalLines?: boolean},
  *   showLegend?: boolean,
+ *   showZoomSlider?: boolean,
  *   xRotateAngle?: number,
  *   xPadding?: {left?: number, right?: number},
  *   xHide?: boolean,
@@ -44,6 +46,7 @@ export default function BarChart(props) {
     bars,
     showGrid,
     showLegend,
+    showZoomSlider,
     xRotateAngle,
     xPadding,
     xHide,
@@ -156,6 +159,8 @@ export default function BarChart(props) {
         <Tooltip content={CustomTooltip} />
 
         {showLegend && <Legend />}
+
+        {showZoomSlider && <Brush height={20} stroke='#8884d8' />}
 
         {bars.map(({ name, data, unit, color, borderColor, stackId }) => {
           const barColorInLegend = color ?? DEFAULT_BAR_COLOR;
