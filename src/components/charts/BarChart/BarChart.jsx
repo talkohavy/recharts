@@ -19,7 +19,10 @@ import { formatLabel, getHeight } from '../helpers';
 
 const DEFAULT_BAR_COLOR = '#355cff';
 
-/** @typedef {import('../types').SingleBar} SingleBar */
+/**
+ * @typedef {import('../types').SingleBar} SingleBar
+ * @typedef {import('../types').BarClickEventProps} BarClickEventProps
+ */
 
 /**
  * @param {{
@@ -37,6 +40,8 @@ const DEFAULT_BAR_COLOR = '#355cff';
  *   barBackgroundColor?: string,
  *   gridColor?: string,
  *   margin?: { top?: number, right?: number, left?: number, bottom?: number }
+ *   onClickBar?: (props: BarClickEventProps, index: number) => void,
+ *   activeIndex?: number,
  *   className?: string,
  *   style?: any,
  * }} props
@@ -56,6 +61,8 @@ export default function BarChart(props) {
     xTickColor = '#666',
     barBackgroundColor = 'transparent',
     gridColor = '#ddd',
+    onClickBar,
+    activeIndex,
     margin,
     className,
     style,
@@ -181,13 +188,18 @@ export default function BarChart(props) {
               unit={unit}
               background={{ fill: barBackgroundColor }}
               stackId={stackId}
+              onClick={onClickBar}
               // minPointSize={5} // <--- give a min height to the lowest value, so that it would still be visible.
               // barSize={40} // <--- it is best to leave this as automatically calculated
               // label={{ position: 'top' }} // <--- Don't need! I'm using a custom label renderer instead.
             >
               <LabelList dataKey={name} fontSize={11} position={stackId ? 'center' : 'top'} content={CustomizedLabel} />
-              {data.map(({ color: specificColor }, barTypeCellIndex) => (
-                <Cell key={`cell-${name}-${barTypeCellIndex}`} fill={specificColor ?? color ?? DEFAULT_BAR_COLOR} />
+              {data.map(({ color: specificColor }, cellIndex) => (
+                <Cell
+                  cursor={onClickBar && 'pointer'}
+                  key={`cell-${name}-${cellIndex}`}
+                  fill={cellIndex === activeIndex ? '#82ca9d' : specificColor ?? color ?? DEFAULT_BAR_COLOR}
+                />
               ))}
             </Bar>
           );

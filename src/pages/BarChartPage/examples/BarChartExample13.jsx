@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import BarChart from '../../../components/charts/BarChart';
 
 /** @typedef {import('../../../components/charts/types').SingleBar} SingleBar */
@@ -5,43 +6,36 @@ import BarChart from '../../../components/charts/BarChart';
 /** @type {Array<SingleBar>} */
 const bars = [
   {
-    name: 'Health Care',
+    name: 'Smoking Zones',
     data: [
       { x: 'Israel', y: 990 },
-      { x: 'England', y: 705 },
-      { x: 'Finland', y: 314 },
-      { x: 'France', y: 567 },
-      { x: 'Netherlands', y: 202 },
       { x: 'USA', y: 865 },
-      { x: 'Canada', y: 586 },
-      { x: 'Russia', y: 165 },
-      { x: 'China', y: 333 },
-      { x: 'Arab Saudi', y: 13 },
-      { x: 'Austria', y: 1003 },
-      { x: 'Ukraine', y: 812 },
+      { x: 'France', y: 567 },
+      { x: 'England', y: 705 },
       { x: 'Italy', y: 435 },
+      { x: 'Russia', y: 165 },
       { x: 'Germany', y: 267 },
-      { x: 'Belgium', y: 709 },
-      { x: 'Belarus', y: 920 },
-      { x: 'Bulgaria', y: 414 },
+      { x: 'China', y: 333 },
     ],
   },
 ];
 
-export default function BarChartExample12() {
+export default function BarChartExample13() {
+  const [activeIndex, setActiveIndex] = useState(-1);
+
   return (
     <div className='flex h-lg w-full max-w-xl grow flex-col items-start justify-start gap-6 border p-6'>
-      <div className='text-xl font-bold'>• Example 12:</div>
+      <div className='text-xl font-bold'>• Example 13:</div>
 
-      <p>BarChart with zoom slider.</p>
+      <p>BarChart with onClick event.</p>
 
       <div className='size-full max-h-md max-w-lg'>
         <BarChart
           bars={bars}
           showGrid
           showLegend
-          showZoomSlider
-          xRotateAngle={-46}
+          activeIndex={activeIndex}
+          onClickBar={(_, index) => setActiveIndex(index)}
           style={{ fontFamily: 'Hiragino Sans GB,Arial,sans-serif' }}
         />
       </div>

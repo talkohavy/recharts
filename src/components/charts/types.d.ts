@@ -6,6 +6,19 @@ export type AxisDomain =
   | [AxisDomainItem, AxisDomainItem]
   | (([dataMin, dataMax]: [number, number], allowDataOverflow: boolean) => [number, number]);
 
+export type BarClickEventProps = {
+  background: { x: number; y: number; width: number; height: number };
+  fill: string;
+  height: number;
+  payload: { x: string | number };
+  tooltipPayload: Array<any>;
+  tooltipPosition: { x: number; y: number };
+  value: number;
+  width: number;
+  x: number;
+  y: number;
+};
+
 export type CurveType =
   | 'basis'
   | 'basisClosed'

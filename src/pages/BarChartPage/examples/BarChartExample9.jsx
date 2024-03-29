@@ -1,9 +1,6 @@
 import BarChart from '../../../components/charts/BarChart';
 
-/**
- * @typedef {import('../../../components/charts/types').SingleBar} SingleBar
- * @param label
- */
+/** @typedef {import('../../../components/charts/types').SingleBar} SingleBar */
 
 /** @type {Array<SingleBar>} */
 const bars = [
