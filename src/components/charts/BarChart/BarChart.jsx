@@ -108,7 +108,9 @@ export default function BarChart(props) {
         margin={margin}
         className={className}
         style={style}
+        stackOffset='sign' // <--- sign knows how to deal with negative values, while default stackOffset just hides them (doesn't show them).
         // layout='horizontal' // <--- default is 'horizontal'
+        // reverseStackOrder // <--- default is false. When true, stacked items will be rendered right to left. By default, stacked items are rendered left to right. Render direction affects SVG layering, not x position.
         // barCategoryGap='10%' // <--- gap between bars. Hard to make this generic. The default seems to do a pretty good job.
       >
         {/* MUST come before XAxis & YAxis */}
