@@ -25,7 +25,7 @@ const DEFAULT_BAR_COLOR = '#355cff';
  * @param {{
  *   bars: Array<SingleBar>,
  *   gapFromTop?: {amount?: number, unit?: 'percent' | 'absolute'},
- *   showGrid?: boolean,
+ *   showGrid?: boolean | {showHorizontalLines?: boolean, showVerticalLines?: boolean},
  *   showLegend?: boolean,
  *   xRotateAngle?: number,
  *   xDown?: number,
@@ -109,7 +109,14 @@ export default function BarChart(props) {
         // barCategoryGap='10%' // <--- gap between bars. Hard to make this generic. The default seems to do a pretty good job.
       >
         {/* MUST come before XAxis & YAxis */}
-        {showGrid && <CartesianGrid stroke={gridColor} strokeDasharray='5 5' />}
+        {showGrid && (
+          <CartesianGrid
+            stroke={gridColor}
+            horizontal={!!(showGrid === true || showGrid.showHorizontalLines)}
+            vertical={!!(showGrid === true || showGrid.showVerticalLines)}
+            strokeDasharray='5 5'
+          />
+        )}
 
         <XAxis
           type='category'
