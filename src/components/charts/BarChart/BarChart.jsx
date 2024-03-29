@@ -4,12 +4,16 @@ import {
   BarChart as BarChartBase,
   CartesianGrid,
   Cell,
+  LabelList,
   Legend,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from 'recharts';
+import CustomizedLabel from '../CustomizedLabel';
+import CustomTooltip from '../CustomTooltip';
+import { formatLabel } from '../helpers';
 
 const DEFAULT_BAR_COLOR = '#355cff';
 
@@ -25,8 +29,9 @@ const DEFAULT_BAR_COLOR = '#355cff';
  *   showLegend?: boolean,
  *   xRotateAngle?: number,
  *   xDown?: number,
- *   xHeight?: number,
  *   xPadding?: {left?: number, right?: number},
+ *   xHeight?: number,
+ *   yWidth?: number,
  *   barBackgroundColor?: string,
  *   gridColor?: string,
  *   margin?: { top?: number, right?: number, left?: number, bottom?: number }
@@ -42,8 +47,9 @@ export default function BarChart(props) {
     gapFromTop = { amount: 20, unit: 'percent' },
     xRotateAngle,
     xDown,
-    xHeight,
     xPadding,
+    xHeight,
+    yWidth,
     barBackgroundColor = 'transparent',
     gridColor = '#ddd',
     margin,
@@ -69,15 +75,23 @@ export default function BarChart(props) {
     const { amount, unit } = gapFromTop;
     if (amount === 0) return;
 
+    if (unit === 'absolute') {
+      /** @type {import('../types').AxisDomain} */
+      const domain = [0, `dataMax + ${amount}`];
+
+      return domain;
+    }
+
     const maxYValue = bars.reduce((maxValue, currentBarType) => {
       const maxValueInCurrentData = currentBarType.data.reduce(
         (maxValue, { y: currentY }) => (currentY > maxValue ? currentY : maxValue),
         maxValue,
       );
+
       return maxValueInCurrentData > maxValue ? maxValueInCurrentData : maxValue;
     }, Number.NEGATIVE_INFINITY);
 
-    const increaseBy = unit === 'absolute' ? amount : Math.ceil((maxYValue * amount) / 100);
+    const increaseBy = Math.ceil((maxYValue * amount) / 100);
     /** @type {import('../types').AxisDomain} */
     const domain = [0, `dataMax + ${increaseBy}`];
 
@@ -86,7 +100,14 @@ export default function BarChart(props) {
 
   return (
     <ResponsiveContainer width='100%' height='100%'>
-      <BarChartBase data={transformedDataForRecharts} margin={margin} className={className} style={style}>
+      <BarChartBase
+        data={transformedDataForRecharts}
+        margin={margin}
+        className={className}
+        style={style}
+        // layout='horizontal' // <--- default is 'horizontal'
+        // barCategoryGap='10%' // <--- gap between bars. Hard to make this generic. The default seems to do a pretty good job.
+      >
         {/* MUST come before XAxis & YAxis */}
         {showGrid && <CartesianGrid stroke={gridColor} strokeDasharray='5 5' />}
 
@@ -96,17 +117,19 @@ export default function BarChart(props) {
           height={xHeight}
           angle={xRotateAngle}
           dy={xDown}
-          padding={xPadding}
+          padding={xPadding} // <--- you can use this to removed padding between the first bar and the Y axis, and the last bar and the chart axis.
           stroke='#666'
           xAxisId='bottom'
+          tickFormatter={formatLabel} // <--- only passes the string value.
+          // tick={CustomAxisTick} // <--- passes everything! x, y, width, height, everything! You'll need to handle the positioning as well. format the entire tick.
         />
-        <YAxis stroke='#666' yAxisId='left' domain={domain} />
+        <YAxis width={yWidth} domain={domain} tickFormatter={formatLabel} type='number' stroke='#666' yAxisId='left' />
 
-        <Tooltip />
+        <Tooltip content={CustomTooltip} />
 
         {showLegend && <Legend />}
 
-        {bars.map(({ name, data, color, borderColor }) => {
+        {bars.map(({ name, data, unit, color, borderColor }) => {
           const barColorInLegend = color ?? DEFAULT_BAR_COLOR;
 
           const barProps = {
@@ -119,11 +142,14 @@ export default function BarChart(props) {
             <Bar
               key={name}
               {...barProps}
-              label={{ position: 'top' }}
               yAxisId='left'
               xAxisId='bottom'
+              unit={unit}
               background={{ fill: barBackgroundColor }}
+              // barSize={40} // <--- it is best to leave this as automatically calculated
+              // label={{ position: 'top' }} // <--- commented out! Since I'm using a custom label renderer.
             >
+              <LabelList dataKey={name} content={CustomizedLabel} />
               {data.map(({ color: specificColor }, barTypeCellIndex) => (
                 <Cell key={`cell-${name}-${barTypeCellIndex}`} fill={specificColor ?? color ?? DEFAULT_BAR_COLOR} />
               ))}

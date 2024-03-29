@@ -3,6 +3,8 @@ import BarChartExample2 from './examples/BarChartExample2';
 import BarChartExample3 from './examples/BarChartExample3';
 import BarChartExample4 from './examples/BarChartExample4';
 import BarChartExample5 from './examples/BarChartExample5';
+import BarChartExample6 from './examples/BarChartExample6';
+import BarChartExample7 from './examples/BarChartExample7';
 
 export default function BarChartPage() {
   return (
@@ -19,6 +21,10 @@ export default function BarChartPage() {
         <BarChartExample4 />
 
         <BarChartExample5 />
+
+        <BarChartExample6 />
+
+        <BarChartExample7 />
       </div>
     </div>
   );

@@ -37,6 +37,7 @@ export type SingleBar = {
   color?: string;
   borderColor?: string;
   data: Array<{ x: number | string; y: number; color?: string }>;
+  unit?: string;
 };
 
 export type SingleLine = {
