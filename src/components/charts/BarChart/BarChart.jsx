@@ -129,7 +129,7 @@ export default function BarChart(props) {
           angle={xRotateAngle}
           padding={xPadding} // <--- you can use this to remove padding between: A. The first bar and the Y axis; B. The last bar and the chart axis.
           hide={xHide}
-          textAnchor='end'
+          textAnchor='end' // <--- CustomizedAxisTick assumes this will always be set to 'end'. We calculate x with it. It's easier to render angled xAxis ticks that way.
           tick={CustomizedAxisTick} // <--- passes everything as an argument! x, y, width, height, everything! You'll even need to handle the tick's positioning, and format the entire tick.
           color={xTickColor}
           stroke='#666' // <--- this is the color of the xAxis line itself!
@@ -155,13 +155,14 @@ export default function BarChart(props) {
 
         {showLegend && <Legend />}
 
-        {bars.map(({ name, data, unit, color, borderColor }) => {
+        {bars.map(({ name, data, unit, color, borderColor, stackId }) => {
           const barColorInLegend = color ?? DEFAULT_BAR_COLOR;
 
           const barProps = {
             fill: barColorInLegend,
             stroke: borderColor,
             dataKey: name,
+            stackId,
           };
 
           return (
@@ -172,10 +173,12 @@ export default function BarChart(props) {
               xAxisId='bottom'
               unit={unit}
               background={{ fill: barBackgroundColor }}
+              stackId={stackId}
+              // minPointSize={5} // <--- give a min height to the lowest value, so that it would still be visible.
               // barSize={40} // <--- it is best to leave this as automatically calculated
               // label={{ position: 'top' }} // <--- Don't need! I'm using a custom label renderer instead.
             >
-              <LabelList dataKey={name} content={CustomizedLabel} fontSize={11} />
+              <LabelList dataKey={name} fontSize={11} position={stackId ? 'center' : 'top'} content={CustomizedLabel} />
               {data.map(({ color: specificColor }, barTypeCellIndex) => (
                 <Cell key={`cell-${name}-${barTypeCellIndex}`} fill={specificColor ?? color ?? DEFAULT_BAR_COLOR} />
               ))}
