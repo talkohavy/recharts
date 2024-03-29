@@ -1,9 +1,7 @@
 import BarChart from '../../../components/charts/BarChart';
 import { COLORS } from '../../../components/charts/constants';
 
-/**
- * @typedef {import('../../../components/charts/types').SingleBar} SingleBar
- */
+/** @typedef {import('../../../components/charts/types').SingleBar} SingleBar */
 
 /** @type {Array<SingleBar>} */
 const bars = [
@@ -26,7 +24,7 @@ export default function BarChartExample4() {
     <div className='flex h-96 w-full max-w-xl grow flex-col items-start justify-start gap-6 border p-6'>
       <div className='text-xl font-bold'>• Example 4:</div>
 
-      <p>Single out a low level bar</p>
+      <p>Single out a low valued bar</p>
 
       <div className='size-full max-h-md max-w-lg'>
         <BarChart bars={bars} showGrid showLegend style={{ fontFamily: 'Hiragino Sans GB,Arial,sans-serif' }} />

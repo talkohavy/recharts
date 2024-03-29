@@ -27,7 +27,7 @@ function formatNumber({ num, precision = 2 }) {
  * @returns {string}
  */
 function ellipsisString(str) {
-  return str.length > 6 ? str.substring(0, 6).concat('..') : str;
+  return str.length > 8 ? str.substring(0, 8).concat('..') : str;
 }
 
 export { ellipsisString, formatNumber };

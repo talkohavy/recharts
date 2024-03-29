@@ -1,28 +1,32 @@
 import BarChart from '../../../components/charts/BarChart';
 
-/** @typedef {import('../../../components/charts/types').SingleBar} SingleBar */
+/**
+ * @typedef {import('../../../components/charts/types').SingleBar} SingleBar
+ * @param label
+ */
 
 /** @type {Array<SingleBar>} */
 const bars = [
   {
     name: 'Cars',
+    unit: 'cm',
     data: [
-      { x: 'Page A', y: 1000000000 },
-      { x: 'Page B', y: 800200026.5 },
-      { x: 'Page C', y: 700110028 },
-      { x: 'Page D', y: 900032 },
-      { x: 'Page E', y: 117013026 },
-      { x: 'Page F', y: 688658035 },
+      { x: 'Page A', y: 9900 },
+      { x: 'Page B', y: 705 },
+      { x: 'Page C', y: 314 },
+      { x: 'Page D', y: 567 },
+      { x: 'Page E', y: 202 },
+      { x: 'Page F', y: 865 },
     ],
   },
 ];
 
-export default function BarChartExample7() {
+export default function BarChartExample9() {
   return (
     <div className='flex h-lg w-full max-w-xl grow flex-col items-start justify-start gap-6 border p-6'>
-      <div className='text-xl font-bold'>• Example 7:</div>
+      <div className='text-xl font-bold'>• Example 9:</div>
 
-      <p>Big numbers are formatted with K, M & B suffixes</p>
+      <p>Tooltip values show unit suffix.</p>
 
       <div className='size-full max-h-md max-w-lg'>
         <BarChart bars={bars} showGrid showLegend style={{ fontFamily: 'Hiragino Sans GB,Arial,sans-serif' }} />

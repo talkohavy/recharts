@@ -2,9 +2,7 @@ import { useMemo } from 'react';
 import BarChart from '../../../components/charts/BarChart';
 import { COLORS } from '../../../components/charts/constants';
 
-/**
- * @typedef {import('../../../components/charts/types').SingleBar} SingleBar
- */
+/** @typedef {import('../../../components/charts/types').SingleBar} SingleBar */
 
 /** @type {Array<SingleBar>} */
 const barsRaw = [
