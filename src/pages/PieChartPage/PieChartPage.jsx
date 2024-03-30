@@ -1,4 +1,5 @@
 import PieChartExample1 from './examples/PieChartExample1';
+import PieChartExample2 from './examples/PieChartExample2';
 
 export default function BarChartPage() {
   return (
@@ -7,6 +8,7 @@ export default function BarChartPage() {
 
       <div className='size-full space-y-10'>
         <PieChartExample1 />
+        <PieChartExample2 />
       </div>
     </div>
   );
