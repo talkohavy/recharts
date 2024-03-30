@@ -2,7 +2,7 @@ import { Sector } from 'recharts';
 
 const CONVERT_DEGREES_TO_RADIANS = Math.PI / 180;
 
-export default function CustomActiveShapeShort(props) {
+export default function CustomPieActiveShapeShort(props) {
   const { cx, cy, midAngle, innerRadius, outerRadius, startAngle, endAngle, fill, percent, value } = props;
 
   const sin = -Math.sin(midAngle * CONVERT_DEGREES_TO_RADIANS);

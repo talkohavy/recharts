@@ -4,7 +4,7 @@ const RADIAN = Math.PI / 180;
 const SMALLEST_PERCENT_VISIBLE = 0.75; // <--- pie pieces below 0.75% will not show the label!
 
 /** @param {import('recharts').PieLabelRenderProps} props */
-export default function CustomPieLabel(props) {
+export default function CustomPiePieLabel(props) {
   const { cx, cy, midAngle, innerRadius, outerRadius, percent } = props;
 
   const percentValueOutOf100 = percent * 100;
