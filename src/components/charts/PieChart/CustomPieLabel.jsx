@@ -1,3 +1,5 @@
+import { getFontSizeFrom, getSizeFromRadius } from './constants';
+
 const RADIAN = Math.PI / 180;
 const SMALLEST_PERCENT_VISIBLE = 0.75; // <--- pie pieces below 0.75% will not show the label!
 
@@ -6,7 +8,7 @@ export default function CustomPieLabel(props) {
   const { cx, cy, midAngle, innerRadius, outerRadius, percent } = props;
 
   const percentValueOutOf100 = percent * 100;
-  const labelDistanceFromCenter = 0.95 - 0.65 * percent; // <--- labelDistanceFromCenter values goes between the range of 35% - 95% of R from the center.
+  const labelDistanceFromCenter = 0.9 - 0.65 * percent; // <--- range of values goes between 25% - 90% of R from the center.
 
   // @ts-ignore
   const radius = innerRadius + (outerRadius - innerRadius) * labelDistanceFromCenter;
@@ -14,6 +16,9 @@ export default function CustomPieLabel(props) {
   const x = cx + radius * Math.cos(-midAngle * RADIAN);
   // @ts-ignore
   const y = cy + radius * Math.sin(-midAngle * RADIAN);
+  const size = getSizeFromRadius(outerRadius);
+  const fontSize = getFontSizeFrom({ size, percent: percentValueOutOf100 });
+  const displayLabel = percentValueOutOf100 >= SMALLEST_PERCENT_VISIBLE && `${percentValueOutOf100.toFixed(0)}%`;
 
   return (
     <text
@@ -23,9 +28,9 @@ export default function CustomPieLabel(props) {
       textAnchor='middle'
       dominantBaseline='central'
       className='pointer-events-none'
-      style={{ fontSize: percentValueOutOf100 <= 2 ? 8 : 12 }}
+      style={{ fontSize }}
     >
-      {percentValueOutOf100 >= SMALLEST_PERCENT_VISIBLE && `${percentValueOutOf100.toFixed(0)}%`}
+      {displayLabel}
     </text>
   );
 }

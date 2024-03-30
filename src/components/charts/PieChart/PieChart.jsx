@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Cell, Legend, Pie, PieChart as PieChartBase, ResponsiveContainer, Tooltip } from 'recharts';
-import CustomTooltip from '../CustomTooltip';
 import { COLORS, PIE_CHART } from './constants';
+import CustomActiveShapeShort from './CustomActiveShapeShort';
 import CustomPieLabel from './CustomPieLabel';
-import PieActiveShape from './PieActiveShape';
+import CustomPieTooltip from './CustomPieTooltip';
 
 /** @typedef {import('../types').SinglePie} SinglePie */
 
@@ -12,21 +12,22 @@ import PieActiveShape from './PieActiveShape';
  *   data: Array<SinglePie>
  *   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
  *   showLegend?: boolean,
+ *   showTooltip?: boolean,
  *   className?: string,
  *   style?: any,
  * }} props
  */
 export default function PieChart(props) {
-  const { data, size = 'sm', showLegend, className, style } = props;
+  const { data, size = 'sm', showLegend = true, showTooltip = false, className, style } = props;
 
   const [isAnimationActive, setIsAnimationActive] = useState(true);
 
   return (
     <ResponsiveContainer width='100%' height='100%'>
       <PieChartBase className={className} style={style}>
-        <Tooltip content={CustomTooltip} />
+        <Tooltip content={CustomPieTooltip} active={showTooltip} />
 
-        {showLegend && <Legend layout='vertical' verticalAlign='top' align='right' />}
+        {showLegend && <Legend layout='vertical' verticalAlign='middle' align='right' />}
 
         <Pie
           data={data}
@@ -38,15 +39,15 @@ export default function PieChart(props) {
           endAngle={-180}
           paddingAngle={0}
           labelLine={false}
-          activeShape={PieActiveShape}
+          activeShape={CustomActiveShapeShort}
           label={CustomPieLabel}
           dataKey='value'
           fill='#8884d8'
           isAnimationActive={isAnimationActive}
           onAnimationEnd={() => setIsAnimationActive(() => false)}
           // label // <--- i'm using CustomPieLabel instead, which is a custom label renderer.
-          // activeIndex={activeIndex} // <--- PieActiveShape takes care of that already.
-          // onMouseEnter={onHoverPie}// <--- PieActiveShape takes care of that already.
+          // activeIndex={activeIndex} // <--- CustomActiveShape takes care of that already.
+          // onMouseEnter={onHoverPie}// <--- CustomActiveShape takes care of that already.
         >
           {data.map((_entry, piePieceIndex) => (
             <Cell key={`cell-${piePieceIndex}`} fill={COLORS[piePieceIndex % COLORS.length]} />

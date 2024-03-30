@@ -3,7 +3,7 @@ import { PIE_CHART } from './constants';
 
 const RADIAN = Math.PI / 180;
 
-export default function PieActiveShape(props) {
+export default function CustomActiveShapePretty(props) {
   // eslint-disable-next-line
   const { cx, cy, midAngle, innerRadius, outerRadius, startAngle, endAngle, fill, payload, percent, value } = props;
 

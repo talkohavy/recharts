@@ -25,38 +25,3 @@ export default function CustomTooltip(props) {
 
   return null;
 }
-// const getIntroOfPage = (label) => {
-//   if (label === 'Page A') {
-//     return "Page A is about men's clothing";
-//   }
-//   if (label === 'Page B') {
-//     return "Page B is about women's dress";
-//   }
-//   if (label === 'Page C') {
-//     return "Page C is about women's bag";
-//   }
-//   if (label === 'Page D') {
-//     return 'Page D is about household goods';
-//   }
-//   if (label === 'Page E') {
-//     return 'Page E is about food';
-//   }
-//   if (label === 'Page F') {
-//     return 'Page F is about baby food';
-//   }
-//   return '';
-// };
-
-// export default function CustomTooltip({ active, payload, label }) {
-//   if (active && payload && payload.length) {
-//     return (
-//       <div className='w-52 border bg-white bg-opacity-80 p-2.5'>
-//         <p className='font-bold text-[#666]'>{`${label} : ${payload[0].value}`}</p>
-//         <p className='border'>{getIntroOfPage(label)}</p>
-//         <p className='text-[#999]'>Anything you want can be displayed here.</p>
-//       </div>
-//     );
-//   }
-
-//   return null;
-// }
