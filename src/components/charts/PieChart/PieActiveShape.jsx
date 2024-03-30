@@ -1,9 +1,12 @@
 import { Sector } from 'recharts';
+import { PIE_CHART } from './constants';
+
+const RADIAN = Math.PI / 180;
 
 export default function PieActiveShape(props) {
-  const RADIAN = Math.PI / 180;
   // eslint-disable-next-line
   const { cx, cy, midAngle, innerRadius, outerRadius, startAngle, endAngle, fill, payload, percent, value } = props;
+
   const sin = Math.sin(-RADIAN * midAngle);
   const cos = Math.cos(-RADIAN * midAngle);
   const sx = cx + (outerRadius + 10) * cos;
@@ -42,7 +45,7 @@ export default function PieActiveShape(props) {
       <path
         d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`}
         stroke={fill}
-        strokeWidth={outerRadius > 150 ? 2 : 1}
+        strokeWidth={outerRadius >= PIE_CHART.xl.outerRadius ? 2 : 1}
         fill='none'
       />
       {/* Part 4: the • dot */}
