@@ -63,3 +63,8 @@ export type SingleLine = {
   isDashed?: boolean;
   dot?: any;
 };
+
+export type SinglePie = {
+  name: string;
+  value: number;
+};

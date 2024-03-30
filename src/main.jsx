@@ -6,11 +6,11 @@ import DarkThemeProvider from './providers/DarkThemeProvider';
 import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <DarkThemeProvider>
-        <App />
-      </DarkThemeProvider>
-    </BrowserRouter>
-  </React.StrictMode>,
+  // <React.StrictMode>
+  <BrowserRouter>
+    <DarkThemeProvider>
+      <App />
+    </DarkThemeProvider>
+  </BrowserRouter>,
+  // </React.StrictMode>,
 );

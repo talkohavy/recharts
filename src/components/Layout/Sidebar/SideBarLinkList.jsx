@@ -12,6 +12,10 @@ const routesRaw = [
     text: 'BarChart',
   },
   {
+    to: '/pie-chart',
+    text: 'PieChart',
+  },
+  {
     to: '/about',
     text: 'About',
   },
