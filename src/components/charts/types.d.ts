@@ -36,6 +36,20 @@ export type CurveType =
   | 'stepBefore'
   | 'stepAfter';
 
+export type PieChartDrawData = {
+  value: number;
+  percent: number;
+  percentFormatted: number;
+  color: string;
+  angle: number;
+  startAngle: number;
+  endAngle: number;
+  path: string;
+  middleDirection: { xDirection: number; yDirection: number };
+  arcStartPoint: { x: number; y: number };
+  arcEndPoint: { x: number; y: number };
+};
+
 export type ReferenceLine = {
   x?: number | string;
   y?: number;
@@ -67,4 +81,5 @@ export type SingleLine = {
 export type SinglePie = {
   name: string;
   value: number;
+  color?: string;
 };
