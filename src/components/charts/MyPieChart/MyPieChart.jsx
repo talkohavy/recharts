@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { formatLabel } from '../helpers';
 import { PIE_CHART } from './constants';
 import { getFontSizeFrom, getPieChart } from './helpers';
 
@@ -18,9 +19,10 @@ export default function MyPieChart(props) {
 
   return (
     <svg
-      viewBox='0 0 1000 1000'
+      viewBox={`0 0 ${PIE_CHART.width} ${PIE_CHART.height}`}
       xmlns='http://www.w3.org/2000/svg'
       style={{ fontFamily: 'Hiragino Sans GB,Arial,sans-serif', border: '1px solid black' }}
+      // className='min-w-lg'
     >
       {/* <line x1='10' y1='0' x2='990' y2='0' stroke='black' strokeLinecap='round' />
       <line x1='10' y1='100' x2='990' y2='100' stroke='black' strokeLinecap='round' />
@@ -48,11 +50,11 @@ export default function MyPieChart(props) {
 
       {pieChartData.map((pieSlice, index) => {
         const { value, path, middleDirection, percentFormatted, percent, color } = pieSlice;
-        const xMiddle = PIE_CHART.centerPoint.x + PIE_CHART.outerRadius * 1.1 * middleDirection.xDirection;
-        const yMiddle = PIE_CHART.centerPoint.y + PIE_CHART.outerRadius * 1.1 * middleDirection.yDirection;
-        const xMiddleBreak = PIE_CHART.centerPoint.x + PIE_CHART.outerRadius * 1.23 * middleDirection.xDirection;
-        const yMiddleBreak = PIE_CHART.centerPoint.y + PIE_CHART.outerRadius * 1.23 * middleDirection.yDirection;
-        const xMiddleFinal = xMiddleBreak + (middleDirection.xDirection >= 0 ? 1 : -1) * 30;
+        const xMiddle = PIE_CHART.centerPoint.x + PIE_CHART.outerRadius * 1.06 * middleDirection.xDirection;
+        const yMiddle = PIE_CHART.centerPoint.y + PIE_CHART.outerRadius * 1.06 * middleDirection.yDirection;
+        const xMiddleBreak = PIE_CHART.centerPoint.x + PIE_CHART.outerRadius * 1.16 * middleDirection.xDirection;
+        const yMiddleBreak = PIE_CHART.centerPoint.y + PIE_CHART.outerRadius * 1.16 * middleDirection.yDirection;
+        const xMiddleFinal = xMiddleBreak + (middleDirection.xDirection >= 0 ? 1 : -1) * 26;
         const yMiddleFinal = yMiddleBreak;
         const currentSlicesOverride = slicesOverrides?.at(index) ?? {};
         const labelDistanceFromCenter = 0.9 - 0.65 * percent; // <--- range of values goes between 25% - 90% of R from the center.
@@ -104,7 +106,7 @@ export default function MyPieChart(props) {
                   textAnchor={textAnchor}
                   fill='#333'
                   style={{ fontSize: 30 }}
-                >{`Value: ${value}`}</text>
+                >{`Value: ${formatLabel(value)}`}</text>
                 {/* Part 6: The % ratio value */}
                 <text
                   x={xMiddleFinal + (middleDirection.xDirection >= 0 ? 1 : -1) * 12}

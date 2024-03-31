@@ -1,10 +1,11 @@
 const PIE_CHART = {
   outerRadius: 250,
   centerPoint: {
-    x: 500,
-    y: 500,
+    x: 575,
+    y: 400,
   },
-  height: 1000,
+  height: 800,
+  width: 1150,
 };
 
 const COLORS = [
