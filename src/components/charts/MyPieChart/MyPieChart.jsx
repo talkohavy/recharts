@@ -17,6 +17,8 @@ export default function MyPieChart(props) {
 
   const pieChartData = useMemo(() => getPieChart(data), [data]);
 
+  console.log(pieChartData);
+
   return (
     <svg
       viewBox={`0 0 ${PIE_CHART.width} ${PIE_CHART.height}`}
