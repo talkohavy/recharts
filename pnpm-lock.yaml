@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@talkohavy/lodash':
+    specifier: ^1.0.51
+    version: 1.0.51
   clsx:
     specifier: ^2.1.0
     version: 2.1.0
@@ -742,6 +745,10 @@ packages:
   /@swc/types@0.1.5:
     resolution: {integrity: sha512-myfUej5naTBWnqOCc/MdVOLVjXUXtIA+NpDrDBKJtLLg2shUjBu3cZmB/85RyitKc55+lUUyl7oRfLOvkr2hsw==}
     dev: true
+
+  /@talkohavy/lodash@1.0.51:
+    resolution: {integrity: sha512-B60zloa8CywKQHIhBhG7LSqkYZxczvOmAzeYbh5HFrQV3gXCSDLS84UXXYjS+DsnrLJgRuYGchpx9RNEYmtlgw==}
+    dev: false
 
   /@types/d3-array@3.2.1:
     resolution: {integrity: sha512-Y2Jn2idRrLzUfAKV2LyRImR+y4oa2AntrgID95SHJxuMUrkNXmanDSed71sRNZysveJVt1hLLemQZIady0FpEg==}
