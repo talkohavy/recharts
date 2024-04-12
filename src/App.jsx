@@ -2,7 +2,7 @@ import { Suspense, lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Layout from './components/Layout';
 
-const HomePage = lazy(() => import('./pages/Home'));
+const LineChartPage = lazy(() => import('./pages/LineChartPage'));
 const BarChartPage = lazy(() => import('./pages/BarChartPage'));
 const PieChartPage = lazy(() => import('./pages/PieChartPage'));
 const PageNotFound = lazy(() => import('./pages/PageNotFound'));
@@ -12,8 +12,9 @@ function App() {
     <Layout>
       <Suspense>
         <Routes>
-          <Route path='/index.html' element={<HomePage />} />
-          <Route path='/' element={<HomePage />} />
+          <Route path='/index.html' element={<LineChartPage />} />
+          <Route path='/' element={<LineChartPage />} />
+          <Route path='/line-chart' element={<LineChartPage />} />
           <Route path='/bar-chart' element={<BarChartPage />} />
           <Route path='/pie-chart' element={<PieChartPage />} />
           {/* <Route path='/list' element={<ListPage />} /> */}
