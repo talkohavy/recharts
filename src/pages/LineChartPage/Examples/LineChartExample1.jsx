@@ -14,12 +14,12 @@ const lines = [
     curveType: 'monotone',
     isDashed: true,
     data: [
-      { x: 'Page A', y: 190000000 }, // x: 0 | Page A
-      { x: 'Page B', y: 191000000 }, // x: 10 | Page B
-      { x: 'Page C', y: 192000000 }, // x: 20 | Page C
-      { x: 'Page D', y: 193000000 }, // x: 30 | Page D
-      { x: 'Page E', y: 194000000 }, // x: 40 | Page E
-      { x: 'Page F', y: 194500000 }, // x: 50 | Page F
+      { x: 'Page A', y: 10 }, // x: 0 | Page A
+      { x: 'Page B', y: 2 }, // x: 10 | Page B
+      { x: 'Page C', y: 6 }, // x: 20 | Page C
+      { x: 'Page D', y: 8 }, // x: 30 | Page D
+      { x: 'Page E', y: 14 }, // x: 40 | Page E
+      { x: 'Page is', y: 7 }, // x: 50 | Page F
     ],
   },
 ];
@@ -32,13 +32,7 @@ export default function LineChartExample1() {
       <p>A simple Line chart</p>
 
       <div className='size-full max-h-md max-w-lg'>
-        <LineChart
-          xLabel='Countries'
-          // yLabel='Amount of cart'
-          lines={lines}
-          showGrid
-          style={{ fontFamily: 'Hiragino Sans GB,Arial,sans-serif', border: '1px solid black' }}
-        />
+        <LineChart lines={lines} showGrid style={{ fontFamily: 'Hiragino Sans GB,Arial,sans-serif' }} />
       </div>
     </div>
   );
