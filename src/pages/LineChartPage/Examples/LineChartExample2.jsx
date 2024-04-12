@@ -17,9 +17,9 @@ const lines = [
       { x: 'Page A', y: 400 }, // x: 0 | Page A
       { x: 'Page B', y: 300 }, // x: 10 | Page B
       { x: 'Page C', y: 300 }, // x: 20 | Page C
-      { x: 'Page D is very long', y: 200 }, // x: 30 | Page D
+      { x: 'Page D', y: 200 }, // x: 30 | Page D
       { x: 'Page E', y: 280 }, // x: 40 | Page E
-      { x: 'Page F Very Long Value', y: 180 }, // x: 50 | Page F
+      { x: 'Page F', y: 180 }, // x: 50 | Page F
     ],
   },
 ];
@@ -29,16 +29,18 @@ export default function LineChartExample2() {
     <div className='mb-6 flex h-96 w-full max-w-xl grow flex-col items-start justify-start gap-6 border p-6'>
       <div className='text-xl font-bold'>• Example 2:</div>
 
-      <p>A simple Line chart with a 45 degrees angle xAxis</p>
+      <p>A simple Line chart x & y labels</p>
 
       <div className='size-full max-h-md max-w-lg'>
         <LineChart
           lines={lines}
+          yLabel='Amount in Liters'
           xLabel='List of Alligators'
           showGrid
-          xRotateAngle={46}
-          xPadding={{ right: 25 }} // fixes the last xAxis word being cut from the right!
-          style={{ fontFamily: 'Hiragino Sans GB,Arial,sans-serif', border: '1px solid black' }}
+          style={{
+            fontFamily: 'Hiragino Sans GB,Arial,sans-serif',
+            // border: '1px solid black'
+          }}
         />
       </div>
     </div>
