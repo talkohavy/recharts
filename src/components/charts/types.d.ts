@@ -6,6 +6,33 @@ export type AxisDomain =
   | [AxisDomainItem, AxisDomainItem]
   | (([dataMin, dataMax]: [number, number], allowDataOverflow: boolean) => [number, number]);
 
+export type AxisLabel =
+  | string
+  | {
+      value: string;
+      angle?: number;
+      dy?: number;
+      dx?: number;
+      position?:
+        | 'insideLeft'
+        | 'insideRight'
+        | 'insideTop'
+        | 'insideBottom'
+        | 'insideTopLeft'
+        | 'insideTopRight'
+        | 'insideBottomLeft'
+        | 'insideBottomRight'
+        | 'left'
+        | 'right'
+        | 'middle'
+        | 'bottom'
+        | 'centerBottom'
+        | 'centerTop'
+        | 'center'
+        | 'insideEnd'
+        | 'insideStart';
+    };
+
 export type BarClickEventProps = {
   background: { x: number; y: number; width: number; height: number };
   fill: string;

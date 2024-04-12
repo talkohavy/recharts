@@ -40,7 +40,7 @@ const referenceLines = [
   },
 ];
 
-export default function Example999() {
+export default function LineChartExample999() {
   return (
     <div className='flex h-xl w-full max-w-xl grow flex-col items-start justify-start gap-6 border p-6'>
       <div className='text-xl font-bold'>• Example 999:</div>

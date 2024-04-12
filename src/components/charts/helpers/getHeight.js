@@ -1,21 +1,17 @@
-import { ellipsisString, formatNumber } from '../../utils/helpers';
-
 /**
- * @param {string | number} value
- * @returns {string}
- */
-function formatLabel(value) {
-  if (typeof value === 'string') return ellipsisString(value);
-
-  return formatNumber({ num: value });
-}
-
-const RECTANGLE = { height: 25, width: 80 };
-/**
- * @param {number} thetaInDegrees
+ * @description
+ * The theta angle is in degrees.
+ * @param {{
+ *   angle: number,
+ *   maxWidth?: number,
+ * }} props
  * @returns {number | undefined}
  */
-function getHeight(thetaInDegrees) {
+function getHeight(props) {
+  const { angle: thetaInDegrees, maxWidth } = props;
+
+  const RECTANGLE = { height: 25, width: maxWidth };
+
   if (!thetaInDegrees) return;
 
   const hypotenuse = Math.sqrt(RECTANGLE.height ** 2 + RECTANGLE.width ** 2);
@@ -25,4 +21,4 @@ function getHeight(thetaInDegrees) {
   return Math.abs(Math.sin(fixedThetaInRadians) * hypotenuse);
 }
 
-export { formatLabel, getHeight };
+export { getHeight };

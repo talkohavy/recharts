@@ -1,6 +1,6 @@
-import Example1 from './Examples/Example1';
-import Example2 from './Examples/Example2';
-import Example999 from './Examples/Example999';
+import LineChartExample1 from './Examples/LineChartExample1';
+import LineChartExample2 from './Examples/LineChartExample2';
+import LineChartExample999 from './Examples/LineChartExample999';
 
 export default function HomePage() {
   return (
@@ -8,11 +8,11 @@ export default function HomePage() {
       <div className='self-center'>LineChart Examples</div>
 
       <div className='size-full space-y-10'>
-        <Example1 />
+        <LineChartExample1 />
 
-        <Example2 />
+        <LineChartExample2 />
 
-        <Example999 />
+        <LineChartExample999 />
       </div>
     </div>
   );

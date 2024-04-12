@@ -15,7 +15,7 @@ import {
 import { CustomizedAxisTick } from '../CustomAxisTick';
 import CustomizedLabel from '../CustomizedLabel';
 import CustomTooltip from '../CustomTooltip';
-import { formatLabel, getHeight } from '../helpers';
+import { formatLabel, getHeight, getTextWidth } from '../helpers';
 
 const DEFAULT_BAR_COLOR = '#355cff';
 
@@ -27,19 +27,20 @@ const DEFAULT_BAR_COLOR = '#355cff';
 /**
  * @param {{
  *   bars: Array<SingleBar>,
+ *   xLabel?: string,
+ *   yLabel?: string,
  *   showGrid?: boolean | {showHorizontalLines?: boolean, showVerticalLines?: boolean},
  *   showLegend?: boolean,
  *   showZoomSlider?: boolean,
  *   xRotateAngle?: number,
  *   xPadding?: {left?: number, right?: number},
  *   xHide?: boolean,
- *   yWidth?: number,
+ *   xTickColor?: string,
  *   yHide?: boolean,
  *   yTickSuffix?: string,
- *   xTickColor?: string,
+ *   yTickColor?: string,
  *   barBackgroundColor?: string,
  *   gridColor?: string,
- *   margin?: { top?: number, right?: number, left?: number, bottom?: number }
  *   onClickBar?: (props: BarClickEventProps, index: number) => void,
  *   activeIndex?: number,
  *   className?: string,
@@ -55,18 +56,60 @@ export default function BarChart(props) {
     xRotateAngle,
     xPadding,
     xHide,
-    yWidth,
-    yHide,
-    yTickSuffix,
     xTickColor = '#666',
+    xLabel,
+    yLabel,
+    yHide,
+    yTickColor = '#666',
+    yTickSuffix,
     barBackgroundColor = 'transparent',
     gridColor = '#ddd',
     onClickBar,
     activeIndex,
-    margin,
     className,
     style,
   } = props;
+
+  const { widthOfLongestXTickLabel, widthOfLongestYTickLabel } = useMemo(() => {
+    let widthOfLongestXTickLabel = 0;
+    let widthOfLongestYTickLabel = 0;
+
+    bars.forEach(({ data }) => {
+      data.forEach(({ x: currentXTickValue, y: currentYTickValue }) => {
+        const currentXTickWidth = getTextWidth({
+          text: formatLabel(currentXTickValue),
+          fontSize: 16,
+          fontFamily: 'Hiragino Sans GB',
+        });
+
+        widthOfLongestXTickLabel =
+          widthOfLongestXTickLabel < currentXTickWidth ? currentXTickWidth : widthOfLongestXTickLabel;
+
+        const currentYTickWidth = getTextWidth({
+          text: formatLabel(currentYTickValue),
+          fontSize: 16,
+          fontFamily: 'Hiragino Sans GB',
+        });
+
+        widthOfLongestYTickLabel =
+          widthOfLongestYTickLabel < currentYTickWidth ? currentYTickWidth : widthOfLongestYTickLabel;
+      });
+    });
+
+    return { widthOfLongestXTickLabel, widthOfLongestYTickLabel };
+  }, [bars]);
+
+  const xAxisHeight = useMemo(
+    () => getHeight({ angle: xRotateAngle, maxWidth: widthOfLongestXTickLabel }),
+    [xRotateAngle, widthOfLongestXTickLabel],
+  );
+
+  const yLabelFixPosition = useMemo(() => {
+    if (!yLabel) return undefined;
+    const width = getTextWidth({ text: yLabel });
+
+    return { value: yLabel, angle: -90, position: 'left', dy: -width / 2 };
+  }, [yLabel]);
 
   const transformedDataForRecharts = useMemo(() => {
     const transformedDataByKey = {};
@@ -81,41 +124,11 @@ export default function BarChart(props) {
     return Object.values(transformedDataByKey);
   }, [bars]);
 
-  // `domain` was once needed in order to know where to place the max point of the YAxis. Now I simply use y padding top of 18.
-  // const domain = useMemo(() => {
-  //   gapFromTop = { amount: 20, unit: 'percent' },
-  // *   gapFromTop?: {amount?: number, unit?: 'percent' | 'absolute'},
-  //   const { amount, unit } = gapFromTop;
-  //   if (amount === 0) return;
-
-  //   if (unit === 'absolute') {
-  //     /** @type {import('../types').AxisDomain} */
-  //     const domain = [0, `dataMax + ${amount}`];
-
-  //     return domain;
-  //   }
-
-  //   const maxYValue = bars.reduce((maxValue, currentBarType) => {
-  //     const maxValueInCurrentData = currentBarType.data.reduce(
-  //       (maxValue, { y: currentY }) => (currentY > maxValue ? currentY : maxValue),
-  //       maxValue,
-  //     );
-
-  //     return maxValueInCurrentData > maxValue ? maxValueInCurrentData : maxValue;
-  //   }, Number.NEGATIVE_INFINITY);
-
-  //   const increaseBy = Math.ceil((maxYValue * amount) / 100);
-  //   /** @type {import('../types').AxisDomain} */
-  //   const domain = [0, `dataMax + ${increaseBy}`];
-
-  //   return domain;
-  // }, [bars, gapFromTop]);
-
   return (
     <ResponsiveContainer width='100%' height='100%'>
       <BarChartBase
+        margin={{ left: yLabel ? 12 : 0, bottom: xLabel ? 20 : 0 }}
         data={transformedDataForRecharts}
-        margin={margin}
         className={className}
         style={style}
         stackOffset='sign' // <--- sign knows how to deal with negative values, while default stackOffset just hides them (doesn't show them).
@@ -137,30 +150,35 @@ export default function BarChart(props) {
         <XAxis
           type='category'
           dataKey='x'
-          height={getHeight(xRotateAngle)}
+          textAnchor='end' // <--- CustomizedAxisTick assumes this will always be set to 'end'. We calculate x with it. It's easier to render angled xAxis ticks that way.
+          stroke='#666' // <--- this is the color of the xAxis line itself!
+          xAxisId='bottom'
+          dy={5}
+          tick={CustomizedAxisTick} // <--- passes everything as an argument! x, y, width, height, everything! You'll even need to handle the tick's positioning, and format the entire tick.
+          height={xAxisHeight}
           angle={xRotateAngle}
           padding={xPadding} // <--- you can use this to remove padding between: A. The first bar and the Y axis; B. The last bar and the chart axis.
           hide={xHide}
-          textAnchor='end' // <--- CustomizedAxisTick assumes this will always be set to 'end'. We calculate x with it. It's easier to render angled xAxis ticks that way.
-          tick={CustomizedAxisTick} // <--- passes everything as an argument! x, y, width, height, everything! You'll even need to handle the tick's positioning, and format the entire tick.
-          color={xTickColor}
-          stroke='#666' // <--- this is the color of the xAxis line itself!
-          xAxisId='bottom'
-          // unit=' cm' // <--- You CANNOT use this when using `tick`, which you are. A. because it doesn't render it, and B. because some ticks will not be displayed. You can use only when using the default tick renderer, add this will automatically add a unit suffix to your xAxis ticks.
+          color={xTickColor} // <--- this is the color of the tick's value!
+          label={{ value: xLabel, angle: 0, position: 'bottom' }}
+          // unit=' cm' // <--- You CANNOT use this when using `tick`, which you are. A. because it doesn't render it, and B. because some ticks will not be displayed. You can use only when using the default tick renderer, and this will automatically add a unit suffix to your xAxis ticks.
           // fontSize={22}
           // fontWeight={100}
           // tickFormatter={formatLabel} // <--- only passes the string value as an argument.
         />
+
         <YAxis
-          unit={yTickSuffix} // <--- you can add a unit suffix to your yAxis ticks!
-          width={yWidth}
-          // domain={domain} // <--- this was once my solution for raising the maxYValue bar, but it created an issue where the gap between the last tick and one before last tick was awkward. The better solution for the initial problem is to use y padding top of 18.
-          padding={{ top: 18 }}
-          hide={yHide}
-          tickFormatter={formatLabel}
-          type='number'
+          // dataKey='y'// <--- do NOT put dataKey on y axis of BarChart! We are going to use the `name` of each Bars set.
+          type='number' // <--- defaults to 'number'. 'category' or 'number'.
           stroke='#666'
           yAxisId='left'
+          padding={{ top: 18 }}
+          tickFormatter={formatLabel}
+          width={yLabel ? widthOfLongestYTickLabel + 15 : widthOfLongestYTickLabel + 20} // <--- works differently on BarChart than it is on LineChart! On LineChart it is best left undefined.
+          hide={yHide}
+          label={yLabelFixPosition}
+          color={yTickColor}
+          unit={yTickSuffix} // <--- you can add a unit suffix to your yAxis ticks!
         />
 
         <Tooltip content={CustomTooltip} />
