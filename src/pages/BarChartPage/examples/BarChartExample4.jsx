@@ -27,7 +27,12 @@ export default function BarChartExample4() {
       <p>Single out a low valued bar</p>
 
       <div className='size-full max-h-md max-w-lg'>
-        <BarChart bars={bars} showGrid showLegend style={{ fontFamily: 'Hiragino Sans GB,Arial,sans-serif' }} />
+        <BarChart
+          bars={bars}
+          showGrid
+          showLegend
+          style={{ fontFamily: 'Hiragino Sans GB,Arial,sans-serif', border: '1px solid black' }}
+        />
       </div>
     </div>
   );

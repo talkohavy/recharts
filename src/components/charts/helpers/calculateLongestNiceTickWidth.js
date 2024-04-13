@@ -1,12 +1,15 @@
 import { formatLabel } from './formatLabel';
 import { getTextWidth } from './getTextWidth';
 
-/** @param {Array<any>} niceTicks */
-function calculateLongestNiceTickWidth(niceTicks) {
+/**
+ * @param {Array<any>} niceTicks
+ * @param {string} suffix
+ */
+function calculateLongestNiceTickWidth(niceTicks, suffix = '') {
   let widthOfLongestTickLabel = 0;
 
   niceTicks.forEach((currentTickValue) => {
-    const currentTickWidth = getTextWidth({ text: formatLabel(currentTickValue) });
+    const currentTickWidth = getTextWidth({ text: `${formatLabel(currentTickValue)}${suffix}` });
 
     if (widthOfLongestTickLabel < currentTickWidth) {
       widthOfLongestTickLabel = currentTickWidth;

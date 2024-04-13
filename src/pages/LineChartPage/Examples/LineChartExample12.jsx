@@ -72,8 +72,8 @@ export default function LineChartExample12() {
         <LineChart
           lines={lines}
           yLabel='Amount in Liters'
-          showGrid
           xLabel='Flying Cars'
+          showGrid
           xRotateAngle={45}
           showLegend
           showZoomSlider

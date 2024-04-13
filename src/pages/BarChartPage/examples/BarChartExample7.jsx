@@ -25,7 +25,12 @@ export default function BarChartExample7() {
       <p>Big numbers are formatted with K, M & B suffixes</p>
 
       <div className='size-full max-h-md max-w-lg'>
-        <BarChart bars={bars} showGrid showLegend style={{ fontFamily: 'Hiragino Sans GB,Arial,sans-serif' }} />
+        <BarChart
+          bars={bars}
+          showGrid
+          showLegend
+          style={{ fontFamily: 'Hiragino Sans GB,Arial,sans-serif', border: '1px solid black' }}
+        />
       </div>
     </div>
   );

@@ -8,7 +8,6 @@ import { COLORS } from '../../../components/charts/constants';
 const barsRaw = [
   {
     name: 'Cars',
-    // color: '#ff7300',
     data: [
       { x: 'Page A', y: 400 }, // x: 0 | Page A
       { x: 'Page B', y: 300 }, // x: 10 | Page B
@@ -20,7 +19,6 @@ const barsRaw = [
   },
   {
     name: 'Plains',
-    // color: 'blue',
     data: [
       { x: 'Page A', y: 680 }, // x: 0 | Page A
       { x: 'Page B', y: 160 }, // x: 10 | Page B
@@ -50,7 +48,12 @@ export default function BarChartExample3() {
       <p>Multiple colorful BarCharts</p>
 
       <div className='size-full max-h-md max-w-lg'>
-        <BarChart bars={bars} showGrid showLegend style={{ fontFamily: 'Hiragino Sans GB,Arial,sans-serif' }} />
+        <BarChart
+          bars={bars}
+          showGrid
+          showLegend
+          style={{ fontFamily: 'Hiragino Sans GB,Arial,sans-serif', border: '1px solid black' }}
+        />
       </div>
     </div>
   );

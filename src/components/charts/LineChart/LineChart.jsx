@@ -66,7 +66,7 @@ export default function LineChart(props) {
     yTickColor = '#666',
     yHide,
     showZoomSlider,
-    yTickSuffix,
+    yTickSuffix = '',
     gridColor = '#ddd',
     className,
     style,
@@ -121,10 +121,10 @@ export default function LineChart(props) {
     const allowDecimals = true;
     const niceTicks = getNiceTickValues(domain, tickCount, allowDecimals);
 
-    const longestYTickWidth = calculateLongestNiceTickWidth(niceTicks);
+    const longestYTickWidth = calculateLongestNiceTickWidth(niceTicks, yTickSuffix);
 
     return longestYTickWidth;
-  }, [maxYValue]);
+  }, [maxYValue, yTickSuffix]);
 
   const widthOfLongestXTickLabel = useMemo(() => {
     let widthOfLongestXTickLabel = 0;
@@ -190,6 +190,7 @@ export default function LineChart(props) {
             angle: 0,
             position: 'bottom',
             dy: calculateXAxisLabelPositioning({ showLegend, showZoomSlider, xRotateAngle: positiveXRotateAngle }),
+            dx: -getTextWidth({ text: xLabel }) / 4,
           }}
           // unit=' cm' // <--- Doesn't appear if you're using `tick`, which you are. Also, it is good practice to have units appear on the label itself, and not on the ticks.
           // fontSize={22}
@@ -198,6 +199,7 @@ export default function LineChart(props) {
         />
 
         <YAxis
+          type='number' // <--- defaults to 'number'. 'category' or 'number'.
           stroke='#666'
           yAxisId='left'
           padding={{ top: 18 }}
@@ -206,7 +208,8 @@ export default function LineChart(props) {
           label={yLabelFixPosition}
           color={yTickColor}
           unit={yTickSuffix} // <--- you can add a unit suffix to your yAxis ticks!
-          width={yLabel ? widthOfLongestYTickLabel + 18 : widthOfLongestYTickLabel + 8} // <--- spaces are different on BarChart than they are on LineChart!
+          width={yLabel ? widthOfLongestYTickLabel + 18 : widthOfLongestYTickLabel + 8}
+          // dataKey='y'// <--- do NOT put dataKey on y axis of LineChart! We are going to use the `name` of each Line's dataset.
         />
 
         <Tooltip />

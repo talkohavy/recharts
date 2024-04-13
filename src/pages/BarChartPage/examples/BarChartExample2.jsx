@@ -37,7 +37,12 @@ export default function BarChartExample2() {
       <p>A single colorful BarChart</p>
 
       <div className='size-full max-h-md max-w-lg'>
-        <BarChart bars={bars} showGrid showLegend style={{ fontFamily: 'Hiragino Sans GB,Arial,sans-serif' }} />
+        <BarChart
+          bars={bars}
+          showGrid
+          showLegend
+          style={{ fontFamily: 'Hiragino Sans GB,Arial,sans-serif', border: '1px solid black' }}
+        />
       </div>
     </div>
   );

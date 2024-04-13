@@ -20,7 +20,7 @@ const bars = [
 
 export default function BarChartExample1() {
   return (
-    <div className='flex h-96 w-full max-w-xl grow flex-col items-start justify-start gap-6 border p-6'>
+    <div className='flex h-xl w-full max-w-xl grow flex-col items-start justify-start gap-6 overflow-auto border p-6'>
       <div className='text-xl font-bold'>• Example 1:</div>
 
       <p>A single BarChart with 1 single color</p>
@@ -28,7 +28,8 @@ export default function BarChartExample1() {
       <div className='size-full max-h-md max-w-lg'>
         <BarChart
           bars={bars}
-          yLabel='Cars'
+          yLabel='Amount in Liters'
+          xLabel='Countries'
           showGrid
           showLegend
           style={{ fontFamily: 'Hiragino Sans GB,Arial,sans-serif', border: '1px solid black' }}

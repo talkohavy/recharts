@@ -26,7 +26,12 @@ export default function BarChartExample9() {
       <p>Tooltip values show unit suffix.</p>
 
       <div className='size-full max-h-md max-w-lg'>
-        <BarChart bars={bars} showGrid showLegend style={{ fontFamily: 'Hiragino Sans GB,Arial,sans-serif' }} />
+        <BarChart
+          bars={bars}
+          showGrid
+          showLegend
+          style={{ fontFamily: 'Hiragino Sans GB,Arial,sans-serif', border: '1px solid black' }}
+        />
       </div>
     </div>
   );

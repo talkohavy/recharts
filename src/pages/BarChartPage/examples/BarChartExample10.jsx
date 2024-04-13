@@ -35,22 +35,22 @@ export default function BarChartExample10() {
           yHide={!showYAxis}
           showGrid
           showLegend
-          style={{ fontFamily: 'Hiragino Sans GB,Arial,sans-serif' }}
+          style={{ fontFamily: 'Hiragino Sans GB,Arial,sans-serif', border: '1px solid black' }}
         />
       </div>
 
       <div className='flex items-center justify-start gap-6'>
         <button
           type='button'
-          className='rounded-md bg-blue-600 p-3 text-white hover:rounded-lg hover:bg-blue-500 active:bg-blue-800'
           onClick={() => setShowYAxis(!showYAxis)}
+          className='rounded-md bg-blue-600 p-3 text-white hover:rounded-lg hover:bg-blue-500 active:bg-blue-800'
         >
           {showYAxis ? 'Hide' : 'Show'} YAxis
         </button>
         <button
           type='button'
-          className='rounded-md bg-blue-600 p-3 text-white hover:rounded-lg hover:bg-blue-500 active:bg-blue-800'
           onClick={() => setShowXAxis(!showXAxis)}
+          className='rounded-md bg-blue-600 p-3 text-white hover:rounded-lg hover:bg-blue-500 active:bg-blue-800'
         >
           {showXAxis ? 'Hide' : 'Show'} XAxis
         </button>

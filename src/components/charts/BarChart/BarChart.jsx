@@ -12,10 +12,21 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import { getNiceTickValues } from 'recharts-scale';
 import { CustomizedAxisTick } from '../CustomAxisTick';
 import CustomizedLabel from '../CustomizedLabel';
 import CustomTooltip from '../CustomTooltip';
-import { formatLabel, getHeight, getTextWidth } from '../helpers';
+import {
+  calculateLongestNiceTickWidth,
+  calculateXAxisLabelPositioning,
+  formatLabel,
+  getHeight,
+  getTextWidth,
+} from '../helpers';
+
+function formatLabel14(value) {
+  return formatLabel(value, 14);
+}
 
 const DEFAULT_BAR_COLOR = '#355cff';
 
@@ -33,7 +44,6 @@ const DEFAULT_BAR_COLOR = '#355cff';
  *   showLegend?: boolean,
  *   showZoomSlider?: boolean,
  *   xRotateAngle?: number,
- *   xPadding?: {left?: number, right?: number},
  *   xHide?: boolean,
  *   xTickColor?: string,
  *   yHide?: boolean,
@@ -54,7 +64,6 @@ export default function BarChart(props) {
     showLegend,
     showZoomSlider,
     xRotateAngle = 0,
-    xPadding,
     xHide,
     xTickColor = '#666',
     xLabel,
@@ -70,27 +79,56 @@ export default function BarChart(props) {
     style,
   } = props;
 
-  const positiveXRotateAngle = Math.abs(xRotateAngle);
+  /** @type {Array<{x: number | string}>} */
+  const transformedDataForRecharts = useMemo(() => {
+    const transformedDataByKey = {};
 
-  const { widthOfLongestXTickLabel, widthOfLongestYTickLabel } = useMemo(() => {
-    let widthOfLongestXTickLabel = 0;
-    let widthOfLongestYTickLabel = 0;
-
-    bars.forEach(({ data }) => {
-      data.forEach(({ x: currentXTickValue, y: currentYTickValue }) => {
-        const currentXTickWidth = getTextWidth({ text: formatLabel(currentXTickValue) });
-
-        widthOfLongestXTickLabel =
-          widthOfLongestXTickLabel < currentXTickWidth ? currentXTickWidth : widthOfLongestXTickLabel;
-
-        const currentYTickWidth = getTextWidth({ text: formatLabel(currentYTickValue) });
-
-        widthOfLongestYTickLabel =
-          widthOfLongestYTickLabel < currentYTickWidth ? currentYTickWidth : widthOfLongestYTickLabel;
+    bars.forEach((barType) => {
+      barType.data.forEach(({ x, y }) => {
+        transformedDataByKey[x] ??= { x };
+        transformedDataByKey[x][barType.name] = y;
       });
     });
 
-    return { widthOfLongestXTickLabel, widthOfLongestYTickLabel };
+    return Object.values(transformedDataByKey);
+  }, [bars]);
+
+  const maxYValue = useMemo(() => {
+    let maxYValue = Number.NEGATIVE_INFINITY;
+    bars.forEach((currentBarType) => {
+      currentBarType.data.forEach(({ y }) => {
+        if (maxYValue < y) maxYValue = y;
+      });
+    });
+
+    return maxYValue;
+  }, [bars]);
+
+  const positiveXRotateAngle = Math.abs(xRotateAngle);
+
+  const widthOfLongestYTickLabel = useMemo(() => {
+    const tickCount = 5;
+    const domain = [0, maxYValue];
+    const allowDecimals = true;
+    const niceTicks = getNiceTickValues(domain, tickCount, allowDecimals);
+
+    const longestYTickWidth = calculateLongestNiceTickWidth(niceTicks, yTickSuffix);
+
+    return longestYTickWidth;
+  }, [maxYValue, yTickSuffix]);
+
+  const widthOfLongestXTickLabel = useMemo(() => {
+    let widthOfLongestXTickLabel = 0;
+
+    bars.forEach(({ data }) => {
+      data.forEach(({ x: currentXTickValue }) => {
+        const currentXTickWidth = getTextWidth({ text: formatLabel(currentXTickValue) });
+
+        if (widthOfLongestXTickLabel < currentXTickWidth) widthOfLongestXTickLabel = currentXTickWidth;
+      });
+    });
+
+    return widthOfLongestXTickLabel;
   }, [bars]);
 
   const xAxisHeight = useMemo(
@@ -104,19 +142,6 @@ export default function BarChart(props) {
 
     return { value: yLabel, angle: -90, position: 'left', dy: -width / 2 };
   }, [yLabel]);
-
-  const transformedDataForRecharts = useMemo(() => {
-    const transformedDataByKey = {};
-
-    bars.forEach((barType) => {
-      barType.data.forEach(({ x, y }) => {
-        transformedDataByKey[x] ??= { x };
-        transformedDataByKey[x][barType.name] = y;
-      });
-    });
-
-    return Object.values(transformedDataByKey);
-  }, [bars]);
 
   return (
     <ResponsiveContainer width='100%' height='100%'>
@@ -147,43 +172,58 @@ export default function BarChart(props) {
           textAnchor='end' // <--- CustomizedAxisTick assumes this will always be set to 'end'. We calculate x with it. It's easier to render angled xAxis ticks that way.
           stroke='#666' // <--- this is the color of the xAxis line itself!
           xAxisId='bottom'
-          dy={0}
           tick={CustomizedAxisTick} // <--- passes everything as an argument! x, y, width, height, everything! You'll even need to handle the tick's positioning, and format the entire tick.
           height={xAxisHeight}
           angle={-positiveXRotateAngle}
-          padding={xPadding} // <--- you can use this to remove padding between: A. The first bar and the Y axis; B. The last bar and the chart axis.
           hide={xHide}
           color={xTickColor} // <--- this is the color of the tick's value!
           label={{
             value: xLabel,
             angle: 0,
             position: 'bottom',
-            dy: showLegend ? 20 : 0,
+            dy: calculateXAxisLabelPositioning({ showLegend, showZoomSlider, xRotateAngle: positiveXRotateAngle }),
             dx: -getTextWidth({ text: xLabel }) / 2,
           }}
           // unit=' cm' // <--- You CANNOT use this when using `tick`, which you are. A. because it doesn't render it, and B. because some ticks will not be displayed. You can use only when using the default tick renderer, and this will automatically add a unit suffix to your xAxis ticks.
           // fontSize={22}
           // fontWeight={100}
           // tickFormatter={formatLabel} // <--- only passes the string value as an argument.
+          // dy={5} // <--- unlike LineChart, dy doesn't affect BarChart.
+          // padding={xPadding} // <--- you can use this to remove padding between: A. The first bar and the Y axis; B. The last bar and the chart axis.
         />
 
         <YAxis
-          // dataKey='y'// <--- do NOT put dataKey on y axis of BarChart! We are going to use the `name` of each Bars set.
           type='number' // <--- defaults to 'number'. 'category' or 'number'.
           stroke='#666'
           yAxisId='left'
           padding={{ top: 18 }}
           tickFormatter={formatLabel}
-          width={yLabel ? widthOfLongestYTickLabel + 25 : widthOfLongestYTickLabel + 20} // <--- works differently on BarChart than it is on LineChart! On LineChart it is best left undefined.
           hide={yHide}
           label={yLabelFixPosition}
           color={yTickColor}
           unit={yTickSuffix} // <--- you can add a unit suffix to your yAxis ticks!
+          width={yLabel ? widthOfLongestYTickLabel + 18 : widthOfLongestYTickLabel + 8}
+          // dataKey='y'// <--- do NOT put dataKey on y axis of BarChart! We are going to use the `name` of each Bars set.
         />
 
         <Tooltip content={CustomTooltip} />
 
-        {showLegend && <Legend />}
+        {showLegend && (
+          <Legend
+            layout='horizontal' // <--- how to align items of the legend.
+            verticalAlign='bottom' // <--- pin legend to top, bottom or center.
+            align='left' // <--- defaults to 'center'. Horizontal alignment.
+            iconSize={14} // <--- defaults to 14
+            onMouseEnter={() => {
+              console.log('mouse enter');
+            }}
+            onMouseLeave={() => {
+              console.log('mouse leave');
+            }}
+            formatter={formatLabel14}
+            // iconType='circle' // <--- defaults to 'line'
+          />
+        )}
 
         {showZoomSlider && <Brush height={20} stroke='#8884d8' />}
 

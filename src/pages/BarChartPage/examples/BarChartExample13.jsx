@@ -34,9 +34,10 @@ export default function BarChartExample13() {
           bars={bars}
           showGrid
           showLegend
+          xRotateAngle={45}
           activeIndex={activeIndex}
           onClickBar={(_, index) => setActiveIndex(index)}
-          style={{ fontFamily: 'Hiragino Sans GB,Arial,sans-serif' }}
+          style={{ fontFamily: 'Hiragino Sans GB,Arial,sans-serif', border: '1px solid black' }}
         />
       </div>
     </div>

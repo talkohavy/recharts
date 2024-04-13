@@ -30,7 +30,7 @@ export default function BarChartExample8() {
           showGrid
           showLegend
           yTickSuffix='cm'
-          style={{ fontFamily: 'Hiragino Sans GB,Arial,sans-serif' }}
+          style={{ fontFamily: 'Hiragino Sans GB,Arial,sans-serif', border: '1px solid black' }}
         />
       </div>
     </div>

@@ -29,8 +29,7 @@ export default function BarChartExample5() {
           bars={bars}
           showGrid
           showLegend
-          className='rounded-lg border'
-          margin={{ top: 30, right: 20, bottom: 10 }}
+          className='rounded-lg border p-2'
           style={{ fontFamily: 'Hiragino Sans GB,Arial,sans-serif' }}
         />
       </div>
