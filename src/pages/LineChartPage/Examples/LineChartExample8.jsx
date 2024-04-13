@@ -36,7 +36,7 @@ export default function LineChartExample8() {
         <LineChart
           lines={lines}
           showGrid
-          className='rounded-lg border p-6 font-thin'
+          className='rounded-lg border p-4 font-thin'
           style={{ fontFamily: 'Hiragino Sans GB,Arial,sans-serif' }}
         />
       </div>

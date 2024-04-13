@@ -1,5 +1,7 @@
 import LineChartExample1 from './Examples/LineChartExample1';
 import LineChartExample10 from './Examples/LineChartExample10';
+import LineChartExample11 from './Examples/LineChartExample11';
+import LineChartExample12 from './Examples/LineChartExample12';
 import LineChartExample2 from './Examples/LineChartExample2';
 import LineChartExample3 from './Examples/LineChartExample3';
 import LineChartExample4 from './Examples/LineChartExample4';
@@ -25,6 +27,8 @@ export default function HomePage() {
         <LineChartExample8 />
         <LineChartExample9 />
         <LineChartExample10 />
+        <LineChartExample11 />
+        <LineChartExample12 />
       </div>
     </div>
   );

@@ -11,8 +11,15 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import { getNiceTickValues } from 'recharts-scale';
 import { CustomizedAxisTick } from '../CustomAxisTick';
-import { calculateXAxisLabelPositioning, formatLabel, getHeight, getTextWidth } from '../helpers';
+import {
+  calculateLongestNiceTickWidth,
+  calculateXAxisLabelPositioning,
+  formatLabel,
+  getHeight,
+  getTextWidth,
+} from '../helpers';
 import ActiveDot from './ActiveDot';
 import NonActiveDot from './NonActiveDot';
 
@@ -65,35 +72,73 @@ export default function LineChart(props) {
     style,
   } = props;
 
-  const positiveXRotateAngle = Math.abs(xRotateAngle);
+  /** @type {Array<{x: number | string}>} */
+  const transformedDataForRecharts = useMemo(() => {
+    const transformedDataByKey = {};
 
-  const { widthOfLongestXTickLabel, widthOfLongestYTickLabel } = useMemo(() => {
-    let widthOfLongestXTickLabel = 0;
-    let widthOfLongestYTickLabel = 0;
-
-    lines.forEach(({ data }) => {
-      data.forEach(({ x: currentXTickValue, y: currentYTickValue }) => {
-        const currentXTickWidth = getTextWidth({
-          text: formatLabel(currentXTickValue),
-          fontSize: 16,
-          fontFamily: 'Hiragino Sans GB',
-        });
-
-        widthOfLongestXTickLabel =
-          widthOfLongestXTickLabel < currentXTickWidth ? currentXTickWidth : widthOfLongestXTickLabel;
-
-        const currentYTickWidth = getTextWidth({
-          text: formatLabel(currentYTickValue),
-          fontSize: 16,
-          fontFamily: 'Hiragino Sans GB',
-        });
-
-        widthOfLongestYTickLabel =
-          widthOfLongestYTickLabel < currentYTickWidth ? currentYTickWidth : widthOfLongestYTickLabel;
+    lines.forEach((currentLine) => {
+      currentLine.data.forEach(({ x, y }) => {
+        transformedDataByKey[x] ??= { x };
+        transformedDataByKey[x][currentLine.name] = y;
       });
     });
 
-    return { widthOfLongestXTickLabel, widthOfLongestYTickLabel };
+    return Object.values(transformedDataByKey);
+  }, [lines]);
+
+  const maxYValue = useMemo(() => {
+    let maxYValue = Number.NEGATIVE_INFINITY;
+    lines.forEach((currentLine) => {
+      currentLine.data.forEach(({ y }) => {
+        if (maxYValue < y) maxYValue = y;
+      });
+    });
+
+    return maxYValue;
+  }, [lines]);
+
+  const positiveXRotateAngle = Math.abs(xRotateAngle);
+
+  const xAxisType = useMemo(() => {
+    let type = null;
+    let prevType = null;
+
+    transformedDataForRecharts.forEach(({ x }) => {
+      type = typeof x;
+
+      if (prevType !== null && prevType !== type)
+        throw new Error('All x values on all lines MUST be of the same type!');
+
+      prevType = type;
+    });
+
+    return typeof type === 'string' ? 'category' : 'number';
+  }, [transformedDataForRecharts]);
+
+  const widthOfLongestYTickLabel = useMemo(() => {
+    const tickCount = 5;
+    const domain = [0, maxYValue];
+    const allowDecimals = true;
+    const niceTicks = getNiceTickValues(domain, tickCount, allowDecimals);
+
+    const longestYTickWidth = calculateLongestNiceTickWidth(niceTicks);
+
+    return longestYTickWidth;
+  }, [maxYValue]);
+
+  const widthOfLongestXTickLabel = useMemo(() => {
+    let widthOfLongestXTickLabel = 0;
+
+    lines.forEach(({ data }) => {
+      data.forEach(({ x: currentXTickValue }) => {
+        const xTickValueFormatted = formatLabel(currentXTickValue);
+        const currentXTickWidth = getTextWidth({ text: xTickValueFormatted });
+
+        if (widthOfLongestXTickLabel < currentXTickWidth) widthOfLongestXTickLabel = currentXTickWidth;
+      });
+    });
+
+    return widthOfLongestXTickLabel;
   }, [lines]);
 
   const xAxisHeight = useMemo(
@@ -107,19 +152,6 @@ export default function LineChart(props) {
 
     return { value: yLabel, angle: -90, position: 'left', dy: -width / 2 };
   }, [yLabel]);
-
-  const transformedDataForRecharts = useMemo(() => {
-    const transformedDataByKey = {};
-
-    lines.forEach((currentLine) => {
-      currentLine.data.forEach(({ x, y }) => {
-        transformedDataByKey[x] ??= { x };
-        transformedDataByKey[x][currentLine.name] = y;
-      });
-    });
-
-    return Object.values(transformedDataByKey);
-  }, [lines]);
 
   return (
     <ResponsiveContainer width='100%' height='100%'>
@@ -141,7 +173,7 @@ export default function LineChart(props) {
         )}
 
         <XAxis
-          type='category'
+          type={xAxisType} // <--- 'category' v.s. 'number'. What is the difference? Isn't it the same eventually? Well no, because consider a case where gaps exist. For instance, 0 1 2 4 5. A 'category' would place an even distance between 2 & 4, when in fact it's a double gap!
           dataKey='x'
           textAnchor='end' // <--- CustomizedAxisTick assumes this will always be set to 'end'. We calculate x with it. It's easier to render angled xAxis ticks that way.
           stroke='#666' // <--- this is the color of the xAxis line itself!
@@ -150,14 +182,14 @@ export default function LineChart(props) {
           tick={CustomizedAxisTick} // <--- passes everything as an argument! x, y, width, height, everything! You'll even need to handle the tick's positioning, and format the entire tick.
           height={xAxisHeight}
           angle={-positiveXRotateAngle}
-          padding={{ right: 40 }} // <--- you can use this to remove padding between: A. The first bar and the Y axis; B. The last bar and the chart axis.
+          padding={{ right: xAxisType === 'category' ? 40 : 0 }} // <--- you can use this to remove padding between: A. The first bar and the Y axis; B. The last bar and the chart axis.
           hide={xHide}
           color={xTickColor} // <--- this is the color of the tick's value!
           label={{
             value: xLabel,
             angle: 0,
             position: 'bottom',
-            dy: calculateXAxisLabelPositioning({ showLegend, xRotateAngle: positiveXRotateAngle }),
+            dy: calculateXAxisLabelPositioning({ showLegend, showZoomSlider, xRotateAngle: positiveXRotateAngle }),
           }}
           // unit=' cm' // <--- Doesn't appear if you're using `tick`, which you are. Also, it is good practice to have units appear on the label itself, and not on the ticks.
           // fontSize={22}
@@ -174,7 +206,7 @@ export default function LineChart(props) {
           label={yLabelFixPosition}
           color={yTickColor}
           unit={yTickSuffix} // <--- you can add a unit suffix to your yAxis ticks!
-          width={yLabel ? widthOfLongestYTickLabel + 25 : widthOfLongestYTickLabel + 20} // <--- works differently on BarChart than it is on LineChart! On LineChart it is best left undefined.
+          width={yLabel ? widthOfLongestYTickLabel + 18 : widthOfLongestYTickLabel + 8} // <--- spaces are different on BarChart than they are on LineChart!
         />
 
         <Tooltip />
@@ -221,14 +253,15 @@ export default function LineChart(props) {
         })}
 
         {lines.map((line) => {
-          const { name, color, data, lineWidth, curveType, isDashed, dot, showValues, hide } = line;
+          const { name, color, data, lineWidth, curveType, isDashed, dots, showDotValues, hide } = line;
 
           const lineProps = {
+            hide,
+            dataKey: name,
             stroke: color ?? 'black',
             strokeWidth: lineWidth ?? 1,
-            dataKey: name,
             type: curveType ?? 'linear',
-            dot,
+            r: dots?.r ?? 3, // <--- 3 is recharts default!
             // data, <--- don't put data here because if you do the line would not appear!
           };
 
@@ -236,13 +269,12 @@ export default function LineChart(props) {
 
           return (
             <Line
-              hide={hide}
               yAxisId='left'
               xAxisId='bottom'
               key={name}
               {...lineProps}
-              dot={<NonActiveDot data={data} showValues={showValues} />}
-              activeDot={<ActiveDot data={data} showValues={showValues} />}
+              dot={<NonActiveDot data={data} showDotValues={showDotValues} />}
+              activeDot={<ActiveDot data={data} showDotValues={showDotValues} />}
             />
           );
         })}

@@ -35,7 +35,7 @@
   },
   "My console.log is": {
     "prefix": ["c", "clg", "clgis"],
-    "body": ["console.log('${1:props} is:', ${0:props})"],
+    "body": ["console.log('${1:props} is:', ${1:props})"],
     "description": "My Console Log Is"
   },
   "My console.error": {

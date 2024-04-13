@@ -78,20 +78,12 @@ export default function BarChart(props) {
 
     bars.forEach(({ data }) => {
       data.forEach(({ x: currentXTickValue, y: currentYTickValue }) => {
-        const currentXTickWidth = getTextWidth({
-          text: formatLabel(currentXTickValue),
-          fontSize: 16,
-          fontFamily: 'Hiragino Sans GB',
-        });
+        const currentXTickWidth = getTextWidth({ text: formatLabel(currentXTickValue) });
 
         widthOfLongestXTickLabel =
           widthOfLongestXTickLabel < currentXTickWidth ? currentXTickWidth : widthOfLongestXTickLabel;
 
-        const currentYTickWidth = getTextWidth({
-          text: formatLabel(currentYTickValue),
-          fontSize: 16,
-          fontFamily: 'Hiragino Sans GB',
-        });
+        const currentYTickWidth = getTextWidth({ text: formatLabel(currentYTickValue) });
 
         widthOfLongestYTickLabel =
           widthOfLongestYTickLabel < currentYTickWidth ? currentYTickWidth : widthOfLongestYTickLabel;

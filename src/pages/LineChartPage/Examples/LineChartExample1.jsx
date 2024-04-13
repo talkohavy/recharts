@@ -29,7 +29,7 @@ export default function LineChartExample1() {
     <div className='flex h-96 w-full max-w-xl grow flex-col items-start justify-start gap-6 border p-6'>
       <div className='text-xl font-bold'>• Example 1:</div>
 
-      <p>A simple Line chart</p>
+      <p>A simple Line chart with xAxis of type 'category'</p>
 
       <div className='size-full max-h-md max-w-lg'>
         <LineChart

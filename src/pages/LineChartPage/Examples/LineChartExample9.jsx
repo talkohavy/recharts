@@ -14,11 +14,11 @@ const lines = [
     color: COLORS[6],
     curveType: 'monotone',
     isDashed: true,
-    showValues: true,
+    showDotValues: true,
     data: [
       { x: 'Page A', y: 100 },
       { x: 'Page B', y: 300 },
-      { x: 'Page C', y: 150, showValue: false },
+      { x: 'Page C', y: 150, showDotValue: false },
       { x: 'Page D', y: 200 },
       { x: 'Page E', y: 80 },
       { x: 'Page F', y: 180 },

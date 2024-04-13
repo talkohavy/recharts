@@ -105,12 +105,12 @@ export type SingleLine = {
   data: Array<{
     x: number | string;
     y: number;
-    showValue?: boolean;
+    showDotValue?: boolean;
     dot?: { r?: number; fill?: string; stroke?: string };
   }>;
   isDashed?: boolean;
-  showValues?: boolean;
-  dot?: { r: number };
+  showDotValues?: boolean;
+  dots?: { r: number };
   hide?: boolean;
 };
 
