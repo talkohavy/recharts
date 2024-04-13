@@ -1,3 +1,4 @@
+import { COLORS } from '../../../components/charts/constants';
 import LineChart from '../../../components/charts/LineChart';
 
 /**
@@ -10,7 +11,7 @@ import LineChart from '../../../components/charts/LineChart';
 const lines = [
   {
     name: 'line1',
-    color: '#ff7300',
+    color: COLORS[5],
     curveType: 'monotone',
     isDashed: true,
     data: [

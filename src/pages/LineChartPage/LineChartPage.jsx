@@ -5,7 +5,8 @@ import LineChartExample4 from './Examples/LineChartExample4';
 import LineChartExample5 from './Examples/LineChartExample5';
 import LineChartExample6 from './Examples/LineChartExample6';
 import LineChartExample7 from './Examples/LineChartExample7';
-import LineChartExample999 from './Examples/LineChartExample8';
+import LineChartExample8 from './Examples/LineChartExample8';
+import LineChartExample9 from './Examples/LineChartExample9';
 
 export default function HomePage() {
   return (
@@ -20,8 +21,8 @@ export default function HomePage() {
         <LineChartExample5 />
         <LineChartExample6 />
         <LineChartExample7 />
-
-        <LineChartExample999 />
+        <LineChartExample8 />
+        <LineChartExample9 />
       </div>
     </div>
   );
