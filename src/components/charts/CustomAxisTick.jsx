@@ -15,7 +15,7 @@ export function CustomizedAxisTick(props) {
         stroke='none'
         textAnchor={textAnchor}
         fill={color}
-        transform={angle && `rotate(${angle})`}
+        transform={angle ? `rotate(${angle})` : undefined}
         style={{ fontSize, fontWeight }}
       >
         {formatLabel(payload.value)}

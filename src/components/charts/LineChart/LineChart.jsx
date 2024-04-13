@@ -11,7 +11,13 @@ import {
   YAxis,
 } from 'recharts';
 import { CustomizedAxisTick } from '../CustomAxisTick';
-import { formatLabel, getHeight, getTextWidth } from '../helpers';
+import { calculateXAxisLabelPositioning, formatLabel, getHeight, getTextWidth } from '../helpers';
+import ActiveDot from './ActiveDot';
+import NonActiveDot from './NonActiveDot';
+
+function formatLabel14(value) {
+  return formatLabel(value, 14);
+}
 
 /**
  * @typedef {import('../types').SingleLine} SingleLine
@@ -22,12 +28,10 @@ import { formatLabel, getHeight, getTextWidth } from '../helpers';
  * @param {{
  *   lines: Array<SingleLine>,
  *   referenceLines?: Array<ReferenceLine>,
- *   showGrid?: boolean,
+ *   showGrid?: boolean | {showHorizontalLines?: boolean, showVerticalLines?: boolean},
  *   showLegend?: boolean,
  *   yHide?: boolean,
- *   xAxisType?: 'number' | 'category',
  *   xRotateAngle?: number,
- *   xPadding?: {left?: number, right?: number},
  *   xHide?: boolean,
  *   xTickColor?: string,
  *   xLabel?: string,
@@ -35,8 +39,6 @@ import { formatLabel, getHeight, getTextWidth } from '../helpers';
  *   yTickColor?: string,
  *   yTickSuffix?: string,
  *   gridColor?: string,
- *   activeDotRadius?: number,
- *   activeDotColor?: string,
  *   className?: string,
  *   style?: any,
  * }} props
@@ -49,15 +51,12 @@ export default function LineChart(props) {
     showLegend,
     xHide,
     xRotateAngle = 0,
-    xPadding,
     xTickColor = '#666',
     xLabel,
     yLabel,
     yTickColor = '#666',
     yHide,
     yTickSuffix,
-    activeDotRadius,
-    activeDotColor,
     gridColor = '#ddd',
     className,
     style,
@@ -65,28 +64,38 @@ export default function LineChart(props) {
 
   const positiveXRotateAngle = Math.abs(xRotateAngle);
 
-  const longestXTickLabel = useMemo(
-    () =>
-      lines.reduce(
-        (maxWidth, currentLine) =>
-          currentLine.data.reduce((maxWidth, { x: currentXTickValue }) => {
-            const currentTickWidth = getTextWidth({
-              text: formatLabel(currentXTickValue),
-              fontSize: 16,
-              fontFamily: 'Hiragino Sans GB',
-            });
-            if (maxWidth < currentTickWidth) return currentTickWidth;
+  const { widthOfLongestXTickLabel, widthOfLongestYTickLabel } = useMemo(() => {
+    let widthOfLongestXTickLabel = 0;
+    let widthOfLongestYTickLabel = 0;
 
-            return maxWidth;
-          }, maxWidth),
-        0,
-      ),
-    [lines],
-  );
+    lines.forEach(({ data }) => {
+      data.forEach(({ x: currentXTickValue, y: currentYTickValue }) => {
+        const currentXTickWidth = getTextWidth({
+          text: formatLabel(currentXTickValue),
+          fontSize: 16,
+          fontFamily: 'Hiragino Sans GB',
+        });
+
+        widthOfLongestXTickLabel =
+          widthOfLongestXTickLabel < currentXTickWidth ? currentXTickWidth : widthOfLongestXTickLabel;
+
+        const currentYTickWidth = getTextWidth({
+          text: formatLabel(currentYTickValue),
+          fontSize: 16,
+          fontFamily: 'Hiragino Sans GB',
+        });
+
+        widthOfLongestYTickLabel =
+          widthOfLongestYTickLabel < currentYTickWidth ? currentYTickWidth : widthOfLongestYTickLabel;
+      });
+    });
+
+    return { widthOfLongestXTickLabel, widthOfLongestYTickLabel };
+  }, [lines]);
 
   const xAxisHeight = useMemo(
-    () => getHeight({ angle: -positiveXRotateAngle, maxWidth: longestXTickLabel }),
-    [positiveXRotateAngle, longestXTickLabel],
+    () => getHeight({ angle: -positiveXRotateAngle, maxWidth: widthOfLongestXTickLabel }),
+    [positiveXRotateAngle, widthOfLongestXTickLabel],
   );
 
   const yLabelFixPosition = useMemo(() => {
@@ -96,17 +105,37 @@ export default function LineChart(props) {
     return { value: yLabel, angle: -90, position: 'left', dy: -width / 2 };
   }, [yLabel]);
 
-  const activeDot = { r: activeDotRadius ?? 8 };
-  if (activeDotColor) {
-    activeDot.stroke = activeDotColor;
-    activeDot.fill = activeDotColor;
-  }
+  const transformedDataForRecharts = useMemo(() => {
+    const transformedDataByKey = {};
+
+    lines.forEach((currentLine) => {
+      currentLine.data.forEach(({ x, y }) => {
+        transformedDataByKey[x] ??= { x };
+        transformedDataByKey[x][currentLine.name] = y;
+      });
+    });
+
+    return Object.values(transformedDataByKey);
+  }, [lines]);
 
   return (
     <ResponsiveContainer width='100%' height='100%'>
-      <LineChartBase margin={{ left: yLabel ? 12 : 0, bottom: xLabel ? 20 : 0 }} className={className} style={style}>
+      <LineChartBase
+        data={transformedDataForRecharts}
+        margin={{ left: yLabel ? 12 : 0, bottom: xLabel ? 30 : 0 }}
+        className={className}
+        style={style}
+      >
         {/* MUST come before XAxis & YAxis */}
-        {showGrid && <CartesianGrid stroke={gridColor} strokeDasharray='5 5' />}
+        {showGrid && (
+          <CartesianGrid
+            stroke={gridColor}
+            horizontal={!!(showGrid === true || showGrid.showHorizontalLines)}
+            vertical={!!(showGrid === true || showGrid.showVerticalLines)}
+            strokeDasharray='5 5'
+            syncWithTicks
+          />
+        )}
 
         <XAxis
           type='category'
@@ -118,10 +147,15 @@ export default function LineChart(props) {
           tick={CustomizedAxisTick} // <--- passes everything as an argument! x, y, width, height, everything! You'll even need to handle the tick's positioning, and format the entire tick.
           height={xAxisHeight}
           angle={-positiveXRotateAngle}
-          padding={xPadding} // <--- you can use this to remove padding between: A. The first bar and the Y axis; B. The last bar and the chart axis.
+          padding={{ right: 40 }} // <--- you can use this to remove padding between: A. The first bar and the Y axis; B. The last bar and the chart axis.
           hide={xHide}
           color={xTickColor} // <--- this is the color of the tick's value!
-          label={{ value: xLabel, angle: 0, position: 'bottom' }}
+          label={{
+            value: xLabel,
+            angle: 0,
+            position: 'bottom',
+            dy: calculateXAxisLabelPositioning({ showLegend, xRotateAngle: positiveXRotateAngle }),
+          }}
           // unit=' cm' // <--- Doesn't appear if you're using `tick`, which you are. Also, it is good practice to have units appear on the label itself, and not on the ticks.
           // fontSize={22}
           // fontWeight={100}
@@ -129,7 +163,6 @@ export default function LineChart(props) {
         />
 
         <YAxis
-          dataKey='y'
           stroke='#666'
           yAxisId='left'
           padding={{ top: 18 }}
@@ -138,14 +171,28 @@ export default function LineChart(props) {
           label={yLabelFixPosition}
           color={yTickColor}
           unit={yTickSuffix} // <--- you can add a unit suffix to your yAxis ticks!
-          // width={undefined} // <--- works differently on BarChart than it is on LineChart! On LineChart it is best left undefined.
+          width={yLabel ? widthOfLongestYTickLabel + 25 : widthOfLongestYTickLabel + 20} // <--- works differently on BarChart than it is on LineChart! On LineChart it is best left undefined.
         />
 
         <Tooltip />
 
-        {showLegend && <Legend />}
+        {showLegend && (
+          <Legend
+            layout='horizontal' // <--- how to align items of the legend.
+            verticalAlign='bottom' // <--- pin legend to top, bottom or center.
+            align='left' // <--- defaults to 'center'. Horizontal alignment.
+            iconSize={14} // <--- defaults to 14
+            onMouseEnter={() => {
+              console.log('mouse enter');
+            }}
+            onMouseLeave={() => {
+              console.log('mouse leave');
+            }}
+            formatter={formatLabel14}
+            // iconType='circle' // <--- defaults to 'line'
+          />
+        )}
 
-        {/* <ReferenceLine x='Page C' stroke='red' label='Max PV PAGE' /> */}
         {referenceLines?.map(({ x, y, label, lineWidth, lineColor, isDashed }, index) => {
           const referenceLineProps = {
             x,
@@ -159,25 +206,40 @@ export default function LineChart(props) {
 
           if (isDashed) referenceLineProps.strokeDasharray = '10 10';
 
-          return <ReferenceLine key={index} {...referenceLineProps} />;
+          return (
+            <ReferenceLine
+              key={index}
+              {...referenceLineProps}
+              // isFront // <--- defaults to false. true will display it on top of bars in BarCharts, or lines in LineCharts.
+            />
+          );
         })}
 
-        {lines.map(({ name, color, lineWidth, curveType, data, isDashed, dot }) => {
+        {lines.map((line) => {
+          const { name, color, data, lineWidth, curveType, isDashed, dot, showValues, hide } = line;
+
           const lineProps = {
-            data,
             stroke: color ?? 'black',
             strokeWidth: lineWidth ?? 1,
-            dataKey: 'y',
+            dataKey: name,
             type: curveType ?? 'linear',
-            activeDot,
-            yAxisId: 'left',
-            xAxisId: 'bottom',
             dot,
+            // data, <--- don't put data here because if you do the line would not appear!
           };
 
           if (isDashed) lineProps.strokeDasharray = '20 20'; // or '5 5'
 
-          return <Line key={name} {...lineProps} />;
+          return (
+            <Line
+              hide={hide}
+              yAxisId='left'
+              xAxisId='bottom'
+              key={name}
+              {...lineProps}
+              dot={<NonActiveDot data={data} showValues={showValues} />}
+              activeDot={<ActiveDot data={data} showValues={showValues} />}
+            />
+          );
         })}
       </LineChartBase>
     </ResponsiveContainer>

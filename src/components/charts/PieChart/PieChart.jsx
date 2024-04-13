@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Cell, Legend, Pie, PieChart as PieChartBase, ResponsiveContainer, Tooltip } from 'recharts';
-import { COLORS, PIE_CHART } from './constants';
+import { COLORS } from '../constants';
+import { PIE_CHART } from './constants';
 import CustomPieActiveShapeShort from './CustomPieActiveShapeShort';
 import CustomPieLegendLabelFormatter from './CustomPieLegendLabelFormatter';
 import CustomPiePieLabel from './CustomPiePieLabel';

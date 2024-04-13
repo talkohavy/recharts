@@ -10,26 +10,29 @@ import LineChart from '../../../components/charts/LineChart';
 const lines = [
   {
     name: 'line1',
-    color: 'black',
+    color: '#ff7300',
     curveType: 'monotone',
     isDashed: true,
+    dot: {
+      r: 30,
+    },
     data: [
-      { x: 'Page A', y: 10 }, // x: 0 | Page A
-      { x: 'Page B', y: 2 }, // x: 10 | Page B
-      { x: 'Page C', y: 6 }, // x: 20 | Page C
-      { x: 'Page D', y: 8 }, // x: 30 | Page D
-      { x: 'Page E', y: 14 }, // x: 40 | Page E
-      { x: 'Page is', y: 7 }, // x: 50 | Page F
+      { x: 'Page A', y: 100 },
+      { x: 'Page B', y: 300 },
+      { x: 'Page C', y: 151, dot: { r: 20, fill: 'red', stroke: 'black' } },
+      { x: 'Page D', y: 200 },
+      { x: 'Page E', y: 80 },
+      { x: 'Page F', y: 180 },
     ],
   },
 ];
 
-export default function LineChartExample1() {
+export default function LineChartExample7() {
   return (
-    <div className='flex h-96 w-full max-w-xl grow flex-col items-start justify-start gap-6 border p-6'>
-      <div className='text-xl font-bold'>• Example 1:</div>
+    <div className='flex h-xl w-full max-w-xl grow flex-col items-start justify-start gap-6 border p-6'>
+      <div className='text-xl font-bold'>• Example 7:</div>
 
-      <p>A simple Line chart</p>
+      <p>A Line chart with 1 singled out point</p>
 
       <div className='size-full max-h-md max-w-lg'>
         <LineChart

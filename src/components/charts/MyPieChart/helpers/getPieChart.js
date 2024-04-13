@@ -1,4 +1,5 @@
-import { COLORS, PIE_CHART } from '../constants';
+import { COLORS } from '../../constants';
+import { PIE_CHART } from '../constants';
 import { getDirectionFromAngle } from './getDirectionFromAngle';
 import { getPointOnArc } from './getPointOnArc';
 

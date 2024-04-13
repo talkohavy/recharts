@@ -53,7 +53,7 @@ export default function BarChart(props) {
     showGrid,
     showLegend,
     showZoomSlider,
-    xRotateAngle,
+    xRotateAngle = 0,
     xPadding,
     xHide,
     xTickColor = '#666',
@@ -69,6 +69,8 @@ export default function BarChart(props) {
     className,
     style,
   } = props;
+
+  const positiveXRotateAngle = Math.abs(xRotateAngle);
 
   const { widthOfLongestXTickLabel, widthOfLongestYTickLabel } = useMemo(() => {
     let widthOfLongestXTickLabel = 0;
@@ -100,8 +102,8 @@ export default function BarChart(props) {
   }, [bars]);
 
   const xAxisHeight = useMemo(
-    () => getHeight({ angle: xRotateAngle, maxWidth: widthOfLongestXTickLabel }),
-    [xRotateAngle, widthOfLongestXTickLabel],
+    () => getHeight({ angle: -positiveXRotateAngle, maxWidth: widthOfLongestXTickLabel }) ?? 40,
+    [positiveXRotateAngle, widthOfLongestXTickLabel],
   );
 
   const yLabelFixPosition = useMemo(() => {
@@ -127,11 +129,11 @@ export default function BarChart(props) {
   return (
     <ResponsiveContainer width='100%' height='100%'>
       <BarChartBase
-        margin={{ left: yLabel ? 12 : 0, bottom: xLabel ? 20 : 0 }}
         data={transformedDataForRecharts}
+        margin={{ left: yLabel ? 12 : 0, bottom: xLabel ? 20 : 0 }}
+        stackOffset='sign' // <--- sign knows how to deal with negative values, while default stackOffset just hides them (doesn't show them).
         className={className}
         style={style}
-        stackOffset='sign' // <--- sign knows how to deal with negative values, while default stackOffset just hides them (doesn't show them).
         // layout='horizontal' // <--- default is 'horizontal'
         // reverseStackOrder // <--- default is false. When true, stacked items will be rendered right to left. By default, stacked items are rendered left to right. Render direction affects SVG layering, not x position.
         // barCategoryGap='10%' // <--- gap between bars. Hard to make this generic. The default seems to do a pretty good job.
@@ -153,14 +155,20 @@ export default function BarChart(props) {
           textAnchor='end' // <--- CustomizedAxisTick assumes this will always be set to 'end'. We calculate x with it. It's easier to render angled xAxis ticks that way.
           stroke='#666' // <--- this is the color of the xAxis line itself!
           xAxisId='bottom'
-          dy={5}
+          dy={0}
           tick={CustomizedAxisTick} // <--- passes everything as an argument! x, y, width, height, everything! You'll even need to handle the tick's positioning, and format the entire tick.
           height={xAxisHeight}
-          angle={xRotateAngle}
+          angle={-positiveXRotateAngle}
           padding={xPadding} // <--- you can use this to remove padding between: A. The first bar and the Y axis; B. The last bar and the chart axis.
           hide={xHide}
           color={xTickColor} // <--- this is the color of the tick's value!
-          label={{ value: xLabel, angle: 0, position: 'bottom' }}
+          label={{
+            value: xLabel,
+            angle: 0,
+            position: 'bottom',
+            dy: showLegend ? 20 : 0,
+            dx: -getTextWidth({ text: xLabel }) / 2,
+          }}
           // unit=' cm' // <--- You CANNOT use this when using `tick`, which you are. A. because it doesn't render it, and B. because some ticks will not be displayed. You can use only when using the default tick renderer, and this will automatically add a unit suffix to your xAxis ticks.
           // fontSize={22}
           // fontWeight={100}
@@ -174,7 +182,7 @@ export default function BarChart(props) {
           yAxisId='left'
           padding={{ top: 18 }}
           tickFormatter={formatLabel}
-          width={yLabel ? widthOfLongestYTickLabel + 15 : widthOfLongestYTickLabel + 20} // <--- works differently on BarChart than it is on LineChart! On LineChart it is best left undefined.
+          width={yLabel ? widthOfLongestYTickLabel + 25 : widthOfLongestYTickLabel + 20} // <--- works differently on BarChart than it is on LineChart! On LineChart it is best left undefined.
           hide={yHide}
           label={yLabelFixPosition}
           color={yTickColor}
@@ -195,17 +203,16 @@ export default function BarChart(props) {
             stroke: borderColor,
             dataKey: name,
             stackId,
+            unit,
           };
 
           return (
             <Bar
-              key={name}
-              {...barProps}
               yAxisId='left'
               xAxisId='bottom'
-              unit={unit}
+              key={name}
+              {...barProps}
               background={{ fill: barBackgroundColor }}
-              stackId={stackId}
               onClick={onClickBar}
               // minPointSize={5} // <--- give a min height to the lowest value, so that it would still be visible.
               // barSize={40} // <--- it is best to leave this as automatically calculated

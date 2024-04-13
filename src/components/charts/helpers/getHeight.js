@@ -1,3 +1,5 @@
+const EXTRA_GAP_BETWEEN_TICKS_AND_LABEL = 10;
+
 /**
  * @description
  * The theta angle is in degrees.
@@ -10,7 +12,7 @@
 function getHeight(props) {
   const { angle: thetaInDegrees, maxWidth } = props;
 
-  const RECTANGLE = { height: 25, width: maxWidth };
+  const RECTANGLE = { height: 25, width: maxWidth + EXTRA_GAP_BETWEEN_TICKS_AND_LABEL };
 
   if (!thetaInDegrees) return;
 

@@ -1,3 +1,4 @@
+import { COLORS } from '../../../components/charts/constants';
 import LineChart from '../../../components/charts/LineChart';
 
 /**
@@ -10,7 +11,7 @@ import LineChart from '../../../components/charts/LineChart';
 const lines = [
   {
     name: 'line1',
-    color: '#ff7300',
+    color: COLORS[3],
     curveType: 'monotone',
     isDashed: true,
     data: [
@@ -24,43 +25,22 @@ const lines = [
   },
 ];
 
-/** @type {Array<ReferenceLine>} */
-const referenceLines = [
-  {
-    y: 220,
-    label: 'Max',
-    lineWidth: 2,
-    lineColor: 'black',
-  },
-  {
-    x: 'Page B', // 'Page B' | 40
-    label: 'Vertical',
-    lineColor: 'blue',
-    isDashed: true,
-  },
-];
-
-export default function LineChartExample999() {
+export default function LineChartExample4() {
   return (
     <div className='flex h-xl w-full max-w-xl grow flex-col items-start justify-start gap-6 border p-6'>
-      <div className='text-xl font-bold'>• Example 999:</div>
+      <div className='text-xl font-bold'>• Example 4:</div>
 
-      <p>A simple Line chart</p>
+      <p>A Line chart with a legend</p>
 
       <div className='size-full max-h-md max-w-lg'>
         <LineChart
           lines={lines}
-          referenceLines={referenceLines}
-          xAxisType='category'
-          xRotateAngle={-45}
-          xDown={20}
-          xHeight={50}
           showGrid
-          // showLegend
-          xPadding={{ right: 30 }} // left: 30, right: 30
-          // margin={{ left: 0, bottom: 20, right: 20 }} // <--- bottom:20 helps in cases where XAxis label are cut. left:-30 helps center the chart when a YAxis is being rendered.
-          className='rounded-lg border p-6 font-thin' // p-6
-          style={{ fontFamily: 'Hiragino Sans GB,Arial,sans-serif' }}
+          showLegend
+          style={{
+            fontFamily: 'Hiragino Sans GB,Arial,sans-serif',
+            border: '1px solid black',
+          }}
         />
       </div>
     </div>

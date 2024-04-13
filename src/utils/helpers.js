@@ -23,11 +23,11 @@ function formatNumber({ num, precision = 2 }) {
 }
 
 /**
- * @param {string} str
+ * @param {{str: string, maxStringLength: number}} props
  * @returns {string}
  */
-function ellipsisString(str) {
-  return str.length > 8 ? str.substring(0, 8).concat('..') : str;
+function ellipsisString({ str, maxStringLength = 8 }) {
+  return str.length > 8 ? str.substring(0, maxStringLength).concat('..') : str;
 }
 
 export { ellipsisString, formatNumber };

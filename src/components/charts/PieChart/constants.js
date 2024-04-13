@@ -6,29 +6,6 @@ const PIE_CHART = {
   xl: { outerRadius: 160 },
 };
 
-const COLORS = [
-  '#0088FE',
-  '#00C49F',
-  '#FFBB28',
-  '#FF8042',
-  '#4CAF50',
-  '#9C27B0',
-  '#FF5722',
-  '#795548',
-  '#607D8B',
-  '#E91E63',
-  '#9E9E9E',
-  '#2196F3',
-  '#3F51B5',
-  '#FF9800',
-  '#009688',
-  '#FFEB3B',
-  '#CDDC39',
-  '#03A9F4',
-  '#8BC34A',
-  '#FF5252',
-];
-
 /**
  * @param {any} outerRadius
  * @returns {'xs' | 'sm' | 'md' | 'lg' | 'xl'}
@@ -62,4 +39,4 @@ function getFontSizeFrom({ size, percent }) {
   return 12;
 }
 
-export { COLORS, PIE_CHART, getFontSizeFrom, getSizeFromRadius };
+export { PIE_CHART, getFontSizeFrom, getSizeFromRadius };

@@ -1,3 +1,4 @@
+import { COLORS } from '../../../components/charts/constants';
 import LineChart from '../../../components/charts/LineChart';
 
 /**
@@ -10,7 +11,7 @@ import LineChart from '../../../components/charts/LineChart';
 const lines = [
   {
     name: 'line1',
-    color: '#ff7300',
+    color: COLORS[2],
     curveType: 'monotone',
     isDashed: true,
     data: [
@@ -26,22 +27,19 @@ const lines = [
 
 export default function LineChartExample3() {
   return (
-    <div className='mb-6 flex h-96 w-full max-w-xl grow flex-col items-start justify-start gap-6 border p-6'>
+    <div className='mb-6 flex h-md w-full max-w-xl grow flex-col items-start justify-start gap-6 border p-6'>
       <div className='text-xl font-bold'>• Example 3:</div>
 
       <p>A simple Line chart with a 45 degrees angle xAxis</p>
 
-      <div className='size-full max-h-md max-w-lg'>
+      <div className='size-full max-h-lg max-w-lg'>
         <LineChart
           lines={lines}
-          yLabel='Amount'
-          xLabel='List of Alligators'
-          showGrid
           xRotateAngle={46}
-          xPadding={{ right: 25 }} // fixes the last xAxis word being cut from the right!
+          showGrid
           style={{
             fontFamily: 'Hiragino Sans GB,Arial,sans-serif',
-            // border: '1px solid black'
+            border: '1px solid black',
           }}
         />
       </div>

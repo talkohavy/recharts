@@ -102,9 +102,16 @@ export type SingleLine = {
   color?: string;
   lineWidth?: number;
   curveType?: CurveType;
-  data: Array<{ x: number | string; y: number }>;
+  data: Array<{
+    x: number | string;
+    y: number;
+    showValue?: boolean;
+    dot?: { r?: number; fill?: string; stroke?: string };
+  }>;
   isDashed?: boolean;
-  dot?: any;
+  showValues?: boolean;
+  dot?: { r: number };
+  hide?: boolean;
 };
 
 export type SinglePie = {
