@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import {
+  Brush,
   CartesianGrid,
   Legend,
   Line,
@@ -33,6 +34,7 @@ function formatLabel14(value) {
  *   yHide?: boolean,
  *   xRotateAngle?: number,
  *   xHide?: boolean,
+ *   showZoomSlider?: boolean,
  *   xTickColor?: string,
  *   xLabel?: string,
  *   yLabel?: string,
@@ -56,6 +58,7 @@ export default function LineChart(props) {
     yLabel,
     yTickColor = '#666',
     yHide,
+    showZoomSlider,
     yTickSuffix,
     gridColor = '#ddd',
     className,
@@ -192,6 +195,8 @@ export default function LineChart(props) {
             // iconType='circle' // <--- defaults to 'line'
           />
         )}
+
+        {showZoomSlider && <Brush height={20} stroke='#8884d8' />}
 
         {referenceLines?.map(({ x, y, label, lineWidth, lineColor, isDashed }, index) => {
           const referenceLineProps = {
