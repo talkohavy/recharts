@@ -1,4 +1,5 @@
 import LineChartExample1 from './Examples/LineChartExample1';
+import LineChartExample10 from './Examples/LineChartExample10';
 import LineChartExample2 from './Examples/LineChartExample2';
 import LineChartExample3 from './Examples/LineChartExample3';
 import LineChartExample4 from './Examples/LineChartExample4';
@@ -23,6 +24,7 @@ export default function HomePage() {
         <LineChartExample7 />
         <LineChartExample8 />
         <LineChartExample9 />
+        <LineChartExample10 />
       </div>
     </div>
   );
