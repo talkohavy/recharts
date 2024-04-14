@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo } from 'react';
+import { useLayoutEffect, useMemo, useState } from 'react';
 import {
   Bar,
   BarChart as BarChartBase,
@@ -22,6 +22,7 @@ import {
   calculateXAxisLabelPositioning,
   formatLabel,
   getHeight,
+  getNamesObject,
   getTextWidth,
 } from '../helpers';
 
@@ -62,6 +63,9 @@ export default function BarChart(props) {
     onClickBar,
     activeBarId,
   } = props;
+
+  const [isLegendHovered, setIsLegendHovered] = useState(false);
+  const [isBarTypeHovered, setIsBarTypeHovered] = useState(() => getNamesObject(bars));
 
   /** @type {Array<{x: number | string}>} */
   const transformedDataForRecharts = useMemo(() => {
@@ -211,11 +215,23 @@ export default function BarChart(props) {
             verticalAlign='bottom' // <--- pin legend to top, bottom or center.
             align='left' // <--- defaults to 'center'. Horizontal alignment.
             iconSize={14} // <--- defaults to 14
-            onMouseEnter={() => {
-              console.log('mouse enter');
+            onMouseEnter={(payload) => {
+              setIsLegendHovered(true);
+              setIsBarTypeHovered((prevState) => {
+                const newIsBarTypeHovered = { ...prevState };
+                // @ts-ignore
+                newIsBarTypeHovered[payload.dataKey] = true;
+                return newIsBarTypeHovered;
+              });
             }}
-            onMouseLeave={() => {
-              console.log('mouse leave');
+            onMouseLeave={(payload) => {
+              setIsLegendHovered(false);
+              setIsBarTypeHovered((prevState) => {
+                const newIsBarTypeHovered = { ...prevState };
+                // @ts-ignore
+                newIsBarTypeHovered[payload.dataKey] = false;
+                return newIsBarTypeHovered;
+              });
             }}
             formatter={formatLabel14}
             // iconType='circle' // <--- defaults to 'line'
@@ -278,6 +294,7 @@ export default function BarChart(props) {
                   <Cell
                     key={barId}
                     fill={barId === activeBarId ? ACTIVE_BAR_COLOR : specificColor ?? color ?? DEFAULT_BAR_COLOR}
+                    opacity={isLegendHovered ? (isBarTypeHovered[name] ? 1 : 0.2) : undefined}
                     cursor={onClickBar && 'pointer'}
                   />
                 );
