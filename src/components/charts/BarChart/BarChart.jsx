@@ -26,25 +26,20 @@ import {
 } from '../helpers';
 
 const DEFAULT_BAR_COLOR = '#355cff';
-const ACTIVE_BAR_COLOR = '#82ca9d';
+const ACTIVE_BAR_COLOR = 'black'; // #82ca9d
 
 function formatLabel14(value) {
   return formatLabel(value, 14);
 }
 
 /**
- * @typedef {import('../types').BaseChartProps} BaseChartProps
+ * @typedef {import('../types').BarChartProps} BarChartProps
  * @typedef {import('../types').SingleBar} SingleBar
  * @typedef {import('../types').BarClickEventProps} BarClickEventProps
  */
 
 /**
- * @param {BaseChartProps & {
- *   bars: Array<SingleBar>,
- *   barBackgroundOverlayColor?: string,
- *   onClickBar?: (props: BarClickEventProps, index: number) => void,
- *   activeIndex?: number,
- * }} props
+ * @param {BarChartProps} props
  */
 export default function BarChart(props) {
   const {
@@ -66,7 +61,7 @@ export default function BarChart(props) {
     style,
     barBackgroundOverlayColor = 'transparent',
     onClickBar,
-    activeIndex,
+    activeBarId,
   } = props;
 
   /** @type {Array<{x: number | string}>} */
@@ -270,19 +265,24 @@ export default function BarChart(props) {
               key={name}
               {...barProps}
               background={{ fill: barBackgroundOverlayColor }}
-              onClick={onClickBar}
+              onClick={(props, index) => onClickBar({ ...props, barTypeIndex: index, name })}
+              data-test-id={name}
               // minPointSize={5} // <--- give a min height to the lowest value, so that it would still be visible.
               // barSize={40} // <--- it is best to leave this as automatically calculated
               // label={{ position: 'top' }} // <--- Don't need! I'm using a custom label renderer instead.
             >
               <LabelList dataKey={name} fontSize={11} position={stackId ? 'center' : 'top'} content={CustomizedLabel} />
-              {data.map(({ color: specificColor }, cellIndex) => (
-                <Cell
-                  cursor={onClickBar && 'pointer'}
-                  key={`cell-${name}-${cellIndex}`}
-                  fill={cellIndex === activeIndex ? ACTIVE_BAR_COLOR : specificColor ?? color ?? DEFAULT_BAR_COLOR}
-                />
-              ))}
+              {data.map(({ x, color: specificColor }) => {
+                const barId = `${name}-${x}`;
+
+                return (
+                  <Cell
+                    cursor={onClickBar && 'pointer'}
+                    key={barId}
+                    fill={barId === activeBarId ? ACTIVE_BAR_COLOR : specificColor ?? color ?? DEFAULT_BAR_COLOR}
+                  />
+                );
+              })}
             </Bar>
           );
         })}
