@@ -74,7 +74,7 @@ export default function LineChartExample12() {
           yLabel='Amount in Liters'
           xLabel='Flying Cars'
           showGrid
-          xRotateAngle={45}
+          xTickRotateAngle={45}
           showLegend
           showZoomSlider
           style={{

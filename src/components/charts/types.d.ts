@@ -35,7 +35,6 @@ export type AxisLabel =
 
 export type BarChartProps = BaseChartProps & {
   bars: Array<SingleBar>;
-  barBackgroundOverlayColor?: string;
   onClickBar?: (props: BarClickEventProps & { name: string; barTypeIndex: number }) => void;
   /**
    * Every Bar within the BarChart has an ID which is a string comprised of '[bar name]-[x value]'.
@@ -70,7 +69,7 @@ export type BaseChartProps = {
   showZoomSlider?: boolean;
   gridColor?: string;
   xLabel?: string;
-  xRotateAngle?: number;
+  xTickRotateAngle?: number;
   xTickColor?: string;
   xHide?: boolean;
   yLabel?: string;

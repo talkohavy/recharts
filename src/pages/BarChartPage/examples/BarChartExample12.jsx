@@ -43,7 +43,7 @@ export default function BarChartExample12() {
           showGrid
           showLegend
           showZoomSlider
-          xRotateAngle={46}
+          xTickRotateAngle={46}
           style={{ fontFamily: 'Hiragino Sans GB,Arial,sans-serif', border: '1px solid black' }}
         />
       </div>

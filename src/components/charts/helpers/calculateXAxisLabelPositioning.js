@@ -4,12 +4,12 @@
  * @param {{
  *   showLegend: boolean,
  *   showZoomSlider: boolean,
- *   xRotateAngle: number
+ *   xTickRotateAngle: number
  *   chartType: 'LineChart' | 'BarChart'
  * }} props
  */
 function calculateXAxisLabelPositioning(props) {
-  const { showLegend, showZoomSlider, xRotateAngle, chartType } = props;
+  const { showLegend, showZoomSlider, xTickRotateAngle, chartType } = props;
 
   if (showLegend && showZoomSlider) return 40; // no matter what the angle is!
 
@@ -17,7 +17,7 @@ function calculateXAxisLabelPositioning(props) {
 
   if (showZoomSlider) return 25; // no matter what the angle is!
 
-  if (!showLegend && xRotateAngle > 0) return 0;
+  if (!showLegend && xTickRotateAngle > 0) return 0;
 
   if (chartType === 'LineChart') return 10;
 

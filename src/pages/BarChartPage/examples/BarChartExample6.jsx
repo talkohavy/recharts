@@ -34,7 +34,7 @@ export default function BarChartExample6() {
           bars={bars}
           xLabel='Countries'
           yLabel='Amount in km'
-          xRotateAngle={46}
+          xTickRotateAngle={46}
           showGrid
           showLegend
           style={{ fontFamily: 'Hiragino Sans GB,Arial,sans-serif', border: '1px solid black' }}

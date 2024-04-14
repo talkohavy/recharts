@@ -44,7 +44,7 @@ export default function LineChart(props) {
     showZoomSlider,
     gridColor = '#ddd',
     xLabel,
-    xRotateAngle = 0,
+    xTickRotateAngle = 0,
     xTickColor = '#666',
     xHide,
     yLabel,
@@ -105,7 +105,7 @@ export default function LineChart(props) {
     return maxYValue;
   }, [lines]);
 
-  const positiveXRotateAngle = Math.abs(xRotateAngle);
+  const positiveXTickRotateAngle = Math.abs(xTickRotateAngle);
 
   const widthOfLongestYTickLabel = useMemo(() => {
     const tickCount = 5;
@@ -134,8 +134,8 @@ export default function LineChart(props) {
   }, [lines]);
 
   const xAxisHeight = useMemo(
-    () => getHeight({ angle: -positiveXRotateAngle, maxWidth: widthOfLongestXTickLabel }),
-    [positiveXRotateAngle, widthOfLongestXTickLabel],
+    () => getHeight({ angle: -positiveXTickRotateAngle, maxWidth: widthOfLongestXTickLabel }),
+    [positiveXTickRotateAngle, widthOfLongestXTickLabel],
   );
 
   const yLabelFixPosition = useMemo(() => {
@@ -173,7 +173,7 @@ export default function LineChart(props) {
           dy={5}
           tick={CustomizedAxisTick} // <--- passes everything as an argument! x, y, width, height, everything! You'll even need to handle the tick's positioning, and format the entire tick.
           height={xAxisHeight}
-          angle={-positiveXRotateAngle}
+          angle={-positiveXTickRotateAngle}
           padding={{ right: xAxisType === 'category' ? 40 : 0 }} // <--- you can use this to remove padding between: A. The first bar and the Y axis; B. The last bar and the chart axis.
           hide={xHide}
           color={xTickColor} // <--- this is the color of the tick's value!
@@ -184,7 +184,7 @@ export default function LineChart(props) {
             dy: calculateXAxisLabelPositioning({
               showLegend,
               showZoomSlider,
-              xRotateAngle: positiveXRotateAngle,
+              xTickRotateAngle: positiveXTickRotateAngle,
               chartType: 'LineChart',
             }),
             dx: -getTextWidth({ text: xLabel }) / 4,

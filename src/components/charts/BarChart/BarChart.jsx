@@ -49,7 +49,7 @@ export default function BarChart(props) {
     showZoomSlider,
     gridColor = '#ddd',
     xLabel,
-    xRotateAngle = 0,
+    xTickRotateAngle = 0,
     xTickColor = '#666',
     xHide,
     yLabel,
@@ -59,7 +59,6 @@ export default function BarChart(props) {
     referenceLines,
     className,
     style,
-    barBackgroundOverlayColor = 'transparent',
     onClickBar,
     activeBarId,
   } = props;
@@ -97,7 +96,7 @@ export default function BarChart(props) {
     return maxYValue;
   }, [bars]);
 
-  const positiveXRotateAngle = Math.abs(xRotateAngle);
+  const positiveXTickRotateAngle = Math.abs(xTickRotateAngle);
 
   const widthOfLongestYTickLabel = useMemo(() => {
     const tickCount = 5;
@@ -125,8 +124,8 @@ export default function BarChart(props) {
   }, [bars]);
 
   const xAxisHeight = useMemo(
-    () => getHeight({ angle: -positiveXRotateAngle, maxWidth: widthOfLongestXTickLabel }) ?? 40,
-    [positiveXRotateAngle, widthOfLongestXTickLabel],
+    () => getHeight({ angle: -positiveXTickRotateAngle, maxWidth: widthOfLongestXTickLabel }) ?? 40,
+    [positiveXTickRotateAngle, widthOfLongestXTickLabel],
   );
 
   const yLabelFixPosition = useMemo(() => {
@@ -167,7 +166,7 @@ export default function BarChart(props) {
           xAxisId='bottom'
           tick={CustomizedAxisTick} // <--- passes everything as an argument! x, y, width, height, everything! You'll even need to handle the tick's positioning, and format the entire tick.
           height={xAxisHeight}
-          angle={-positiveXRotateAngle}
+          angle={-positiveXTickRotateAngle}
           hide={xHide}
           color={xTickColor} // <--- this is the color of the tick's value!
           label={{
@@ -177,7 +176,7 @@ export default function BarChart(props) {
             dy: calculateXAxisLabelPositioning({
               showLegend,
               showZoomSlider,
-              xRotateAngle: positiveXRotateAngle,
+              xTickRotateAngle: positiveXTickRotateAngle,
               chartType: 'BarChart',
             }),
             dx: -getTextWidth({ text: xLabel }) / 2,
@@ -260,26 +259,26 @@ export default function BarChart(props) {
 
           return (
             <Bar
+              key={name}
               yAxisId='left'
               xAxisId='bottom'
-              key={name}
               {...barProps}
-              background={{ fill: barBackgroundOverlayColor }}
               onClick={(props, index) => onClickBar({ ...props, barTypeIndex: index, name })}
-              data-test-id={name}
               // minPointSize={5} // <--- give a min height to the lowest value, so that it would still be visible.
               // barSize={40} // <--- it is best to leave this as automatically calculated
-              // label={{ position: 'top' }} // <--- Don't need! I'm using a custom label renderer instead.
+              // label={{ position: 'top' }} // <--- Don't need! I'm using a custom label renderer instead (CustomizedLabel).
+              // background={{ fill: barBackgroundOverlayColor }} // <--- DO NOT put a background! This is what interrupted my onClick event from getting the right BarChart name!
             >
               <LabelList dataKey={name} fontSize={11} position={stackId ? 'center' : 'top'} content={CustomizedLabel} />
+
               {data.map(({ x, color: specificColor }) => {
                 const barId = `${name}-${x}`;
 
                 return (
                   <Cell
-                    cursor={onClickBar && 'pointer'}
                     key={barId}
                     fill={barId === activeBarId ? ACTIVE_BAR_COLOR : specificColor ?? color ?? DEFAULT_BAR_COLOR}
+                    cursor={onClickBar && 'pointer'}
                   />
                 );
               })}
