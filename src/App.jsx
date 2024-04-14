@@ -5,6 +5,7 @@ import Layout from './components/Layout';
 const LineChartPage = lazy(() => import('./pages/LineChartPage'));
 const BarChartPage = lazy(() => import('./pages/BarChartPage'));
 const PieChartPage = lazy(() => import('./pages/PieChartPage'));
+const PlaygroundBarChartPage = lazy(() => import('./pages/PlaygroundBarChart'));
 const PageNotFound = lazy(() => import('./pages/PageNotFound'));
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
           <Route path='/line-chart' element={<LineChartPage />} />
           <Route path='/bar-chart' element={<BarChartPage />} />
           <Route path='/pie-chart' element={<PieChartPage />} />
+          <Route path='/playground-bar-chart' element={<PlaygroundBarChartPage />} />
           {/* <Route path='/list' element={<ListPage />} /> */}
           {/* <Route path='/list/:id' element={<SinlgeItemPage />} /> */}
 
