@@ -31,27 +31,14 @@ function formatLabel14(value) {
 const DEFAULT_BAR_COLOR = '#355cff';
 
 /**
+ * @typedef {import('../types').BaseChartProps} BaseChartProps
  * @typedef {import('../types').SingleBar} SingleBar
  * @typedef {import('../types').BarClickEventProps} BarClickEventProps
  */
 
 /**
- * @param {{
+ * @param {BaseChartProps & {
  *   bars: Array<SingleBar>,
- *   showGrid?: boolean | {showHorizontalLines?: boolean, showVerticalLines?: boolean},
- *   showLegend?: boolean,
- *   showZoomSlider?: boolean,
- *   gridColor?: string,
- *   xLabel?: string,
- *   xRotateAngle?: number,
- *   xTickColor?: string,
- *   xHide?: boolean,
- *   yLabel?: string,
- *   yTickColor?: string,
- *   yTickSuffix?: string,
- *   yHide?: boolean,
- *   className?: string,
- *   style?: any,
  *   barBackgroundOverlayColor?: string,
  *   onClickBar?: (props: BarClickEventProps, index: number) => void,
  *   activeIndex?: number,

@@ -46,6 +46,28 @@ export type BarClickEventProps = {
   y: number;
 };
 
+/**
+ * @description
+ * The below props are shared props between a LineChart & a BarChart.
+ * They do not fit for PieChart.
+ */
+export type BaseChartProps = {
+  showGrid?: boolean | { showHorizontalLines?: boolean; showVerticalLines?: boolean };
+  showLegend?: boolean;
+  showZoomSlider?: boolean;
+  gridColor?: string;
+  xLabel?: string;
+  xRotateAngle?: number;
+  xTickColor?: string;
+  xHide?: boolean;
+  yLabel?: string;
+  yTickColor?: string;
+  yTickSuffix?: string;
+  yHide?: boolean;
+  className?: string;
+  style?: any;
+};
+
 export type CurveType =
   | 'basis'
   | 'basisClosed'

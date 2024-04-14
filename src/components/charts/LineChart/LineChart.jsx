@@ -28,27 +28,14 @@ function formatLabel14(value) {
 }
 
 /**
+ * @typedef {import('../types').BaseChartProps} BaseChartProps
  * @typedef {import('../types').SingleLine} SingleLine
  * @typedef {import('../types').ReferenceLine} ReferenceLine
  */
 
 /**
- * @param {{
+ * @param {BaseChartProps & {
  *   lines: Array<SingleLine>,
- *   showGrid?: boolean | {showHorizontalLines?: boolean, showVerticalLines?: boolean},
- *   showLegend?: boolean,
- *   showZoomSlider?: boolean,
- *   gridColor?: string,
- *   xLabel?: string,
- *   xRotateAngle?: number,
- *   xTickColor?: string,
- *   xHide?: boolean,
- *   yLabel?: string,
- *   yTickColor?: string,
- *   yTickSuffix?: string,
- *   yHide?: boolean,
- *   className?: string,
- *   style?: any,
  *   referenceLines?: Array<ReferenceLine>,
  * }} props
  */
