@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useLayoutEffect, useMemo } from 'react';
 import {
   Bar,
   BarChart as BarChartBase,
@@ -7,6 +7,7 @@ import {
   Cell,
   LabelList,
   Legend,
+  ReferenceLine,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -24,11 +25,12 @@ import {
   getTextWidth,
 } from '../helpers';
 
+const DEFAULT_BAR_COLOR = '#355cff';
+const ACTIVE_BAR_COLOR = '#82ca9d';
+
 function formatLabel14(value) {
   return formatLabel(value, 14);
 }
-
-const DEFAULT_BAR_COLOR = '#355cff';
 
 /**
  * @typedef {import('../types').BaseChartProps} BaseChartProps
@@ -59,6 +61,7 @@ export default function BarChart(props) {
     yTickColor = '#666',
     yTickSuffix,
     yHide,
+    referenceLines,
     className,
     style,
     barBackgroundOverlayColor = 'transparent',
@@ -78,6 +81,14 @@ export default function BarChart(props) {
     });
 
     return Object.values(transformedDataByKey);
+  }, [bars]);
+
+  useLayoutEffect(() => {
+    for (let i = 0; i < bars.length - 1; i++) {
+      for (let j = i + 1; j < bars.length; j++) {
+        if (bars[i].name === bars[j].name) throw new Error('Two bars cannot have the same name!');
+      }
+    }
   }, [bars]);
 
   const maxYValue = useMemo(() => {
@@ -168,7 +179,12 @@ export default function BarChart(props) {
             value: xLabel,
             angle: 0,
             position: 'bottom',
-            dy: calculateXAxisLabelPositioning({ showLegend, showZoomSlider, xRotateAngle: positiveXRotateAngle }),
+            dy: calculateXAxisLabelPositioning({
+              showLegend,
+              showZoomSlider,
+              xRotateAngle: positiveXRotateAngle,
+              chartType: 'BarChart',
+            }),
             dx: -getTextWidth({ text: xLabel }) / 2,
           }}
           // unit=' cm' // <--- You CANNOT use this when using `tick`, which you are. A. because it doesn't render it, and B. because some ticks will not be displayed. You can use only when using the default tick renderer, and this will automatically add a unit suffix to your xAxis ticks.
@@ -214,12 +230,34 @@ export default function BarChart(props) {
 
         {showZoomSlider && <Brush height={20} stroke='#8884d8' />}
 
-        {bars.map(({ name, data, unit, color, borderColor, stackId }) => {
+        {referenceLines?.map(({ x, y, label, lineWidth, lineColor, isDashed }, index) => {
+          const referenceLineProps = {
+            x,
+            y,
+            label,
+            stroke: lineColor ?? '#666',
+            strokeWidth: lineWidth ?? 1,
+            xAxisId: 'bottom',
+            yAxisId: 'left',
+          };
+
+          if (isDashed) referenceLineProps.strokeDasharray = '10 10';
+
+          return (
+            <ReferenceLine
+              key={index}
+              {...referenceLineProps}
+              // isFront // <--- defaults to false. true will display it on top of bars in BarCharts, or lines in LineCharts.
+            />
+          );
+        })}
+
+        {bars.map(({ name, data, unit, color, barBorderColor, stackId }) => {
           const barColorInLegend = color ?? DEFAULT_BAR_COLOR;
 
           const barProps = {
             fill: barColorInLegend,
-            stroke: borderColor,
+            stroke: barBorderColor,
             dataKey: name,
             stackId,
             unit,
@@ -242,7 +280,7 @@ export default function BarChart(props) {
                 <Cell
                   cursor={onClickBar && 'pointer'}
                   key={`cell-${name}-${cellIndex}`}
-                  fill={cellIndex === activeIndex ? '#82ca9d' : specificColor ?? color ?? DEFAULT_BAR_COLOR}
+                  fill={cellIndex === activeIndex ? ACTIVE_BAR_COLOR : specificColor ?? color ?? DEFAULT_BAR_COLOR}
                 />
               ))}
             </Bar>

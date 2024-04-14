@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useLayoutEffect, useMemo } from 'react';
 import {
   Brush,
   CartesianGrid,
@@ -13,6 +13,7 @@ import {
 } from 'recharts';
 import { getNiceTickValues } from 'recharts-scale';
 import { CustomizedAxisTick } from '../CustomAxisTick';
+import CustomTooltip from '../CustomTooltip';
 import {
   calculateLongestNiceTickWidth,
   calculateXAxisLabelPositioning,
@@ -30,14 +31,10 @@ function formatLabel14(value) {
 /**
  * @typedef {import('../types').BaseChartProps} BaseChartProps
  * @typedef {import('../types').SingleLine} SingleLine
- * @typedef {import('../types').ReferenceLine} ReferenceLine
  */
 
 /**
- * @param {BaseChartProps & {
- *   lines: Array<SingleLine>,
- *   referenceLines?: Array<ReferenceLine>,
- * }} props
+ * @param {BaseChartProps & {lines: Array<SingleLine>}} props
  */
 export default function LineChart(props) {
   const {
@@ -54,9 +51,9 @@ export default function LineChart(props) {
     yTickColor = '#666',
     yTickSuffix = '',
     yHide,
+    referenceLines,
     className,
     style,
-    referenceLines,
   } = props;
 
   /** @type {Array<{x: number | string}>} */
@@ -73,19 +70,6 @@ export default function LineChart(props) {
     return Object.values(transformedDataByKey);
   }, [lines]);
 
-  const maxYValue = useMemo(() => {
-    let maxYValue = Number.NEGATIVE_INFINITY;
-    lines.forEach((currentLine) => {
-      currentLine.data.forEach(({ y }) => {
-        if (maxYValue < y) maxYValue = y;
-      });
-    });
-
-    return maxYValue;
-  }, [lines]);
-
-  const positiveXRotateAngle = Math.abs(xRotateAngle);
-
   const xAxisType = useMemo(() => {
     let type = null;
     let prevType = null;
@@ -101,6 +85,27 @@ export default function LineChart(props) {
 
     return typeof type === 'string' ? 'category' : 'number';
   }, [transformedDataForRecharts]);
+
+  useLayoutEffect(() => {
+    for (let i = 0; i < lines.length - 1; i++) {
+      for (let j = i + 1; j < lines.length; j++) {
+        if (lines[i].name === lines[j].name) throw new Error('Two lines cannot have the same name!');
+      }
+    }
+  }, [lines]);
+
+  const maxYValue = useMemo(() => {
+    let maxYValue = Number.NEGATIVE_INFINITY;
+    lines.forEach((currentLine) => {
+      currentLine.data.forEach(({ y }) => {
+        if (maxYValue < y) maxYValue = y;
+      });
+    });
+
+    return maxYValue;
+  }, [lines]);
+
+  const positiveXRotateAngle = Math.abs(xRotateAngle);
 
   const widthOfLongestYTickLabel = useMemo(() => {
     const tickCount = 5;
@@ -176,7 +181,12 @@ export default function LineChart(props) {
             value: xLabel,
             angle: 0,
             position: 'bottom',
-            dy: calculateXAxisLabelPositioning({ showLegend, showZoomSlider, xRotateAngle: positiveXRotateAngle }),
+            dy: calculateXAxisLabelPositioning({
+              showLegend,
+              showZoomSlider,
+              xRotateAngle: positiveXRotateAngle,
+              chartType: 'LineChart',
+            }),
             dx: -getTextWidth({ text: xLabel }) / 4,
           }}
           // unit=' cm' // <--- Doesn't appear if you're using `tick`, which you are. Also, it is good practice to have units appear on the label itself, and not on the ticks.
@@ -199,7 +209,7 @@ export default function LineChart(props) {
           // dataKey='y'// <--- do NOT put dataKey on y axis of LineChart! We are going to use the `name` of each Line's dataset.
         />
 
-        <Tooltip />
+        <Tooltip content={CustomTooltip} />
 
         {showLegend && (
           <Legend

@@ -64,6 +64,7 @@ export type BaseChartProps = {
   yTickColor?: string;
   yTickSuffix?: string;
   yHide?: boolean;
+  referenceLines?: Array<ReferenceLine>;
   className?: string;
   style?: any;
 };
@@ -104,18 +105,27 @@ export type PieChartDrawData = {
 export type ReferenceLine = {
   x?: number | string;
   y?: number;
-  label: string;
+  label?: string;
   lineWidth?: number;
   lineColor?: string;
   isDashed?: boolean;
 };
 
 export type SingleBar = {
+  /**
+   * _name_ must be unique! Do not leave as an empty string.
+   */
   name: string;
-  color?: string;
-  borderColor?: string;
   data: Array<{ x: number | string; y: number; color?: string }>;
+  color?: string;
+  barBorderColor?: string;
+  /**
+   * a suffix that will be added to the tooltip.
+   */
   unit?: string;
+  /**
+   * Give 2 bars (or more) the same stackId to have them stacked together, one on top of the other, in the same bar.
+   */
   stackId?: string;
 };
 

@@ -6,6 +6,8 @@ import { ellipsisString, formatNumber } from '../../../utils/helpers';
  * @returns {string}
  */
 function formatLabel(value, maxStringLength = 8) {
+  if (value == null) return undefined;
+
   if (typeof value === 'string') return ellipsisString({ str: value, maxStringLength });
 
   return formatNumber({ num: value });
