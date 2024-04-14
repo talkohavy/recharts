@@ -207,6 +207,13 @@ module.exports = {
         0.5: '0.5px',
         1: '1px',
         1.5: '1.5px',
+        5: '5px',
+        6: '6px',
+        7: '7px',
+        8: '8px',
+        9: '9px',
+        10: '10px',
+        15: '15px',
       },
       borderRadius: {
         '4xl': '2rem', // use like so: rounded-4xl
@@ -274,7 +281,7 @@ module.exports = {
         'slide-up': 'slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
         'slide-down': 'slideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
         'appear-quick': 'appear 150ms normal ease forwards',
-        spin: 'spin 1.5s cubic-bezier(.72,.18,.3,.99) infinite',
+        spin: 'spin 2s linear 0s infinite normal forwards',
         blinkingText: 'blinkingText 0.8s ease-in-out infinite alternate',
         shake: 'shake ease-in 5s infinite',
         appear: 'appear 1000ms normal ease forwards',
