@@ -15,7 +15,7 @@ export default function CustomizedLabel(props) {
         y={updatedYPosition}
         textAnchor='middle'
         dominantBaseline='middle'
-        className='dark:fill-white'
+        className='pointer-events-none dark:fill-white'
         style={{ fontSize, fontWeight }}
       >
         {formatLabel(value)}
