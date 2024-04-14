@@ -38,23 +38,23 @@ const DEFAULT_BAR_COLOR = '#355cff';
 /**
  * @param {{
  *   bars: Array<SingleBar>,
- *   xLabel?: string,
- *   yLabel?: string,
  *   showGrid?: boolean | {showHorizontalLines?: boolean, showVerticalLines?: boolean},
  *   showLegend?: boolean,
  *   showZoomSlider?: boolean,
- *   xRotateAngle?: number,
- *   xHide?: boolean,
- *   xTickColor?: string,
- *   yHide?: boolean,
- *   yTickSuffix?: string,
- *   yTickColor?: string,
- *   barBackgroundColor?: string,
  *   gridColor?: string,
- *   onClickBar?: (props: BarClickEventProps, index: number) => void,
- *   activeIndex?: number,
+ *   xLabel?: string,
+ *   xRotateAngle?: number,
+ *   xTickColor?: string,
+ *   xHide?: boolean,
+ *   yLabel?: string,
+ *   yTickColor?: string,
+ *   yTickSuffix?: string,
+ *   yHide?: boolean,
  *   className?: string,
  *   style?: any,
+ *   barBackgroundOverlayColor?: string,
+ *   onClickBar?: (props: BarClickEventProps, index: number) => void,
+ *   activeIndex?: number,
  * }} props
  */
 export default function BarChart(props) {
@@ -63,20 +63,20 @@ export default function BarChart(props) {
     showGrid,
     showLegend,
     showZoomSlider,
-    xRotateAngle = 0,
-    xHide,
-    xTickColor = '#666',
+    gridColor = '#ddd',
     xLabel,
+    xRotateAngle = 0,
+    xTickColor = '#666',
+    xHide,
     yLabel,
-    yHide,
     yTickColor = '#666',
     yTickSuffix,
-    barBackgroundColor = 'transparent',
-    gridColor = '#ddd',
-    onClickBar,
-    activeIndex,
+    yHide,
     className,
     style,
+    barBackgroundOverlayColor = 'transparent',
+    onClickBar,
+    activeIndex,
   } = props;
 
   /** @type {Array<{x: number | string}>} */
@@ -244,7 +244,7 @@ export default function BarChart(props) {
               xAxisId='bottom'
               key={name}
               {...barProps}
-              background={{ fill: barBackgroundColor }}
+              background={{ fill: barBackgroundOverlayColor }}
               onClick={onClickBar}
               // minPointSize={5} // <--- give a min height to the lowest value, so that it would still be visible.
               // barSize={40} // <--- it is best to leave this as automatically calculated

@@ -35,41 +35,41 @@ function formatLabel14(value) {
 /**
  * @param {{
  *   lines: Array<SingleLine>,
- *   referenceLines?: Array<ReferenceLine>,
  *   showGrid?: boolean | {showHorizontalLines?: boolean, showVerticalLines?: boolean},
  *   showLegend?: boolean,
- *   yHide?: boolean,
- *   xRotateAngle?: number,
- *   xHide?: boolean,
  *   showZoomSlider?: boolean,
- *   xTickColor?: string,
+ *   gridColor?: string,
  *   xLabel?: string,
+ *   xRotateAngle?: number,
+ *   xTickColor?: string,
+ *   xHide?: boolean,
  *   yLabel?: string,
  *   yTickColor?: string,
  *   yTickSuffix?: string,
- *   gridColor?: string,
+ *   yHide?: boolean,
  *   className?: string,
  *   style?: any,
+ *   referenceLines?: Array<ReferenceLine>,
  * }} props
  */
 export default function LineChart(props) {
   const {
     lines,
-    referenceLines,
     showGrid,
     showLegend,
-    xHide,
+    showZoomSlider,
+    gridColor = '#ddd',
+    xLabel,
     xRotateAngle = 0,
     xTickColor = '#666',
-    xLabel,
+    xHide,
     yLabel,
     yTickColor = '#666',
-    yHide,
-    showZoomSlider,
     yTickSuffix = '',
-    gridColor = '#ddd',
+    yHide,
     className,
     style,
+    referenceLines,
   } = props;
 
   /** @type {Array<{x: number | string}>} */
