@@ -53,6 +53,7 @@ export default function BarChart(props) {
     showGrid,
     showLegend,
     showZoomSlider,
+    showPreviewInSlider,
     gridColor = '#ddd',
     xLabel,
     xTickRotateAngle = 0,
@@ -253,12 +254,20 @@ export default function BarChart(props) {
           <Brush
             height={BRUSH_HEIGHT}
             endIndex={BRUSH_ITEMS_PER_PAGE} // <---The default end index of brush. If the option is not set, the end index will be calculated by the length of data.
-            stroke='#8884d8'
-            // onChange={(args) => console.log('args are:', args)}
+            stroke='#4b5af1'
             // startIndex={0} // <--- The default start index of brush. If the option is not set, the start index will be 0.
+            // onChange={(args) => console.log('args are:', args)}
             // gap={1} // <--- Default to 1. `gap` is the refresh rate. 1 is smoothest.
             // travellerWidth={6}
-          />
+          >
+            {showPreviewInSlider ? (
+              <BarChartBase data={transformedDataForRecharts}>
+                {bars.map(({ name }) => (
+                  <Bar key={name} dataKey={name} isAnimationActive={false} fill='#999' />
+                ))}
+              </BarChartBase>
+            ) : undefined}
+          </Brush>
         )}
 
         {referenceLines?.map(({ x, y, label, lineWidth, lineColor, isDashed }, index) => {

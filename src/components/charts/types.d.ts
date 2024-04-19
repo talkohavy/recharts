@@ -68,6 +68,7 @@ export type BaseChartProps = {
   showGrid?: boolean | { showHorizontalLines?: boolean; showVerticalLines?: boolean };
   showLegend?: boolean;
   showZoomSlider?: boolean;
+  showPreviewInSlider?: boolean;
   gridColor?: string;
   xLabel?: string;
   xTickRotateAngle?: number;
