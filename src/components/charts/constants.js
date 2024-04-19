@@ -1,3 +1,7 @@
+const BRUSH_HEIGHT = 40;
+const BRUSH_ITEMS_PER_PAGE = 10;
+const LEGEND_HEIGHT = 30;
+
 const COLORS = [
   '#0088FE',
   '#00C49F',
@@ -21,4 +25,4 @@ const COLORS = [
   '#FF5252',
 ];
 
-export { COLORS };
+export { BRUSH_HEIGHT, BRUSH_ITEMS_PER_PAGE, COLORS, LEGEND_HEIGHT };

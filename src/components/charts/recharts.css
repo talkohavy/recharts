@@ -1,0 +1,8 @@
+/* The background of a Bar in a recharts BarChart when hovering it with the mouse's cursor */
+/* .recharts-tooltip-cursor { fill: transparent } */
+
+/* Rechart's legend wrapper */
+.recharts-legend-wrapper {
+  padding-top: 6px;
+  padding-left: 6px;
+}

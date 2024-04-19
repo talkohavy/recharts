@@ -10,8 +10,8 @@ export default function NumberInput({ value, setValue, step = 1, placeholder = '
   const isSubtractingRef = useRef(false);
   const timeoutIdRef = useRef(null); // To track the timeout for the initial delay
 
-  const incrementValue = () => setValue((prev) => prev + step);
-  const decrementValue = () => setValue((prev) => prev - step);
+  const incrementValue = () => setValue((prev) => +prev + step);
+  const decrementValue = () => setValue((prev) => +prev - step);
 
   const startAdding = () => {
     incrementValue();

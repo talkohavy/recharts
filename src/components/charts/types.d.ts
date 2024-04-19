@@ -34,6 +34,7 @@ export type AxisLabel =
     };
 
 export type BarChartProps = BaseChartProps & {
+  type?: 'category' | 'datetime';
   bars: Array<SingleBar>;
   onClickBar?: (props: BarClickEventProps & { name: string; barTypeIndex: number }) => void;
   /**
@@ -133,7 +134,7 @@ export type SingleBar = {
    * _name_ must be unique! Do not leave as an empty string.
    */
   name: string;
-  data: Array<{ x: number | string; y: number; color?: string }>;
+  data: SingleBarData;
   color?: string;
   barBorderColor?: string;
   /**
@@ -146,22 +147,26 @@ export type SingleBar = {
   stackId?: string;
 };
 
+export type SingleBarData = Array<{ x: number | string; y: number; color?: string }>;
+
 export type SingleLine = {
   name: string;
   color?: string;
   lineWidth?: number;
   curveType?: CurveType;
-  data: Array<{
-    x: number | string;
-    y: number;
-    showDotValue?: boolean;
-    dot?: { r?: number; fill?: string; stroke?: string };
-  }>;
+  data: SingleLineData;
   isDashed?: boolean;
   showDotValues?: boolean;
   dots?: { r: number };
   hide?: boolean;
 };
+
+export type SingleLineData = Array<{
+  x: number | string;
+  y: number;
+  showDotValue?: boolean;
+  dot?: { r?: number; fill?: string; stroke?: string };
+}>;
 
 export type SinglePie = {
   name: string;

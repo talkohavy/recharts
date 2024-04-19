@@ -1,4 +1,4 @@
-import { formatLabel } from './formatLabel';
+import { formatLabel } from './formatters';
 import { getTextWidth } from './getTextWidth';
 
 /**

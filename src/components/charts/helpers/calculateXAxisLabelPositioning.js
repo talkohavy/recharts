@@ -1,26 +1,25 @@
+import { BRUSH_HEIGHT, LEGEND_HEIGHT } from '../constants';
+
 /**
- * @description
- * This function is specific for LineChart (for now).
  * @param {{
  *   showLegend: boolean,
  *   showZoomSlider: boolean,
- *   xTickRotateAngle: number
  *   chartType: 'LineChart' | 'BarChart'
  * }} props
  */
 function calculateXAxisLabelPositioning(props) {
-  const { showLegend, showZoomSlider, xTickRotateAngle, chartType } = props;
+  const { showLegend, showZoomSlider, chartType } = props;
 
-  if (showLegend && showZoomSlider) return 40; // no matter what the angle is!
+  let xLabelGoesDownBy = 0;
 
-  if (showLegend || showZoomSlider) return 20; // no matter what the angle is!
+  if (showLegend) xLabelGoesDownBy += LEGEND_HEIGHT;
 
-  if (!showLegend && xTickRotateAngle > 0) return 0;
+  if (showZoomSlider) xLabelGoesDownBy += BRUSH_HEIGHT;
 
-  if (chartType === 'LineChart') return 10;
+  if (chartType === 'LineChart') xLabelGoesDownBy += 10;
 
   // chartType is BarChart:
-  return 0;
+  return xLabelGoesDownBy;
 }
 
 export { calculateXAxisLabelPositioning };

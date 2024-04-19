@@ -14,6 +14,7 @@ import {
   YAxis,
 } from 'recharts';
 import { getNiceTickValues } from 'recharts-scale';
+import { BRUSH_HEIGHT, BRUSH_ITEMS_PER_PAGE, LEGEND_HEIGHT } from '../constants';
 import { CustomizedAxisTick } from '../CustomAxisTick';
 import CustomizedLabel from '../CustomizedLabel';
 import CustomTooltip from '../CustomTooltip';
@@ -24,7 +25,10 @@ import {
   getHeight,
   getNamesObject,
   getTextWidth,
+  validateUniqueNamesOnDataSets,
 } from '../helpers';
+import { FORMATTERS } from '../helpers/formatters';
+import '../recharts.css';
 
 const DEFAULT_BAR_COLOR = '#355cff';
 const ACTIVE_BAR_COLOR = 'black'; // #82ca9d
@@ -44,6 +48,7 @@ function formatLabel14(value) {
  */
 export default function BarChart(props) {
   const {
+    type: xAxisType = 'category',
     bars,
     showGrid,
     showLegend,
@@ -68,6 +73,8 @@ export default function BarChart(props) {
   const [isLegendHovered, setIsLegendHovered] = useState(false);
   const [isBarTypeHovered, setIsBarTypeHovered] = useState(() => getNamesObject(bars));
 
+  const positiveXTickRotateAngle = Math.abs(xTickRotateAngle);
+
   /** @type {Array<{x: number | string}>} */
   const transformedDataForRecharts = useMemo(() => {
     const transformedDataByKey = {};
@@ -83,11 +90,7 @@ export default function BarChart(props) {
   }, [bars]);
 
   useLayoutEffect(() => {
-    for (let i = 0; i < bars.length - 1; i++) {
-      for (let j = i + 1; j < bars.length; j++) {
-        if (bars[i].name === bars[j].name) throw new Error('Two bars cannot have the same name!');
-      }
-    }
+    validateUniqueNamesOnDataSets(bars);
   }, [bars]);
 
   const maxYValue = useMemo(() => {
@@ -101,15 +104,13 @@ export default function BarChart(props) {
     return maxYValue;
   }, [bars]);
 
-  const positiveXTickRotateAngle = Math.abs(xTickRotateAngle);
-
   const widthOfLongestYTickLabel = useMemo(() => {
-    const tickCount = 5;
+    const yTickCount = 5;
     const domain = [0, maxYValue];
     const allowDecimals = true;
-    const niceTicks = getNiceTickValues(domain, tickCount, allowDecimals);
+    const niceYTicks = getNiceTickValues(domain, yTickCount, allowDecimals);
 
-    const longestYTickWidth = calculateLongestNiceTickWidth(niceTicks, yTickSuffix);
+    const longestYTickWidth = calculateLongestNiceTickWidth(niceYTicks, yTickSuffix);
 
     return longestYTickWidth;
   }, [maxYValue, yTickSuffix]);
@@ -117,16 +118,16 @@ export default function BarChart(props) {
   const widthOfLongestXTickLabel = useMemo(() => {
     let widthOfLongestXTickLabel = 0;
 
-    bars.forEach(({ data }) => {
-      data.forEach(({ x: currentXTickValue }) => {
-        const currentXTickWidth = getTextWidth({ text: formatLabel(currentXTickValue) });
-
-        if (widthOfLongestXTickLabel < currentXTickWidth) widthOfLongestXTickLabel = currentXTickWidth;
+    transformedDataForRecharts.forEach(({ x: currentXTickValue }) => {
+      const currentXTickWidth = getTextWidth({
+        text: FORMATTERS[xAxisType](currentXTickValue),
       });
+
+      if (widthOfLongestXTickLabel < currentXTickWidth) widthOfLongestXTickLabel = currentXTickWidth;
     });
 
     return widthOfLongestXTickLabel;
-  }, [bars]);
+  }, [transformedDataForRecharts, xAxisType]);
 
   const xAxisHeight = useMemo(
     () => getHeight({ angle: -positiveXTickRotateAngle, maxWidth: widthOfLongestXTickLabel }) ?? 40,
@@ -165,12 +166,17 @@ export default function BarChart(props) {
         )}
 
         <XAxis
-          type='category'
+          type={xAxisType === 'category' ? 'category' : 'number'}
+          scale={xAxisType === 'category' ? 'auto' : 'time'}
+          domain={['auto', 'auto']}
+          allowDataOverflow={false}
+          padding='gap' // <--- 'gap' gives the first and the last bar gap from the walls. 'no-gap' has both the first & last bars touch the walls.
           dataKey='x'
           textAnchor='end' // <--- CustomizedAxisTick assumes this will always be set to 'end'. We calculate x with it. It's easier to render angled xAxis ticks that way.
           stroke='#666' // <--- this is the color of the xAxis line itself!
           xAxisId='bottom'
-          tick={CustomizedAxisTick} // <--- passes everything as an argument! x, y, width, height, everything! You'll even need to handle the tick's positioning, and format the entire tick.
+          // eslint-disable-next-line
+          tick={(tickProps) => <CustomizedAxisTick {...tickProps} axisType={xAxisType} />} // <--- passes everything as an argument! x, y, width, height, everything! You'll even need to handle the tick's positioning, and format the entire tick.
           height={xAxisHeight}
           angle={-positiveXTickRotateAngle}
           hide={xHide}
@@ -182,17 +188,19 @@ export default function BarChart(props) {
             dy: calculateXAxisLabelPositioning({
               showLegend,
               showZoomSlider,
-              xTickRotateAngle: positiveXTickRotateAngle,
               chartType: 'BarChart',
             }),
             dx: -yAxisWidth / 2,
           }}
+          // interval={10} // <--- defaults to preserveEnd.If set 0, all the ticks will be shown. If set preserveStart", "preserveEnd" or "preserveStartEnd", the ticks which is to be shown or hidden will be calculated automatically.
+          // includeHidden // <--- defaults to false. Ensures that all data points within a chart contribute to its domain calculation, even when they are hidden.
           // unit=' cm' // <--- You CANNOT use this when using `tick`, which you are. A. because it doesn't render it, and B. because some ticks will not be displayed. You can use only when using the default tick renderer, and this will automatically add a unit suffix to your xAxis ticks.
           // fontSize={22}
           // fontWeight={100}
-          // tickFormatter={formatLabel} // <--- only passes the string value as an argument.
+          // tickFormatter={formatDate} // <--- only passes the string value as an argument.
           // dy={5} // <--- unlike LineChart, dy doesn't affect BarChart.
-          // padding={xPadding} // <--- you can use this to remove padding between: A. The first bar and the Y axis; B. The last bar and the chart axis.
+          // tickCount={10} // <-- defaults to 5
+          // allowDecimals={false} // <--- default to true
         />
 
         <YAxis
@@ -213,6 +221,7 @@ export default function BarChart(props) {
 
         {showLegend && (
           <Legend
+            height={LEGEND_HEIGHT}
             layout='horizontal' // <--- how to align items of the legend.
             verticalAlign='bottom' // <--- pin legend to top, bottom or center.
             align='left' // <--- defaults to 'center'. Horizontal alignment.
@@ -240,7 +249,17 @@ export default function BarChart(props) {
           />
         )}
 
-        {showZoomSlider && <Brush height={20} stroke='#8884d8' />}
+        {showZoomSlider && (
+          <Brush
+            height={BRUSH_HEIGHT}
+            endIndex={BRUSH_ITEMS_PER_PAGE} // <---The default end index of brush. If the option is not set, the end index will be calculated by the length of data.
+            stroke='#8884d8'
+            // onChange={(args) => console.log('args are:', args)}
+            // startIndex={0} // <--- The default start index of brush. If the option is not set, the start index will be 0.
+            // gap={1} // <--- Default to 1. `gap` is the refresh rate. 1 is smoothest.
+            // travellerWidth={6}
+          />
+        )}
 
         {referenceLines?.map(({ x, y, label, lineWidth, lineColor, isDashed }, index) => {
           const referenceLineProps = {
