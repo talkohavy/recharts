@@ -13,9 +13,7 @@ function calculateXAxisLabelPositioning(props) {
 
   if (showLegend && showZoomSlider) return 40; // no matter what the angle is!
 
-  if (showLegend) return 20; // no matter what the angle is!
-
-  if (showZoomSlider) return 25; // no matter what the angle is!
+  if (showLegend || showZoomSlider) return 20; // no matter what the angle is!
 
   if (!showLegend && xTickRotateAngle > 0) return 0;
 

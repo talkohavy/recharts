@@ -58,6 +58,7 @@ export default function BarChart(props) {
     yTickSuffix,
     yHide,
     referenceLines,
+    isAnimationActive,
     className,
     style,
     onClickBar,
@@ -131,6 +132,7 @@ export default function BarChart(props) {
     () => getHeight({ angle: -positiveXTickRotateAngle, maxWidth: widthOfLongestXTickLabel }) ?? 40,
     [positiveXTickRotateAngle, widthOfLongestXTickLabel],
   );
+  const yAxisWidth = yLabel ? widthOfLongestYTickLabel + 18 : widthOfLongestYTickLabel + 8;
 
   const yLabelFixPosition = useMemo(() => {
     if (!yLabel) return undefined;
@@ -183,7 +185,7 @@ export default function BarChart(props) {
               xTickRotateAngle: positiveXTickRotateAngle,
               chartType: 'BarChart',
             }),
-            dx: -getTextWidth({ text: xLabel }) / 2,
+            dx: -yAxisWidth / 2,
           }}
           // unit=' cm' // <--- You CANNOT use this when using `tick`, which you are. A. because it doesn't render it, and B. because some ticks will not be displayed. You can use only when using the default tick renderer, and this will automatically add a unit suffix to your xAxis ticks.
           // fontSize={22}
@@ -203,7 +205,7 @@ export default function BarChart(props) {
           label={yLabelFixPosition}
           color={yTickColor}
           unit={yTickSuffix} // <--- you can add a unit suffix to your yAxis ticks!
-          width={yLabel ? widthOfLongestYTickLabel + 18 : widthOfLongestYTickLabel + 8}
+          width={yAxisWidth}
           // dataKey='y'// <--- do NOT put dataKey on y axis of BarChart! We are going to use the `name` of each Bars set.
         />
 
@@ -280,6 +282,8 @@ export default function BarChart(props) {
               xAxisId='bottom'
               {...barProps}
               onClick={(props, index) => onClickBar({ ...props, barTypeIndex: index, name })}
+              isAnimationActive={isAnimationActive} // <--- rechart says it defaults to true in CSR and to false in SSR
+              // onAnimationEnd={() => console.log('animation end!')}
               // minPointSize={5} // <--- give a min height to the lowest value, so that it would still be visible.
               // barSize={40} // <--- it is best to leave this as automatically calculated
               // label={{ position: 'top' }} // <--- Don't need! I'm using a custom label renderer instead (CustomizedLabel).

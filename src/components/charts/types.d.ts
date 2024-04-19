@@ -77,6 +77,11 @@ export type BaseChartProps = {
   yTickSuffix?: string;
   yHide?: boolean;
   referenceLines?: Array<ReferenceLine>;
+  /**
+   * According to recharts, if you leave this as undefined, it would default to `true` in CSR, and to `false` in SSR.
+   * @default undefined
+   */
+  isAnimationActive?: boolean;
   className?: string;
   style?: any;
 };
