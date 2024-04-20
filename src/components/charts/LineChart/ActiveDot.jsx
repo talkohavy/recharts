@@ -1,6 +1,6 @@
 // /** @param {import('recharts').DotProps} props */
 export default function ActiveDot(props) {
-  const { cx, cy, data, payload, dataKey, fill, r } = props;
+  const { cx, cy, payload, dataKey, fill, r, data } = props;
 
   if (!payload[dataKey]) return;
 

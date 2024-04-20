@@ -11,7 +11,7 @@ export function CustomizedAxisTick(props) {
 
   return (
     <g transform={`translate(${translateXBy},${y})`}>
-      <title>{payload.value}</title>
+      <title>{formattedLabel}</title>
       <text
         x={0}
         y={0}

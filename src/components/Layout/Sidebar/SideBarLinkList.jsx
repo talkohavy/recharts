@@ -19,9 +19,14 @@ const routesRaw = [
     activeNames: ['/pie-chart'],
   },
   {
-    to: '/playground-bar-chart',
+    to: '/bar-chart-playground',
     text: 'Playground for BarChart',
-    activeNames: ['/playground-bar-chart'],
+    activeNames: ['/bar-chart-playground'],
+  },
+  {
+    to: '/line-chart-playground',
+    text: 'Playground for LineChart',
+    activeNames: ['/line-chart-playground'],
   },
   {
     to: '/about',

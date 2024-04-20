@@ -43,6 +43,7 @@ export default function BarChartExample11() {
           bars={bars}
           showGrid
           showLegend
+          showValues
           style={{ fontFamily: 'Hiragino Sans GB,Arial,sans-serif', border: '1px solid black' }}
         />
       </div>

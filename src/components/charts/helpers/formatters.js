@@ -29,6 +29,7 @@ function formatDate(date) {
 
 const FORMATTERS = {
   category: formatLabel,
+  number: formatLabel,
   datetime: formatDate,
 };
 

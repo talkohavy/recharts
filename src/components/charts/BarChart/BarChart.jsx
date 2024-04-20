@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo, useState } from 'react';
+import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
   Bar,
   BarChart as BarChartBase,
@@ -23,11 +23,13 @@ import {
   calculateXAxisLabelPositioning,
   formatLabel,
   getHeight,
+  getLengthOfLongestData,
   getNamesObject,
   getTextWidth,
+  getWidthOfLongestXLabel,
+  validateAxisValuesAreSameType,
   validateUniqueNamesOnDataSets,
 } from '../helpers';
-import { FORMATTERS } from '../helpers/formatters';
 import '../recharts.css';
 
 const DEFAULT_BAR_COLOR = '#355cff';
@@ -54,6 +56,7 @@ export default function BarChart(props) {
     showLegend,
     showZoomSlider,
     showPreviewInSlider,
+    showValues: showValuesGlobal,
     gridColor = '#ddd',
     xLabel,
     xTickRotateAngle = 0,
@@ -61,7 +64,7 @@ export default function BarChart(props) {
     xHide,
     yLabel,
     yTickColor = '#666',
-    yTickSuffix,
+    yTickSuffix = '',
     yHide,
     referenceLines,
     isAnimationActive,
@@ -71,6 +74,10 @@ export default function BarChart(props) {
     activeBarId,
   } = props;
 
+  const lengthOfLongestData = useMemo(() => getLengthOfLongestData(bars), [bars]);
+
+  const startIndex = useRef(0);
+  const endIndex = useRef(Math.min(BRUSH_ITEMS_PER_PAGE, lengthOfLongestData - 1));
   const [isLegendHovered, setIsLegendHovered] = useState(false);
   const [isBarTypeHovered, setIsBarTypeHovered] = useState(() => getNamesObject(bars));
 
@@ -89,6 +96,10 @@ export default function BarChart(props) {
 
     return Object.values(transformedDataByKey);
   }, [bars]);
+
+  useLayoutEffect(() => {
+    validateAxisValuesAreSameType(transformedDataForRecharts);
+  }, [transformedDataForRecharts]);
 
   useLayoutEffect(() => {
     validateUniqueNamesOnDataSets(bars);
@@ -116,19 +127,10 @@ export default function BarChart(props) {
     return longestYTickWidth;
   }, [maxYValue, yTickSuffix]);
 
-  const widthOfLongestXTickLabel = useMemo(() => {
-    let widthOfLongestXTickLabel = 0;
-
-    transformedDataForRecharts.forEach(({ x: currentXTickValue }) => {
-      const currentXTickWidth = getTextWidth({
-        text: FORMATTERS[xAxisType](currentXTickValue),
-      });
-
-      if (widthOfLongestXTickLabel < currentXTickWidth) widthOfLongestXTickLabel = currentXTickWidth;
-    });
-
-    return widthOfLongestXTickLabel;
-  }, [transformedDataForRecharts, xAxisType]);
+  const widthOfLongestXTickLabel = useMemo(
+    () => getWidthOfLongestXLabel({ transformedDataForRecharts, xAxisType }),
+    [transformedDataForRecharts, xAxisType],
+  );
 
   const xAxisHeight = useMemo(
     () => getHeight({ angle: -positiveXTickRotateAngle, maxWidth: widthOfLongestXTickLabel }) ?? 40,
@@ -167,7 +169,7 @@ export default function BarChart(props) {
         )}
 
         <XAxis
-          type={xAxisType === 'category' ? 'category' : 'number'}
+          type={xAxisType === 'category' ? 'category' : 'number'} // <--- 'category' v.s. 'number'. What is the difference? Isn't it the same eventually? Well no, because consider a case where gaps exist. For instance, 0 1 2 4 5. A 'category' would place an even distance between 2 & 4, when in fact it's a double gap!
           scale={xAxisType === 'category' ? 'auto' : 'time'}
           domain={['auto', 'auto']}
           allowDataOverflow={false}
@@ -176,7 +178,6 @@ export default function BarChart(props) {
           textAnchor='end' // <--- CustomizedAxisTick assumes this will always be set to 'end'. We calculate x with it. It's easier to render angled xAxis ticks that way.
           stroke='#666' // <--- this is the color of the xAxis line itself!
           xAxisId='bottom'
-          // eslint-disable-next-line
           tick={(tickProps) => <CustomizedAxisTick {...tickProps} axisType={xAxisType} />} // <--- passes everything as an argument! x, y, width, height, everything! You'll even need to handle the tick's positioning, and format the entire tick.
           height={xAxisHeight}
           angle={-positiveXTickRotateAngle}
@@ -199,9 +200,9 @@ export default function BarChart(props) {
           // fontSize={22}
           // fontWeight={100}
           // tickFormatter={formatDate} // <--- only passes the string value as an argument.
-          // dy={5} // <--- unlike LineChart, dy doesn't affect BarChart.
           // tickCount={10} // <-- defaults to 5
           // allowDecimals={false} // <--- default to true
+          // dy={5} // <--- unlike LineChart, dy doesn't affect BarChart.
         />
 
         <YAxis
@@ -218,7 +219,12 @@ export default function BarChart(props) {
           // dataKey='y'// <--- do NOT put dataKey on y axis of BarChart! We are going to use the `name` of each Bars set.
         />
 
-        <Tooltip content={CustomTooltip} />
+        <Tooltip
+          content={(tooltipProps) => (
+            // @ts-ignore
+            <CustomTooltip {...tooltipProps} xAxisType={xAxisType} yTickSuffix={yTickSuffix} />
+          )}
+        />
 
         {showLegend && (
           <Legend
@@ -253,10 +259,13 @@ export default function BarChart(props) {
         {showZoomSlider && (
           <Brush
             height={BRUSH_HEIGHT}
-            endIndex={BRUSH_ITEMS_PER_PAGE} // <---The default end index of brush. If the option is not set, the end index will be calculated by the length of data.
+            startIndex={startIndex.current} // <--- The default start index of brush. If the option is not set, the start index will be 0.
+            endIndex={endIndex.current} // <---The default end index of brush. If the option is not set, the end index will be calculated by the length of data.
+            onChange={(brushProps) => {
+              startIndex.current = brushProps.startIndex;
+              endIndex.current = brushProps.endIndex;
+            }}
             stroke='#4b5af1'
-            // startIndex={0} // <--- The default start index of brush. If the option is not set, the start index will be 0.
-            // onChange={(args) => console.log('args are:', args)}
             // gap={1} // <--- Default to 1. `gap` is the refresh rate. 1 is smoothest.
             // travellerWidth={6}
           >
@@ -317,7 +326,14 @@ export default function BarChart(props) {
               // label={{ position: 'top' }} // <--- Don't need! I'm using a custom label renderer instead (CustomizedLabel).
               // background={{ fill: barBackgroundOverlayColor }} // <--- DO NOT put a background! This is what interrupted my onClick event from getting the right BarChart name!
             >
-              <LabelList dataKey={name} fontSize={11} position={stackId ? 'center' : 'top'} content={CustomizedLabel} />
+              {showValuesGlobal && (
+                <LabelList
+                  dataKey={name}
+                  fontSize={11}
+                  position={stackId ? 'center' : 'top'}
+                  content={CustomizedLabel}
+                />
+              )}
 
               {data.map(({ x, color: specificColor }) => {
                 const barId = `${name}-${x}`;

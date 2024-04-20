@@ -2,14 +2,15 @@ import { formatLabel } from '../helpers';
 
 // /** @param {import('recharts').DotProps} props */
 export default function NonActiveDot(props) {
-  const { cx, cy, stroke, payload, r, dataKey, data, showDotValues } = props;
+  const { cx, cy, stroke, payload, r, dataKey, opacity, data, showChartValues, showLineValues } = props;
 
   if (!payload[dataKey]) return;
 
-  const { showDotValue, dot } = data.find((dotData) => dotData.x === payload.x && dotData.y === payload[dataKey]) ?? {};
+  const { showValue: showDotValue, dot } =
+    data.find((dotData) => dotData.x === payload.x && dotData.y === payload[dataKey]) ?? {};
 
-  const dotProps = { r: dot?.r ?? r, fill: dot?.fill ?? stroke };
-  const isValueVisible = showDotValue ?? showDotValues;
+  const dotProps = { r: dot?.r ?? r, fill: dot?.fill ?? stroke, opacity };
+  const isValueVisible = showDotValue ?? showLineValues ?? showChartValues;
 
   return (
     <svg>

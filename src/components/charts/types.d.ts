@@ -34,7 +34,6 @@ export type AxisLabel =
     };
 
 export type BarChartProps = BaseChartProps & {
-  type?: 'category' | 'datetime';
   bars: Array<SingleBar>;
   onClickBar?: (props: BarClickEventProps & { name: string; barTypeIndex: number }) => void;
   /**
@@ -65,10 +64,20 @@ export type BarClickEventProps = {
  * They do not fit for PieChart.
  */
 export type BaseChartProps = {
+  /**
+   * Use 'category' when your xAxis is made of *words*. i.e. ['Cars', 'Ships', 'Planes', 'Other'].
+   *
+   * Use 'number' when your xAxis is made of *numbers*, which can contain gaps. i.e. [1,2,3,6]. In this example, recharts will take care of properly spacing 3 and 6, while if using 'category' the space between them would be 1.
+   *
+   * Use 'datetime' when your xAxis is time-based. xAxis values MUST BE of unix timestamp.
+   * @default 'category'
+   */
+  type?: 'category' | 'number' | 'datetime';
   showGrid?: boolean | { showHorizontalLines?: boolean; showVerticalLines?: boolean };
   showLegend?: boolean;
   showZoomSlider?: boolean;
   showPreviewInSlider?: boolean;
+  showValues?: boolean;
   gridColor?: string;
   xLabel?: string;
   xTickRotateAngle?: number;
@@ -104,6 +113,8 @@ export type CurveType =
   | 'step'
   | 'stepBefore'
   | 'stepAfter';
+
+export type LineChartProps = BaseChartProps & { lines: Array<SingleLine> };
 
 export type PieChartDrawData = {
   name: string;
@@ -155,9 +166,13 @@ export type SingleLine = {
   color?: string;
   lineWidth?: number;
   curveType?: CurveType;
+  /**
+   * A suffix that will be added to the tooltip. If both `unit` & `yTickSuffix` are defined, `unit` is taken.
+   */
+  unit?: string;
   data: SingleLineData;
   isDashed?: boolean;
-  showDotValues?: boolean;
+  showValues?: boolean;
   dots?: { r: number };
   hide?: boolean;
 };
@@ -165,7 +180,7 @@ export type SingleLine = {
 export type SingleLineData = Array<{
   x: number | string;
   y: number;
-  showDotValue?: boolean;
+  showValue?: boolean;
   dot?: { r?: number; fill?: string; stroke?: string };
 }>;
 
