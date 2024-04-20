@@ -21,7 +21,7 @@ import CustomTooltip from '../CustomTooltip';
 import {
   calculateLongestNiceTickWidth,
   calculateXAxisLabelPositioning,
-  formatLabel,
+  getDefaultSettings,
   getHeight,
   getLengthOfLongestData,
   getNamesObject,
@@ -34,10 +34,6 @@ import '../recharts.css';
 
 const DEFAULT_BAR_COLOR = '#355cff';
 const ACTIVE_BAR_COLOR = 'black'; // #82ca9d
-
-function formatLabel14(value) {
-  return formatLabel(value, 14);
-}
 
 /**
  * @typedef {import('../types').BarChartProps} BarChartProps
@@ -145,12 +141,17 @@ export default function BarChart(props) {
     return { value: yLabel, angle: -90, position: 'left', dy: -width / 2 };
   }, [yLabel]);
 
+  const chartSettings = useMemo(
+    () => getDefaultSettings({ xLabel, yLabel, showGrid, gridColor }),
+    [xLabel, yLabel, showGrid, gridColor],
+  );
+
   return (
     <ResponsiveContainer width='100%' height='100%'>
+      {/* @ts-ignore */}
       <BarChartBase
         data={transformedDataForRecharts}
-        margin={{ left: yLabel ? 12 : 0, bottom: xLabel ? 20 : 0 }}
-        stackOffset='sign' // <--- sign knows how to deal with negative values, while default stackOffset just hides them (doesn't show them).
+        {...chartSettings.barChartBase}
         className={className}
         style={style}
         // layout='horizontal' // <--- default is 'horizontal'
@@ -158,26 +159,13 @@ export default function BarChart(props) {
         // barCategoryGap='10%' // <--- gap between bars. Hard to make this generic. The default seems to do a pretty good job.
       >
         {/* MUST come before XAxis & YAxis */}
-        {showGrid && (
-          <CartesianGrid
-            stroke={gridColor}
-            horizontal={!!(showGrid === true || showGrid.showHorizontalLines)}
-            vertical={!!(showGrid === true || showGrid.showVerticalLines)}
-            strokeDasharray='5 5'
-            syncWithTicks
-          />
-        )}
+        {showGrid && <CartesianGrid {...chartSettings.grid} />}
 
         <XAxis
+          {...chartSettings.xAxis}
           type={xAxisType === 'category' ? 'category' : 'number'} // <--- 'category' v.s. 'number'. What is the difference? Isn't it the same eventually? Well no, because consider a case where gaps exist. For instance, 0 1 2 4 5. A 'category' would place an even distance between 2 & 4, when in fact it's a double gap!
           scale={xAxisType === 'category' ? 'auto' : 'time'}
-          domain={['auto', 'auto']}
-          allowDataOverflow={false}
           padding='gap' // <--- 'gap' gives the first and the last bar gap from the walls. 'no-gap' has both the first & last bars touch the walls.
-          dataKey='x'
-          textAnchor='end' // <--- CustomizedAxisTick assumes this will always be set to 'end'. We calculate x with it. It's easier to render angled xAxis ticks that way.
-          stroke='#666' // <--- this is the color of the xAxis line itself!
-          xAxisId='bottom'
           tick={(tickProps) => <CustomizedAxisTick {...tickProps} axisType={xAxisType} />} // <--- passes everything as an argument! x, y, width, height, everything! You'll even need to handle the tick's positioning, and format the entire tick.
           height={xAxisHeight}
           angle={-positiveXTickRotateAngle}
@@ -205,12 +193,9 @@ export default function BarChart(props) {
           // dy={5} // <--- unlike LineChart, dy doesn't affect BarChart.
         />
 
+        {/* @ts-ignore */}
         <YAxis
-          type='number' // <--- defaults to 'number'. 'category' or 'number'.
-          stroke='#666'
-          yAxisId='left'
-          padding={{ top: 18 }}
-          tickFormatter={formatLabel}
+          {...chartSettings.yAxis}
           hide={yHide}
           label={yLabelFixPosition}
           color={yTickColor}
@@ -227,12 +212,10 @@ export default function BarChart(props) {
         />
 
         {showLegend && (
+          // @ts-ignore
           <Legend
+            {...chartSettings.legend}
             height={LEGEND_HEIGHT}
-            layout='horizontal' // <--- how to align items of the legend.
-            verticalAlign='bottom' // <--- pin legend to top, bottom or center.
-            align='left' // <--- defaults to 'center'. Horizontal alignment.
-            iconSize={14} // <--- defaults to 14
             onMouseEnter={(payload) => {
               setIsLegendHovered(true);
               setIsBarTypeHovered((prevState) => {
@@ -251,13 +234,13 @@ export default function BarChart(props) {
                 return newIsBarTypeHovered;
               });
             }}
-            formatter={formatLabel14}
             // iconType='circle' // <--- defaults to 'line'
           />
         )}
 
         {showZoomSlider && (
           <Brush
+            {...chartSettings.zoomSlider}
             height={BRUSH_HEIGHT}
             startIndex={startIndex.current} // <--- The default start index of brush. If the option is not set, the start index will be 0.
             endIndex={endIndex.current} // <---The default end index of brush. If the option is not set, the end index will be calculated by the length of data.
@@ -265,7 +248,6 @@ export default function BarChart(props) {
               startIndex.current = brushProps.startIndex;
               endIndex.current = brushProps.endIndex;
             }}
-            stroke='#4b5af1'
             // gap={1} // <--- Default to 1. `gap` is the refresh rate. 1 is smoothest.
             // travellerWidth={6}
           >
@@ -286,8 +268,6 @@ export default function BarChart(props) {
             label,
             stroke: lineColor ?? '#666',
             strokeWidth: lineWidth ?? 1,
-            xAxisId: 'bottom',
-            yAxisId: 'left',
           };
 
           if (isDashed) referenceLineProps.strokeDasharray = '10 10';
@@ -295,6 +275,7 @@ export default function BarChart(props) {
           return (
             <ReferenceLine
               key={index}
+              {...chartSettings.referenceLines}
               {...referenceLineProps}
               // isFront // <--- defaults to false. true will display it on top of bars in BarCharts, or lines in LineCharts.
             />
@@ -315,8 +296,7 @@ export default function BarChart(props) {
           return (
             <Bar
               key={name}
-              yAxisId='left'
-              xAxisId='bottom'
+              {...chartSettings.bar}
               {...barProps}
               onClick={(props, index) => onClickBar({ ...props, barTypeIndex: index, name })}
               isAnimationActive={isAnimationActive} // <--- rechart says it defaults to true in CSR and to false in SSR

@@ -18,7 +18,7 @@ import CustomTooltip from '../CustomTooltip';
 import {
   calculateLongestNiceTickWidth,
   calculateXAxisLabelPositioning,
-  formatLabel,
+  getDefaultSettings,
   getHeight,
   getLengthOfLongestData,
   getNamesObject,
@@ -30,10 +30,6 @@ import {
 import ActiveDot from './ActiveDot';
 import NonActiveDot from './NonActiveDot';
 import '../recharts.css';
-
-function formatLabel14(value) {
-  return formatLabel(value, 14);
-}
 
 /**
  * @typedef {import('../types').LineChartProps} LineChartProps
@@ -139,35 +135,26 @@ export default function LineChart(props) {
     return { value: yLabel, angle: -90, position: 'left', dy: -width / 2 };
   }, [yLabel]);
 
+  const chartSettings = useMemo(
+    () => getDefaultSettings({ xLabel, yLabel, showGrid, gridColor }),
+    [xLabel, yLabel, showGrid, gridColor],
+  );
+
   return (
     <ResponsiveContainer width='100%' height='100%'>
       <LineChartBase
         data={transformedDataForRecharts}
-        margin={{ left: yLabel ? 12 : 0, bottom: xLabel ? 30 : 0 }}
         className={className}
         style={style}
+        {...chartSettings.lineChartBase}
       >
         {/* MUST come before XAxis & YAxis */}
-        {showGrid && (
-          <CartesianGrid
-            stroke={gridColor}
-            horizontal={!!(showGrid === true || showGrid.showHorizontalLines)}
-            vertical={!!(showGrid === true || showGrid.showVerticalLines)}
-            strokeDasharray='5 5'
-            syncWithTicks
-          />
-        )}
+        {showGrid && <CartesianGrid {...chartSettings.grid} />}
 
         <XAxis
+          {...chartSettings.xAxis}
           type={xAxisType === 'datetime' ? 'number' : xAxisType} // <--- 'category' v.s. 'number'. What is the difference? Isn't it the same eventually? Well no, because consider a case where gaps exist. For instance, 0 1 2 4 5. A 'category' would place an even distance between 2 & 4, when in fact it's a double gap!
           scale={xAxisType === 'datetime' ? 'time' : 'auto'}
-          domain={['auto', 'auto']}
-          allowDataOverflow={false}
-          padding={{ right: 40 }} // <--- you can use this to remove padding between: A. The first bar and the Y axis; B. The last bar and the chart axis. I'm using 40 to have the last dot always visible in case the last data point is a large red dot - 40 would make it visible.
-          dataKey='x'
-          textAnchor='end' // <--- CustomizedAxisTick assumes this will always be set to 'end'. We calculate x with it. It's easier to render angled xAxis ticks that way.
-          stroke='#666' // <--- this is the color of the xAxis line itself!
-          xAxisId='bottom'
           tick={(tickProps) => <CustomizedAxisTick {...tickProps} axisType={xAxisType} />} // <--- passes everything as an argument! x, y, width, height, everything! You'll even need to handle the tick's positioning, and format the entire tick.
           height={xAxisHeight}
           angle={-positiveXTickRotateAngle}
@@ -195,12 +182,9 @@ export default function LineChart(props) {
           // dy={5} // <--- doesn't even work anymore.
         />
 
+        {/* @ts-ignore */}
         <YAxis
-          type='number' // <--- defaults to 'number'. 'category' or 'number'.
-          stroke='#666'
-          yAxisId='left'
-          padding={{ top: 18 }}
-          tickFormatter={formatLabel}
+          {...chartSettings.yAxis}
           hide={yHide}
           label={yLabelFixPosition}
           color={yTickColor}
@@ -217,12 +201,10 @@ export default function LineChart(props) {
         />
 
         {showLegend && (
+          // @ts-ignore
           <Legend
+            {...chartSettings.legend}
             height={LEGEND_HEIGHT}
-            layout='horizontal' // <--- how to align items of the legend.
-            verticalAlign='bottom' // <--- pin legend to top, bottom or center.
-            align='left' // <--- defaults to 'center'. Horizontal alignment.
-            iconSize={14} // <--- defaults to 14
             onMouseEnter={(payload) => {
               setIsLegendHovered(true);
               setIsLineHovered((prevState) => {
@@ -241,7 +223,6 @@ export default function LineChart(props) {
                 return newIsLineHovered;
               });
             }}
-            formatter={formatLabel14}
             // iconType='circle' // <--- defaults to 'line'
           />
         )}
@@ -255,7 +236,7 @@ export default function LineChart(props) {
               startIndex.current = brushProps.startIndex;
               endIndex.current = brushProps.endIndex;
             }}
-            stroke='#4b5af1'
+            {...chartSettings.zoomSlider}
             // gap={1} // <--- Default to 1. `gap` is the refresh rate. 1 is smoothest.
             // travellerWidth={6}
           >
@@ -283,8 +264,6 @@ export default function LineChart(props) {
             label,
             stroke: lineColor ?? '#666',
             strokeWidth: lineWidth ?? 1,
-            xAxisId: 'bottom',
-            yAxisId: 'left',
           };
 
           if (isDashed) referenceLineProps.strokeDasharray = '10 10';
@@ -292,6 +271,7 @@ export default function LineChart(props) {
           return (
             <ReferenceLine
               key={index}
+              {...chartSettings.referenceLines}
               {...referenceLineProps}
               // isFront // <--- defaults to false. true will display it on top of bars in BarCharts, or lines in LineCharts.
             />
@@ -318,8 +298,7 @@ export default function LineChart(props) {
 
           return (
             <Line
-              yAxisId='left'
-              xAxisId='bottom'
+              {...chartSettings.line}
               key={name}
               {...lineProps}
               dot={(dotProps) => (

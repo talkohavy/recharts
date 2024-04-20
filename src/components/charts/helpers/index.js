@@ -1,6 +1,7 @@
 export { FORMATTERS, formatDate, formatLabel } from './formatters';
 export { calculateLongestNiceTickWidth } from './calculateLongestNiceTickWidth';
 export { calculateXAxisLabelPositioning } from './calculateXAxisLabelPositioning';
+export { getDefaultSettings } from './getDefaultSettings';
 export { getHeight } from './getHeight';
 export { getLengthOfLongestData } from './getLengthOfLongestData';
 export { getNamesObject } from './getNamesObject';

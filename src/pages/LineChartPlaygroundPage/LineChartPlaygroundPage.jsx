@@ -1,74 +1,15 @@
 import { useState } from 'react';
-import { COLORS } from '../../components/charts/constants';
 import Checkbox from '../../components/Checkbox';
 import Input from '../../components/Input';
 import LineChartWithSpinner from '../../components/LineChartWithSpinner';
 import NumberInput from '../../components/NumberInput';
-
-// import { COLORS } from '../../components/charts/constants';
+import { seriesLines } from './data';
 
 /**
  * @typedef {import('../../components/charts/types').LineSeries} LineSeries
  * @typedef {import('../../components/charts/types').LineSeriesData} LineSeriesData
  * @typedef {import('../../components/charts/types').ReferenceLine} ReferenceLine
  */
-
-function generateXAxisValues() {
-  const dataPointsCount = Math.floor(Math.random() * 200);
-
-  /** @type {LineSeriesData} */
-  const dataSets = [];
-
-  const oneDay = 1000 * 60 * 60 * 24;
-  const addGap = oneDay * 30;
-
-  for (let i = 0; i < dataPointsCount; i++) {
-    const shouldAddGap = i > dataPointsCount / 2;
-
-    const pointWithXValue = { x: Date.now() + i * oneDay + (shouldAddGap ? addGap : 0) };
-
-    // @ts-ignore
-    dataSets.push(pointWithXValue);
-  }
-
-  return dataSets;
-}
-
-function generateDataForSeries(xAxisPoints) {
-  const dataForSeries = xAxisPoints.map((item) => ({ ...item }));
-
-  dataForSeries.forEach((p, index) => {
-    if (index === dataForSeries.length / 2) {
-      p.y = null;
-    } else {
-      p.y = 10 + Math.floor(Math.random() * 200);
-    }
-  });
-
-  return dataForSeries;
-}
-
-const xAxisValues = generateXAxisValues();
-
-/** @type {Array<LineSeries>} */
-const lines = [
-  {
-    name: 'National GDP',
-    curveType: 'monotone',
-    color: COLORS[0],
-    unit: 'cm',
-    showValues: false,
-    data: generateDataForSeries(xAxisValues),
-  },
-  {
-    name: 'Dark Matter',
-    curveType: 'monotone',
-    color: COLORS[1],
-    unit: 'km',
-    showValues: false,
-    data: generateDataForSeries(xAxisValues),
-  },
-];
 
 export default function LineChartPlaygroundPage() {
   const [showBorder, setShowBorder] = useState(true);
@@ -93,7 +34,7 @@ export default function LineChartPlaygroundPage() {
             {/* Write your BarChart Code Below Here */}
             <LineChartWithSpinner
               type='datetime'
-              lines={lines}
+              lines={seriesLines}
               xLabel={xLabel}
               yLabel={yLabel}
               yTickSuffix={yTickSuffix}
@@ -171,7 +112,7 @@ export default function LineChartPlaygroundPage() {
         </div>
 
         <div className='h-full w-2/5 overflow-auto rounded-md border bg-blue-50/50 p-4'>
-          <pre>{JSON.stringify(lines, null, 4)}</pre>
+          <pre>{JSON.stringify(seriesLines, null, 4)}</pre>
         </div>
       </div>
     </div>
