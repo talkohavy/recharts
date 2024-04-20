@@ -1,10 +1,10 @@
 /**
- * @typedef {import('../types').SingleBar} SingleBar
- * @typedef {import('../types').SingleLine} SingleLine
+ * @typedef {import('../types').BarSeries} BarSeries
+ * @typedef {import('../types').LineSeries} LineSeries
  */
 
 /**
- * @param {Array<SingleLine | SingleBar>} dataArr
+ * @param {Array<LineSeries | BarSeries>} dataArr
  */
 function getLengthOfLongestData(dataArr) {
   return dataArr.reduce((maxLength, { data }) => {

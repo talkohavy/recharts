@@ -1,10 +1,10 @@
 /**
- * @typedef {import('../types').SingleBar} SingleBar
- * @typedef {import('../types').SingleLine} SingleLine
+ * @typedef {import('../types').BarSeries} BarSeries
+ * @typedef {import('../types').LineSeries} LineSeries
  */
 
 /**
- * @param {Array<SingleBar> | Array<SingleLine>} data
+ * @param {Array<BarSeries> | Array<LineSeries>} data
  */
 function getNamesObject(data) {
   const obj = {};

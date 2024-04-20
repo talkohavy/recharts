@@ -1,9 +1,9 @@
 import BarChart from '../../../components/charts/BarChart';
 import { COLORS } from '../../../components/charts/constants';
 
-/** @typedef {import('../../../components/charts/types').SingleBar} SingleBar */
+/** @typedef {import('../../../components/charts/types').BarSeries} BarSeries */
 
-/** @type {Array<SingleBar>} */
+/** @type {Array<BarSeries>} */
 const bars = [
   {
     name: 'Cars',

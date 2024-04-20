@@ -1,10 +1,10 @@
 /**
- * @typedef {import('../types').SingleBar} SingleBar
- * @typedef {import('../types').SingleLine} SingleLine
+ * @typedef {import('../types').BarSeries} BarSeries
+ * @typedef {import('../types').LineSeries} LineSeries
  */
 
 /**
- * @param {Array<SingleBar | SingleLine>} chartData
+ * @param {Array<BarSeries | LineSeries>} chartData
  * @throws An Error.
  */
 function validateUniqueNamesOnDataSets(chartData) {

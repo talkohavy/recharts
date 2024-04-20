@@ -41,7 +41,7 @@ function formatLabel14(value) {
 
 /**
  * @typedef {import('../types').BarChartProps} BarChartProps
- * @typedef {import('../types').SingleBar} SingleBar
+ * @typedef {import('../types').BarSeries} BarSeries
  * @typedef {import('../types').BarClickEventProps} BarClickEventProps
  */
 

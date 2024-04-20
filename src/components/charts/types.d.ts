@@ -1,40 +1,26 @@
 import type { FC, ReactNode } from 'react';
 
-export type AxisDomain =
-  | string[]
-  | number[]
-  | [AxisDomainItem, AxisDomainItem]
-  | (([dataMin, dataMax]: [number, number], allowDataOverflow: boolean) => [number, number]);
-
-export type AxisLabel =
-  | string
-  | {
-      value: string;
-      angle?: number;
-      dy?: number;
-      dx?: number;
-      position?:
-        | 'insideLeft'
-        | 'insideRight'
-        | 'insideTop'
-        | 'insideBottom'
-        | 'insideTopLeft'
-        | 'insideTopRight'
-        | 'insideBottomLeft'
-        | 'insideBottomRight'
-        | 'left'
-        | 'right'
-        | 'middle'
-        | 'bottom'
-        | 'centerBottom'
-        | 'centerTop'
-        | 'center'
-        | 'insideEnd'
-        | 'insideStart';
-    };
+export type AxisLabelPosition =
+  | 'insideLeft'
+  | 'insideRight'
+  | 'insideTop'
+  | 'insideBottom'
+  | 'insideTopLeft'
+  | 'insideTopRight'
+  | 'insideBottomLeft'
+  | 'insideBottomRight'
+  | 'left'
+  | 'right'
+  | 'middle'
+  | 'bottom'
+  | 'centerBottom'
+  | 'centerTop'
+  | 'center'
+  | 'insideEnd'
+  | 'insideStart';
 
 export type BarChartProps = BaseChartProps & {
-  bars: Array<SingleBar>;
+  bars: Array<BarSeries>;
   onClickBar?: (props: BarClickEventProps & { name: string; barTypeIndex: number }) => void;
   /**
    * Every Bar within the BarChart has an ID which is a string comprised of '[bar name]-[x value]'.
@@ -57,6 +43,26 @@ export type BarClickEventProps = {
   tooltipPayload: Array<any>;
   tooltipPosition: { x: number; y: number };
 };
+
+export type BarSeries = {
+  /**
+   * _name_ must be unique! Do not leave as an empty string.
+   */
+  name: string;
+  data: BarSeriesData;
+  color?: string;
+  barBorderColor?: string;
+  /**
+   * a suffix that will be added to the tooltip.
+   */
+  unit?: string;
+  /**
+   * Give 2 bars (or more) the same stackId to have them stacked together, one on top of the other, in the same bar.
+   */
+  stackId?: string;
+};
+
+export type BarSeriesData = Array<{ x: number | string; y: number; color?: string }>;
 
 /**
  * @description
@@ -115,13 +121,36 @@ export type CurveType =
   | 'stepAfter';
 
 export type LineChartProps = BaseChartProps & {
-  lines: Array<SingleLine>;
+  lines: Array<LineSeries>;
   /**
    * Whether to connect a graph line across null points.
    * @default false
    */
   connectNulls?: boolean;
 };
+
+export type LineSeries = {
+  name: string;
+  color?: string;
+  lineWidth?: number;
+  curveType?: CurveType;
+  /**
+   * A suffix that will be added to the tooltip. If both `unit` & `yTickSuffix` are defined, `unit` is taken.
+   */
+  unit?: string;
+  data: LineSeriesData;
+  isDashed?: boolean;
+  showValues?: boolean;
+  dots?: { r: number };
+  hide?: boolean;
+};
+
+export type LineSeriesData = Array<{
+  x: number | string;
+  y: number;
+  showValue?: boolean;
+  dot?: { r?: number; fill?: string; stroke?: string };
+}>;
 
 export type PieChartDrawData = {
   name: string;
@@ -147,49 +176,6 @@ export type ReferenceLine = {
   lineColor?: string;
   isDashed?: boolean;
 };
-
-export type SingleBar = {
-  /**
-   * _name_ must be unique! Do not leave as an empty string.
-   */
-  name: string;
-  data: SingleBarData;
-  color?: string;
-  barBorderColor?: string;
-  /**
-   * a suffix that will be added to the tooltip.
-   */
-  unit?: string;
-  /**
-   * Give 2 bars (or more) the same stackId to have them stacked together, one on top of the other, in the same bar.
-   */
-  stackId?: string;
-};
-
-export type SingleBarData = Array<{ x: number | string; y: number; color?: string }>;
-
-export type SingleLine = {
-  name: string;
-  color?: string;
-  lineWidth?: number;
-  curveType?: CurveType;
-  /**
-   * A suffix that will be added to the tooltip. If both `unit` & `yTickSuffix` are defined, `unit` is taken.
-   */
-  unit?: string;
-  data: SingleLineData;
-  isDashed?: boolean;
-  showValues?: boolean;
-  dots?: { r: number };
-  hide?: boolean;
-};
-
-export type SingleLineData = Array<{
-  x: number | string;
-  y: number;
-  showValue?: boolean;
-  dot?: { r?: number; fill?: string; stroke?: string };
-}>;
 
 export type SinglePie = {
   name: string;

@@ -3,11 +3,11 @@ import LineChart from '../../../components/charts/LineChart';
 
 /**
  * @typedef {import('../../../components/charts/types').CurveType} CurveType
- * @typedef {import('../../../components/charts/types').SingleLine} SingleLine
+ * @typedef {import('../../../components/charts/types').LineSeries} LineSeries
  * @typedef {import('../../../components/charts/types').ReferenceLine} ReferenceLine
  */
 
-/** @type {Array<SingleLine>} */
+/** @type {Array<LineSeries>} */
 const lines = [
   {
     name: 'line1',
