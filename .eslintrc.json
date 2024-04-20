@@ -2,6 +2,7 @@
   "root": true,
   "extends": ["plugin:ezlint/recommended", "plugin:ezlint/react"],
   "rules": {
-    "jsdoc/check-indentation": "off"
+    "jsdoc/check-indentation": "off",
+    "react/no-unstable-nested-components": "off"
   }
 }
