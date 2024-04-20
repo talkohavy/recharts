@@ -64,6 +64,7 @@ export default function LineChart(props) {
     isAnimationActive,
     className,
     style,
+    connectNulls,
   } = props;
 
   const lengthOfLongestData = useMemo(() => getLengthOfLongestData(lines), [lines]);
@@ -185,7 +186,7 @@ export default function LineChart(props) {
           }}
           // interval={10} // <--- defaults to preserveEnd.If set 0, all the ticks will be shown. If set preserveStart", "preserveEnd" or "preserveStartEnd", the ticks which is to be shown or hidden will be calculated automatically.
           // includeHidden // <--- defaults to false. Ensures that all data points within a chart contribute to its domain calculation, even when they are hidden.
-          // unit=' cm' // <--- Doesn't appear if you're using `tick`, which you are. Also, it is good practice to have units appear on the label itself, and not on the ticks.
+          // unit=' cm' // <--- Doesn't appear if you're using `tick`, which you are. Also, it is good practice to have units appear on the label itself, and not on the ticks of the xAxis.
           // fontSize={22}
           // fontWeight={100}
           // tickFormatter={formatLabel} // <--- only passes the string value as an argument.
@@ -309,6 +310,7 @@ export default function LineChart(props) {
             r: dots?.r ?? 3, // <--- 3 is recharts default!
             opacity: isLegendHovered ? (isLineHovered[name] ? 1 : 0.1) : undefined,
             isAnimationActive, // <--- rechart says it defaults to true in CSR and to false in SSR
+            connectNulls,
             // data, <--- don't put data here because if you do the line would not appear!
           };
 

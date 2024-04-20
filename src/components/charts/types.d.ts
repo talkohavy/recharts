@@ -114,7 +114,14 @@ export type CurveType =
   | 'stepBefore'
   | 'stepAfter';
 
-export type LineChartProps = BaseChartProps & { lines: Array<SingleLine> };
+export type LineChartProps = BaseChartProps & {
+  lines: Array<SingleLine>;
+  /**
+   * Whether to connect a graph line across null points.
+   * @default false
+   */
+  connectNulls?: boolean;
+};
 
 export type PieChartDrawData = {
   name: string;
