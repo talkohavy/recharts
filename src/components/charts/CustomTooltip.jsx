@@ -1,13 +1,18 @@
-import { FORMATTERS, formatLabel } from './helpers';
+import { formatLabel } from './helpers';
 
 /** @typedef {import('recharts').TooltipProps<string,string>} TooltipProps */
 
-/** @param {TooltipProps & {yTickSuffix?: string, xAxisType: string}} props */
+/**
+ * @param {TooltipProps & {
+ *   ySuffix: string,
+ *   xValueFormatter: (value: any) => string
+ * }} props
+ */
 export default function CustomTooltip(props) {
-  const { active, payload, label, separator, xAxisType, yTickSuffix } = props;
+  const { active, payload, label, separator, xValueFormatter, ySuffix } = props;
 
   if (active && payload && payload.length) {
-    const formattedXLabel = FORMATTERS[xAxisType](label);
+    const formattedXLabel = xValueFormatter(label);
 
     return (
       <div className='whitespace-nowrap rounded-md border border-neutral-400 bg-white bg-opacity-90 p-2.5 pb-3'>
@@ -21,7 +26,7 @@ export default function CustomTooltip(props) {
                 <span>{name}</span>
                 <span>{separator}</span>
                 <span>{formattedValue}</span>
-                <span>{unit ?? yTickSuffix}</span>
+                <span>{unit ?? ySuffix}</span>
               </li>
             );
           })}

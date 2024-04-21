@@ -1,11 +1,15 @@
 import { getTextWidth } from './helpers';
-import { FORMATTERS } from './helpers/formatters';
 
-/** @param {import('recharts').LabelProps & {payload: any, axisType: 'category' | 'datetime'}} props */
+/**
+ * @param {import('recharts').LabelProps & {
+ *   payload: any,
+ *   xTickFormatter: (value: any) => string
+ * }} props
+ */
 export function CustomizedAxisTick(props) {
-  const { x, y, color, payload, angle, textAnchor, fontWeight, fontSize, axisType } = props;
+  const { x, y, color, payload, angle, textAnchor, fontWeight, fontSize, xTickFormatter } = props;
 
-  const formattedLabel = FORMATTERS[axisType](payload.value);
+  const formattedLabel = xTickFormatter(payload.value);
   const textWidth = getTextWidth({ text: formattedLabel });
   const translateXBy = +x + (angle < -45 ? -10 : angle ? 0 : textWidth / 2);
 

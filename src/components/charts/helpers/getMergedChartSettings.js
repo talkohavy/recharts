@@ -1,5 +1,5 @@
 import { calculateXAxisLabelPositioning } from './calculateXAxisLabelPositioning';
-import { formatLabel } from './formatters';
+import { FORMATTERS, formatLabel } from './formatters';
 import { getTextWidth } from './getTextWidth';
 
 /**
@@ -13,9 +13,10 @@ import { getTextWidth } from './getTextWidth';
  *   settings: ChartSettings,
  *   xAxisHeight: number,
  *   yAxisWidth: number,
+ *   xAxisType: 'category' | 'number' | 'datetime'
  * }} props
  */
-function getMergedChartSettings({ chartType, settings, xAxisHeight, yAxisWidth }) {
+function getMergedChartSettings({ chartType, settings, xAxisHeight, yAxisWidth, xAxisType }) {
   return {
     general: {
       showValues: settings?.general?.showValues,
@@ -43,6 +44,7 @@ function getMergedChartSettings({ chartType, settings, xAxisHeight, yAxisWidth }
       stroke: '#666', // <--- this is the color of the xAxis line itself!
       xAxisId: 'bottom',
       padding: { right: 40 }, // <--- you can use this to remove padding between: A. The first bar and the Y axis; B. The last bar and the chart axis. I'm using 40 to have the last dot always visible in case the last data point is a large red dot - 40 would make it visible.
+      tickFormatter: settings?.xAxis?.tickFormatter ?? FORMATTERS[xAxisType],
     },
     yAxis: {
       hide: settings?.yAxis?.show === undefined ? false : !settings?.yAxis?.show,
@@ -81,6 +83,7 @@ function getMergedChartSettings({ chartType, settings, xAxisHeight, yAxisWidth }
     },
     tooltip: {
       yTickSuffix: settings?.yAxis?.tickSuffix ?? '', // <--- Notice that I copy whatever the yAxis has.
+      xValueFormatter: settings?.xAxis?.tickFormatter ?? settings?.tooltip.xValueFormatter ?? FORMATTERS[xAxisType],
     },
     zoomSlider: {
       show: settings?.zoomSlider?.show,
