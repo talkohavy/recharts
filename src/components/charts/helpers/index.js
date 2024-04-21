@@ -1,9 +1,10 @@
 export { FORMATTERS, formatDate, formatLabel } from './formatters';
 export { calculateLongestNiceTickWidth } from './calculateLongestNiceTickWidth';
 export { calculateXAxisLabelPositioning } from './calculateXAxisLabelPositioning';
-export { getDefaultSettings } from './getDefaultSettings';
+export { calculateYAxisWidth } from './calculateYAxisWidth';
 export { getHeight } from './getHeight';
 export { getLengthOfLongestData } from './getLengthOfLongestData';
+export { getMergedChartSettings } from './getMergedChartSettings';
 export { getNamesObject } from './getNamesObject';
 export { getTextWidth } from './getTextWidth';
 export { getWidthOfLongestXLabel } from './getWidthOfLongestXLabel';

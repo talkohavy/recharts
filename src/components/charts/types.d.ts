@@ -70,6 +70,7 @@ export type BarSeriesData = Array<{ x: number | string; y: number; color?: strin
  * They do not fit for PieChart.
  */
 export type BaseChartProps = {
+  settings?: ChartSettings;
   /**
    * Use 'category' when your xAxis is made of *words*. i.e. ['Cars', 'Ships', 'Planes', 'Other'].
    *
@@ -79,28 +80,103 @@ export type BaseChartProps = {
    * @default 'category'
    */
   type?: 'category' | 'number' | 'datetime';
-  showGrid?: boolean | { showHorizontalLines?: boolean; showVerticalLines?: boolean };
-  showLegend?: boolean;
-  showZoomSlider?: boolean;
-  showPreviewInSlider?: boolean;
-  showValues?: boolean;
-  gridColor?: string;
-  xLabel?: string;
-  xTickRotateAngle?: number;
-  xTickColor?: string;
-  xHide?: boolean;
-  yLabel?: string;
-  yTickColor?: string;
-  yTickSuffix?: string;
   yHide?: boolean;
   referenceLines?: Array<ReferenceLine>;
-  /**
-   * According to recharts, if you leave this as undefined, it would default to `true` in CSR, and to `false` in SSR.
-   * @default undefined
-   */
-  isAnimationActive?: boolean;
   className?: string;
   style?: any;
+};
+
+export type ChartSettings = {
+  general?: {
+    /**
+     * According to recharts, if you leave this as undefined, it would default to `true` in CSR, and to `false` in SSR.
+     * @default undefined
+     */
+    isAnimationActive?: boolean;
+    /**
+     * In case of a LineChart, shows values for all lines, above the dots.
+     * In case of a BarChart, shows values for all bars, inside the bar.
+     * @default false
+     */
+    showValues?: boolean;
+  };
+  xAxis?: {
+    /**
+     * @default true
+     */
+    show?: boolean;
+    label?: string;
+    /**
+     * The color of the tick's value.
+     * @default '#666'
+     */
+    color?: string;
+    /**
+     * The angle of the tick's value.
+     * @default 0
+     */
+    tickAngle?: number;
+    tickFormatter?: (value: any) => string;
+    // tickSuffix: string;
+  };
+  yAxis?: {
+    /**
+     * @default true
+     */
+    show?: boolean;
+    label?: string;
+    tickColor?: string;
+    tickSuffix?: string;
+    tickFormatter?: (value: any) => string;
+  };
+  grid?: {
+    /**
+     * @default false
+     */
+    show?: boolean;
+    /**
+     * @default false
+     */
+    showHorizontalLines?: boolean;
+    /**
+     * @default false
+     */
+    showVerticalLines?: boolean;
+    strokeDasharray?: string;
+    color?: string;
+  };
+  zoomSlider?: {
+    /**
+     * @default false
+     */
+    show?: boolean;
+    /**
+     * @default false
+     */
+    showPreviewInSlider?: boolean;
+  };
+  legend?: {
+    /**
+     * @default true
+     */
+    show?: boolean;
+    nameFormatter?: (value: any) => string;
+  };
+  tooltip?: {
+    /**
+     * @default true
+     */
+    show?: boolean;
+    xValueFormatter?: (value: any) => string;
+    yValueFormatter?: (value: any) => string;
+  };
+  lines?: {
+    /**
+     * Whether to connect a graph line across null points.
+     * @default false
+     */
+    connectNulls?: boolean;
+  };
 };
 
 export type CurveType =
@@ -122,11 +198,6 @@ export type CurveType =
 
 export type LineChartProps = BaseChartProps & {
   lines: Array<LineSeries>;
-  /**
-   * Whether to connect a graph line across null points.
-   * @default false
-   */
-  connectNulls?: boolean;
 };
 
 export type LineSeries = {

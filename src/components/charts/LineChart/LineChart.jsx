@@ -11,18 +11,15 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { getNiceTickValues } from 'recharts-scale';
-import { BRUSH_HEIGHT, BRUSH_ITEMS_PER_PAGE, LEGEND_HEIGHT, TICK_DASH_WIDTH } from '../constants';
+import { BRUSH_HEIGHT, BRUSH_ITEMS_PER_PAGE, LEGEND_HEIGHT } from '../constants';
 import { CustomizedAxisTick } from '../CustomAxisTick';
 import CustomTooltip from '../CustomTooltip';
 import {
-  calculateLongestNiceTickWidth,
-  calculateXAxisLabelPositioning,
-  getDefaultSettings,
+  calculateYAxisWidth,
   getHeight,
   getLengthOfLongestData,
+  getMergedChartSettings,
   getNamesObject,
-  getTextWidth,
   getWidthOfLongestXLabel,
   validateAxisValuesAreSameType,
   validateUniqueNamesOnDataSets,
@@ -39,29 +36,7 @@ import '../recharts.css';
  * @param {LineChartProps} props
  */
 export default function LineChart(props) {
-  const {
-    type: xAxisType = 'category',
-    lines,
-    showGrid,
-    showLegend,
-    showZoomSlider,
-    showPreviewInSlider,
-    showValues: showChartValues,
-    gridColor = '#ddd',
-    xLabel,
-    xTickRotateAngle = 0,
-    xTickColor = '#666',
-    xHide,
-    yLabel,
-    yTickColor = '#666',
-    yTickSuffix = '',
-    yHide,
-    referenceLines,
-    isAnimationActive,
-    className,
-    style,
-    connectNulls,
-  } = props;
+  const { type: xAxisType = 'category', settings: settingsToMerge, lines, referenceLines, className, style } = props;
 
   const lengthOfLongestData = useMemo(() => getLengthOfLongestData(lines), [lines]);
 
@@ -70,7 +45,7 @@ export default function LineChart(props) {
   const [isLegendHovered, setIsLegendHovered] = useState(false);
   const [isLineHovered, setIsLineHovered] = useState(() => getNamesObject(lines));
 
-  const positiveXTickRotateAngle = Math.abs(xTickRotateAngle);
+  const positiveXTickRotateAngle = Math.abs(settingsToMerge?.xAxis?.tickAngle ?? 0);
 
   /** @type {Array<{x: number | string}>} */
   const transformedDataForRecharts = useMemo(() => {
@@ -115,29 +90,19 @@ export default function LineChart(props) {
     [positiveXTickRotateAngle, widthOfLongestXTickLabel],
   );
 
-  const yAxisWidth = useMemo(() => {
-    const yTickCount = 5;
-    const domain = [0, maxYValue];
-    const allowDecimals = true;
-    const niceYTicks = getNiceTickValues(domain, yTickCount, allowDecimals);
-
-    const longestYTickWidth = calculateLongestNiceTickWidth(niceYTicks, yTickSuffix);
-
-    const yAxisWidth = longestYTickWidth + TICK_DASH_WIDTH + (yLabel ? 8 : 0);
-
-    return yAxisWidth;
-  }, [maxYValue, yTickSuffix, yLabel]);
-
-  const yLabelFixPosition = useMemo(() => {
-    if (!yLabel) return undefined;
-    const width = getTextWidth({ text: yLabel });
-
-    return { value: yLabel, angle: -90, position: 'left', dy: -width / 2 };
-  }, [yLabel]);
+  const yAxisWidth = useMemo(
+    () =>
+      calculateYAxisWidth({
+        maxYValue,
+        yLabel: settingsToMerge?.yAxis?.label,
+        yTickSuffix: settingsToMerge?.yAxis?.tickSuffix,
+      }),
+    [maxYValue, settingsToMerge?.yAxis?.label, settingsToMerge?.yAxis?.tickSuffix],
+  );
 
   const chartSettings = useMemo(
-    () => getDefaultSettings({ xLabel, yLabel, showGrid, gridColor }),
-    [xLabel, yLabel, showGrid, gridColor],
+    () => getMergedChartSettings({ chartType: 'LineChart', settings: settingsToMerge, xAxisHeight, yAxisWidth }),
+    [settingsToMerge, xAxisHeight, yAxisWidth],
   );
 
   return (
@@ -149,28 +114,13 @@ export default function LineChart(props) {
         {...chartSettings.lineChartBase}
       >
         {/* MUST come before XAxis & YAxis */}
-        {showGrid && <CartesianGrid {...chartSettings.grid} />}
+        {chartSettings.grid.show && <CartesianGrid {...chartSettings.grid} />}
 
         <XAxis
           {...chartSettings.xAxis}
           type={xAxisType === 'datetime' ? 'number' : xAxisType} // <--- 'category' v.s. 'number'. What is the difference? Isn't it the same eventually? Well no, because consider a case where gaps exist. For instance, 0 1 2 4 5. A 'category' would place an even distance between 2 & 4, when in fact it's a double gap!
           scale={xAxisType === 'datetime' ? 'time' : 'auto'}
           tick={(tickProps) => <CustomizedAxisTick {...tickProps} axisType={xAxisType} />} // <--- passes everything as an argument! x, y, width, height, everything! You'll even need to handle the tick's positioning, and format the entire tick.
-          height={xAxisHeight}
-          angle={-positiveXTickRotateAngle}
-          hide={xHide}
-          color={xTickColor} // <--- this is the color of the tick's value!
-          label={{
-            value: xLabel,
-            angle: 0,
-            position: 'bottom',
-            dy: calculateXAxisLabelPositioning({
-              showLegend,
-              showZoomSlider,
-              chartType: 'LineChart',
-            }),
-            dx: -yAxisWidth / 2,
-          }}
           // interval={10} // <--- defaults to preserveEnd.If set 0, all the ticks will be shown. If set preserveStart", "preserveEnd" or "preserveStartEnd", the ticks which is to be shown or hidden will be calculated automatically.
           // includeHidden // <--- defaults to false. Ensures that all data points within a chart contribute to its domain calculation, even when they are hidden.
           // unit=' cm' // <--- Doesn't appear if you're using `tick`, which you are. Also, it is good practice to have units appear on the label itself, and not on the ticks of the xAxis.
@@ -185,22 +135,17 @@ export default function LineChart(props) {
         {/* @ts-ignore */}
         <YAxis
           {...chartSettings.yAxis}
-          hide={yHide}
-          label={yLabelFixPosition}
-          color={yTickColor}
-          unit={yTickSuffix} // <--- you can add a unit suffix to your yAxis ticks!
-          width={yAxisWidth}
           // dataKey='y'// <--- do NOT put dataKey on y axis of LineChart! We are going to use the `name` of each Line's dataset.
         />
 
         <Tooltip
           content={(tooltipProps) => (
             // @ts-ignore
-            <CustomTooltip {...tooltipProps} xAxisType={xAxisType} yTickSuffix={yTickSuffix} />
+            <CustomTooltip {...tooltipProps} xAxisType={xAxisType} yTickSuffix={chartSettings.tooltip.yTickSuffix} />
           )}
         />
 
-        {showLegend && (
+        {chartSettings.legend.show && (
           // @ts-ignore
           <Legend
             {...chartSettings.legend}
@@ -227,7 +172,7 @@ export default function LineChart(props) {
           />
         )}
 
-        {showZoomSlider && (
+        {chartSettings.zoomSlider.show && (
           <Brush
             height={BRUSH_HEIGHT}
             startIndex={startIndex.current} // <--- The default start index of brush. If the option is not set, the start index will be 0.
@@ -240,7 +185,7 @@ export default function LineChart(props) {
             // gap={1} // <--- Default to 1. `gap` is the refresh rate. 1 is smoothest.
             // travellerWidth={6}
           >
-            {showPreviewInSlider ? (
+            {chartSettings.zoomSlider.showPreviewInSlider ? (
               <LineChartBase data={transformedDataForRecharts}>
                 {lines.map(({ name, curveType }) => (
                   <Line
@@ -289,8 +234,6 @@ export default function LineChart(props) {
             type: curveType ?? 'linear',
             r: dots?.r ?? 3, // <--- 3 is recharts default!
             opacity: isLegendHovered ? (isLineHovered[name] ? 1 : 0.1) : undefined,
-            isAnimationActive, // <--- rechart says it defaults to true in CSR and to false in SSR
-            connectNulls,
             // data, <--- don't put data here because if you do the line would not appear!
           };
 
@@ -298,14 +241,14 @@ export default function LineChart(props) {
 
           return (
             <Line
-              {...chartSettings.line}
               key={name}
+              {...chartSettings.lines}
               {...lineProps}
               dot={(dotProps) => (
                 <NonActiveDot
                   {...dotProps}
                   data={data}
-                  showChartValues={showChartValues}
+                  showChartValues={chartSettings.general.showValues}
                   showLineValues={showLineValues}
                 />
               )}
@@ -313,7 +256,7 @@ export default function LineChart(props) {
                 <ActiveDot
                   {...dotProps}
                   data={data}
-                  showChartValues={showChartValues}
+                  showChartValues={chartSettings.general.showValues}
                   showLineValues={showLineValues}
                 />
               )}

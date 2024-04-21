@@ -33,17 +33,47 @@ export default function LineChartPlaygroundPage() {
           <div className='h-md max-h-md w-full shrink-0'>
             {/* Write your BarChart Code Below Here */}
             <LineChartWithSpinner
+              settings={{
+                general: {
+                  isAnimationActive: false,
+                  showValues,
+                },
+                xAxis: {
+                  // show: true,
+                  label: xLabel,
+                  tickAngle: xTickAngle,
+                  // tickFormatter: () => {},
+                  // tickSuffix: 'cm'
+                },
+                yAxis: {
+                  // show: true,
+                  label: yLabel,
+                  tickSuffix: yTickSuffix,
+                  // tickFormatter: () => {},
+                },
+                grid: {
+                  show: showGrid,
+                  color: 'red',
+                  // @ts-ignore
+                  showHorizontalLines: showGrid.showHorizontalLines,
+                  // @ts-ignore
+                  showVerticalLines: showGrid.showVerticalLines,
+                },
+                legend: {
+                  show: showLegend,
+                },
+                tooltip: {
+                  // show: true,
+                  // xValueFormatter: ()=>{}
+                  // yValueFormatter: ()=>{}
+                },
+                zoomSlider: {
+                  show: showZoomSlider,
+                  showPreviewInSlider,
+                },
+              }}
               type='datetime'
               lines={seriesLines}
-              xLabel={xLabel}
-              yLabel={yLabel}
-              yTickSuffix={yTickSuffix}
-              xTickRotateAngle={xTickAngle}
-              showGrid={showGrid}
-              showLegend={showLegend}
-              showZoomSlider={showZoomSlider}
-              showPreviewInSlider={showPreviewInSlider}
-              showValues={showValues}
               // referenceLines={referenceLines}
               className={showAsCard && 'rounded-lg border border-neutral-300 p-4 font-thin'}
               style={{ fontFamily: 'Hiragino Sans GB,Arial,sans-serif', border: showBorder && '1px solid black' }}
