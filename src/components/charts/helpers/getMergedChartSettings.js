@@ -76,6 +76,7 @@ function getMergedChartSettings({ chartType, settings, xAxisHeight, yAxisWidth, 
       stroke: '#666',
       yAxisId: 'left',
       padding: { top: 18 },
+      includeHidden: true, // <--- when having multiple lines, and playing around clicking the legend items, animations look so much better with this as `true`.
       // dataKey: 'y'// <--- do NOT put dataKey on y axis of BarChart or LineChart! We are going to use the `name` of each Bars set.
     },
     grid: {
