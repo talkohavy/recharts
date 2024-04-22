@@ -19,6 +19,7 @@ import { getTextWidth } from './getTextWidth';
  */
 function getMergedChartSettings({ chartType, settings, xAxisHeight, yAxisWidth, xAxisType }) {
   const showGrid = settings?.grid?.show ?? true;
+  const showLegend = settings?.legend?.show ?? chartType === 'BarChart';
 
   return {
     general: {
@@ -32,8 +33,8 @@ function getMergedChartSettings({ chartType, settings, xAxisHeight, yAxisWidth, 
         angle: 0,
         position: 'bottom',
         dy: calculateXAxisLabelPositioning({
-          showLegend: settings?.legend?.show ?? true,
-          showZoomSlider: settings?.legend?.show ?? false, // <--- this line is coupled with the line of `legend.show`. When it changed, this line should also change.
+          showLegend,
+          showZoomSlider: settings?.zoomSlider?.show ?? false,
           chartType,
         }),
         dx: -yAxisWidth / 2,

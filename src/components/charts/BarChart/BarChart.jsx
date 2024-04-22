@@ -134,7 +134,7 @@ export default function BarChart(props) {
 
   const chartSettings = useMemo(
     () =>
-      getMergedChartSettings({ settings: settingsToMerge, chartType: 'LineChart', xAxisType, xAxisHeight, yAxisWidth }),
+      getMergedChartSettings({ settings: settingsToMerge, chartType: 'BarChart', xAxisType, xAxisHeight, yAxisWidth }),
     [settingsToMerge, xAxisType, xAxisHeight, yAxisWidth],
   );
 
