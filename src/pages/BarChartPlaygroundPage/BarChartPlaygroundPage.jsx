@@ -57,11 +57,11 @@ export default function BarChartPlaygroundPage() {
   const [xLabel, setXLabel] = useState('');
   const [yLabel, setYLabel] = useState('');
   const [yTickSuffix, setYTickSuffix] = useState('');
-  const [xTickAngle, setXTickAngle] = useState(0);
+  const [xTickAngle, setXTickAngle] = useState(45);
   const [showZoomSlider, setShowZoomSlider] = useState(false);
   const [showPreviewInSlider, setShowPreviewInSlider] = useState(false);
   const [showLegend, setShowLegend] = useState(false);
-  const [showGrid, setShowGrid] = useState(false);
+  const [showGrid, setShowGrid] = useState(true);
 
   const [bars, setBars] = useState(barsRaw);
   const [isLoading, setIsLoading] = useState(false);
