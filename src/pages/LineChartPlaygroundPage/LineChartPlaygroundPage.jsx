@@ -11,6 +11,26 @@ import { seriesLines } from './data';
  * @typedef {import('../../components/charts/types').ReferenceLine} ReferenceLine
  */
 
+// function customDateFormatter(date) {
+//   const options = {
+//     // weekday: 'short', // undefined | short | long
+//     dayPeriod: 'short',
+//     year: 'numeric',
+//     month: 'numeric', // numeric | short | long
+//     day: 'numeric',
+//     hour: 'numeric',
+//     hour12: false, // defaults to true. false is 24H
+//     minute: 'numeric',
+//     // second: 'numeric',
+//     // timeZone: 'Australia/Sydney',
+//     // timeZoneName: 'short',
+//   };
+//   // @ts-ignore
+//   const formattedDate = Intl.DateTimeFormat('en-US', options).format(date);
+
+//   return formattedDate;
+// }
+
 export default function LineChartPlaygroundPage() {
   const [showBorder, setShowBorder] = useState(true);
   const [showAsCard, setShowAsCard] = useState(false);
@@ -42,6 +62,7 @@ export default function LineChartPlaygroundPage() {
                   // show: true,
                   label: xLabel,
                   tickAngle: xTickAngle,
+                  // tickFormatter: customDateFormatter,
                   // tickFormatter: () => {},
                   // tickSuffix: 'cm'
                 },
@@ -64,8 +85,11 @@ export default function LineChartPlaygroundPage() {
                 },
                 tooltip: {
                   // show: true,
-                  // xValueFormatter: ()=>{}
+                  // xValueFormatter: customDateFormatter,
                   // yValueFormatter: ()=>{}
+                },
+                lines: {
+                  // connectNulls: true,
                 },
                 zoomSlider: {
                   show: showZoomSlider,
