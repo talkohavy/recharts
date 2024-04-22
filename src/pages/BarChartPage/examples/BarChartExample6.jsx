@@ -32,11 +32,11 @@ export default function BarChartExample6() {
       <div className='size-full max-h-md max-w-lg'>
         <BarChart
           bars={bars}
-          xLabel='Countries'
-          yLabel='Amount in km'
-          xTickRotateAngle={46}
-          showGrid
-          showLegend
+          settings={{
+            xAxis: { label: 'Countries', tickAngle: 46 },
+            yAxis: { label: 'Amount in km' },
+            legend: { show: true },
+          }}
           style={{ fontFamily: 'Hiragino Sans GB,Arial,sans-serif', border: '1px solid black' }}
         />
       </div>

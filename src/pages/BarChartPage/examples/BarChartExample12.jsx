@@ -38,12 +38,12 @@ export default function BarChartExample12() {
       <div className='size-full max-h-md max-w-lg'>
         <BarChart
           bars={bars}
-          xLabel='Countries'
-          yLabel='Amount in cm'
-          showGrid
-          showLegend
-          showZoomSlider
-          xTickRotateAngle={46}
+          settings={{
+            xAxis: { label: 'Countries', tickAngle: 46 },
+            yAxis: { label: 'Amount in cm' },
+            legend: { show: true },
+            zoomSlider: { show: true },
+          }}
           style={{ fontFamily: 'Hiragino Sans GB,Arial,sans-serif', border: '1px solid black' }}
         />
       </div>

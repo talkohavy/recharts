@@ -27,8 +27,7 @@ export default function BarChartExample5() {
       <div className='size-full max-h-md max-w-lg'>
         <BarChart
           bars={bars}
-          showGrid
-          showLegend
+          settings={{ legend: { show: true } }}
           className='rounded-lg border p-2'
           style={{ fontFamily: 'Hiragino Sans GB,Arial,sans-serif' }}
         />

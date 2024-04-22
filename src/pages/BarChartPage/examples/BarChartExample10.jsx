@@ -31,10 +31,11 @@ export default function BarChartExample10() {
       <div className='size-full max-h-md max-w-lg'>
         <BarChart
           bars={bars}
-          xHide={!showXAxis}
-          yHide={!showYAxis}
-          showGrid
-          showLegend
+          settings={{
+            xAxis: { show: !showXAxis },
+            yAxis: { show: !showYAxis },
+            legend: { show: true },
+          }}
           style={{ fontFamily: 'Hiragino Sans GB,Arial,sans-serif', border: '1px solid black' }}
         />
       </div>

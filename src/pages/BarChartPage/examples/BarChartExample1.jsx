@@ -28,10 +28,11 @@ export default function BarChartExample1() {
       <div className='size-full max-h-md max-w-lg'>
         <BarChart
           bars={bars}
-          yLabel='Amount in Liters'
-          xLabel='Countries'
-          showGrid
-          showLegend
+          settings={{
+            yAxis: { label: 'Amount in Liters' },
+            xAxis: { label: 'Countries' },
+            legend: { show: true },
+          }}
           style={{ fontFamily: 'Hiragino Sans GB,Arial,sans-serif', border: '1px solid black' }}
         />
       </div>

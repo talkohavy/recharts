@@ -48,9 +48,9 @@ export default function BarChartExample13() {
       <div className='size-full max-h-md max-w-lg'>
         <BarChart
           bars={bars}
-          showGrid
-          showLegend
-          xTickRotateAngle={45}
+          settings={{
+            xAxis: { tickAngle: 45 },
+          }}
           activeBarId={activeBarId}
           onClickBar={({ name, payload }) => {
             setActiveBarId(`${name}-${payload.x}`);
