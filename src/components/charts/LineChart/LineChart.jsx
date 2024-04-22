@@ -138,15 +138,6 @@ export default function LineChart(props) {
           type={xAxisType === 'datetime' ? 'number' : xAxisType} // <--- 'category' v.s. 'number'. What is the difference? Isn't it the same eventually? Well no, because consider a case where gaps exist. For instance, 0 1 2 4 5. A 'category' would place an even distance between 2 & 4, when in fact it's a double gap!
           scale={xAxisType === 'datetime' ? 'time' : 'auto'}
           tick={(tickProps) => <CustomizedAxisTick {...tickProps} xTickFormatter={chartSettings.xAxis.tickFormatter} />} // <--- passes everything as an argument! x, y, width, height, everything! You'll even need to handle the tick's positioning, and format the entire tick.
-          // interval={10} // <--- defaults to preserveEnd.If set 0, all the ticks will be shown. If set preserveStart", "preserveEnd" or "preserveStartEnd", the ticks which is to be shown or hidden will be calculated automatically.
-          // includeHidden // <--- defaults to false. Ensures that all data points within a chart contribute to its domain calculation, even when they are hidden.
-          // unit=' cm' // <--- Doesn't appear if you're using `tick`, which you are. Also, it is good practice to have units appear on the label itself, and not on the ticks of the xAxis.
-          // fontSize={22}
-          // fontWeight={100}
-          // tickFormatter={formatLabel} // <--- only passes the string value as an argument.
-          // tickCount={10} // <-- defaults to 5
-          // allowDecimals={false} // <--- default to true
-          // dy={5} // <--- doesn't even work anymore.
         />
 
         {/* @ts-ignore */}
