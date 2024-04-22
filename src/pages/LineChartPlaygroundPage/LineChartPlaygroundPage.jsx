@@ -3,7 +3,8 @@ import Checkbox from '../../components/Checkbox';
 import Input from '../../components/Input';
 import LineChartWithSpinner from '../../components/LineChartWithSpinner';
 import NumberInput from '../../components/NumberInput';
-import { seriesLines } from './data';
+import Select from '../../components/Select';
+import { mainExample } from './examples/index';
 
 /**
  * @typedef {import('../../components/charts/types').LineSeries} LineSeries
@@ -31,10 +32,17 @@ import { seriesLines } from './data';
 //   return formattedDate;
 // }
 
+const lineTypeOptions = [
+  { value: 'category', label: 'Category' },
+  { value: 'number', label: 'Number' },
+  { value: 'datetime', label: 'Datetime' },
+];
+
 export default function LineChartPlaygroundPage() {
   const [showBorder, setShowBorder] = useState(true);
   const [showAsCard, setShowAsCard] = useState(false);
   const [showValues, setShowValues] = useState(false);
+  const [xAxisTypeOption, setXAxisTypeOption] = useState(lineTypeOptions[0]);
   const [xLabel, setXLabel] = useState('');
   const [yLabel, setYLabel] = useState('');
   const [yTickSuffix, setYTickSuffix] = useState('');
@@ -53,6 +61,9 @@ export default function LineChartPlaygroundPage() {
           <div className='h-md max-h-md w-full shrink-0'>
             {/* Write your BarChart Code Below Here */}
             <LineChartWithSpinner
+              // @ts-ignore
+              type={xAxisTypeOption.value}
+              lines={mainExample}
               settings={{
                 general: {
                   isAnimationActive: false,
@@ -96,8 +107,6 @@ export default function LineChartPlaygroundPage() {
                   showPreviewInSlider,
                 },
               }}
-              type='datetime'
-              lines={seriesLines}
               // referenceLines={referenceLines}
               className={showAsCard && 'rounded-lg border border-neutral-300 p-4 font-thin'}
               style={{ fontFamily: 'Hiragino Sans GB,Arial,sans-serif', border: showBorder && '1px solid black' }}
@@ -106,6 +115,7 @@ export default function LineChartPlaygroundPage() {
 
           <div className='flex items-start justify-between gap-6'>
             <div className='flex flex-col items-start justify-between gap-3'>
+              <Select selectedOption={xAxisTypeOption} setOption={setXAxisTypeOption} options={lineTypeOptions} />
               <Input value={xLabel} setValue={setXLabel} placeholder='x label (i.e. countries)' />
               <Input value={yLabel} setValue={setYLabel} placeholder='y label (i.e. Amount in GDP)' />
               <Input value={yTickSuffix} setValue={setYTickSuffix} placeholder='y tick suffix (i.e. cm)' />
@@ -166,7 +176,7 @@ export default function LineChartPlaygroundPage() {
         </div>
 
         <div className='h-full w-2/5 overflow-auto rounded-md border bg-blue-50/50 p-4'>
-          <pre>{JSON.stringify(seriesLines, null, 4)}</pre>
+          <pre>{JSON.stringify(mainExample, null, 4)}</pre>
         </div>
       </div>
     </div>
