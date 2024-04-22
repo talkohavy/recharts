@@ -17,7 +17,7 @@ const lines = [
     data: [
       { x: 'Page A', y: 100 },
       { x: 'Page B', y: 300 },
-      { x: 'Page C', y: 151, showDotValue: true, dot: { r: 12, fill: 'red', stroke: 'black' } },
+      { x: 'Page C', y: 151, showValue: true, dot: { r: 12, fill: 'red', stroke: 'black' } },
       { x: 'Page D', y: 200 },
       { x: 'Page E', y: 80 },
       { x: 'Page F', y: 180 },
@@ -35,7 +35,7 @@ export default function LineChartExample7() {
       <div className='size-full max-h-md max-w-lg'>
         <LineChart
           lines={lines}
-          showGrid
+          settings={{ grid: { show: true } }}
           style={{
             fontFamily: 'Hiragino Sans GB,Arial,sans-serif',
             border: '1px solid black',

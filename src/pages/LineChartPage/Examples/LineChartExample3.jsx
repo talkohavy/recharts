@@ -35,8 +35,10 @@ export default function LineChartExample3() {
       <div className='size-full max-h-lg max-w-lg'>
         <LineChart
           lines={lines}
-          xTickRotateAngle={46}
-          showGrid
+          settings={{
+            xAxis: { tickAngle: 46 },
+            grid: { show: true },
+          }}
           style={{
             fontFamily: 'Hiragino Sans GB,Arial,sans-serif',
             border: '1px solid black',

@@ -71,12 +71,13 @@ export default function LineChartExample12() {
       <div className='size-full max-h-md max-w-lg'>
         <LineChart
           lines={lines}
-          yLabel='Amount in Liters'
-          xLabel='Flying Cars'
-          showGrid
-          xTickRotateAngle={45}
-          showLegend
-          showZoomSlider
+          settings={{
+            xAxis: { label: 'Flying Cars', tickAngle: 45 },
+            yAxis: { label: 'Amount in Liters' },
+            grid: { show: true },
+            legend: { show: true },
+            zoomSlider: { show: true },
+          }}
           style={{
             fontFamily: 'Hiragino Sans GB,Arial,sans-serif',
             border: '1px solid black',

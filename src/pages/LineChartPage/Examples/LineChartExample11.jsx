@@ -42,11 +42,12 @@ export default function LineChartExample11() {
       <div className='size-full max-h-md max-w-lg'>
         <LineChart
           lines={lines}
-          xLabel='Flying Cars'
-          yLabel='Amount in Liters'
-          xTickRotateAngle={45}
-          showGrid
-          showLegend
+          settings={{
+            xAxis: { label: 'Flying Cars', tickAngle: 45 },
+            yAxis: { label: 'Amount in Liters' },
+            grid: { show: true },
+            legend: { show: true },
+          }}
           style={{
             fontFamily: 'Hiragino Sans GB,Arial,sans-serif',
             border: '1px solid black',

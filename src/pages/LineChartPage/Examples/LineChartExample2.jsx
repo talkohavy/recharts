@@ -35,9 +35,11 @@ export default function LineChartExample2() {
       <div className='size-full max-h-md max-w-lg'>
         <LineChart
           lines={lines}
-          yLabel='Amount in Liters'
-          xLabel='List of Alligators'
-          showGrid
+          settings={{
+            yAxis: { label: 'Amount in Liters' },
+            xAxis: { label: 'List of Alligators' },
+            grid: { show: true },
+          }}
           style={{
             fontFamily: 'Hiragino Sans GB,Arial,sans-serif',
             border: '1px solid black',

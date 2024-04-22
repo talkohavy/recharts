@@ -52,7 +52,7 @@ export default function LineChartExample6() {
         <LineChart
           lines={lines}
           referenceLines={referenceLines}
-          showGrid
+          settings={{ grid: { show: true } }}
           style={{
             fontFamily: 'Hiragino Sans GB,Arial,sans-serif',
             border: '1px solid black',

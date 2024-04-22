@@ -54,8 +54,7 @@ export default function LineChartExample10() {
       <div className='size-full max-h-md max-w-lg'>
         <LineChart
           lines={lines}
-          showGrid
-          showZoomSlider
+          settings={{ grid: { show: true }, zoomSlider: { show: true } }}
           style={{
             fontFamily: 'Hiragino Sans GB,Arial,sans-serif',
             border: '1px solid black',
