@@ -11,7 +11,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { BRUSH_HEIGHT, BRUSH_ITEMS_PER_PAGE, LEGEND_HEIGHT } from '../constants';
+import { BRUSH_ITEMS_PER_PAGE } from '../constants';
 import { CustomizedAxisTick } from '../CustomAxisTick';
 import CustomTooltip from '../CustomTooltip';
 import {
@@ -150,10 +150,7 @@ export default function LineChart(props) {
         />
 
         {/* @ts-ignore */}
-        <YAxis
-          {...chartSettings.yAxis}
-          // dataKey='y'// <--- do NOT put dataKey on y axis of LineChart! We are going to use the `name` of each Line's dataset.
-        />
+        <YAxis {...chartSettings.yAxis} />
 
         <Tooltip
           content={(tooltipProps) => (
@@ -170,7 +167,6 @@ export default function LineChart(props) {
           // @ts-ignore
           <Legend
             {...chartSettings.legend}
-            height={LEGEND_HEIGHT}
             onMouseEnter={(payload) => {
               setIsLegendHovered(true);
               setIsLineHovered((prevState) => {
@@ -189,22 +185,18 @@ export default function LineChart(props) {
                 return newIsLineHovered;
               });
             }}
-            // iconType='circle' // <--- defaults to 'line'
           />
         )}
 
         {chartSettings.zoomSlider.show && (
           <Brush
-            height={BRUSH_HEIGHT}
+            {...chartSettings.zoomSlider}
             startIndex={startIndex.current} // <--- The default start index of brush. If the option is not set, the start index will be 0.
             endIndex={endIndex.current} // <---The default end index of brush. If the option is not set, the end index will be calculated by the length of data.
             onChange={(brushProps) => {
               startIndex.current = brushProps.startIndex;
               endIndex.current = brushProps.endIndex;
             }}
-            {...chartSettings.zoomSlider}
-            // gap={1} // <--- Default to 1. `gap` is the refresh rate. 1 is smoothest.
-            // travellerWidth={6}
           >
             {chartSettings.zoomSlider.showPreviewInSlider ? (
               <LineChartBase data={transformedDataForRecharts}>

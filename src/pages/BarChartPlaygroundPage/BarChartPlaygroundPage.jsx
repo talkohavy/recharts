@@ -118,17 +118,51 @@ export default function BarChartPlaygroundPage() {
           <div className='size-full h-md max-h-md shrink-0'>
             {/* Write your BarChart Code Below Here */}
             <BarChartWithSpinner
+              settings={{
+                general: {
+                  isAnimationActive: false,
+                  showValues,
+                },
+                xAxis: {
+                  // show: true,
+                  label: xLabel,
+                  tickAngle: xTickAngle,
+                  // tickFormatter: customDateFormatter,
+                  // tickFormatter: () => {},
+                  // tickSuffix: 'cm'
+                },
+                yAxis: {
+                  // show: true,
+                  label: yLabel,
+                  tickSuffix: yTickSuffix,
+                  // tickFormatter: () => {},
+                },
+                grid: {
+                  show: showGrid,
+                  color: 'red',
+                  // @ts-ignore
+                  showHorizontalLines: showGrid.showHorizontalLines,
+                  // @ts-ignore
+                  showVerticalLines: showGrid.showVerticalLines,
+                },
+                legend: {
+                  show: showLegend,
+                },
+                tooltip: {
+                  // show: true,
+                  // xValueFormatter: customDateFormatter,
+                  // yValueFormatter: ()=>{}
+                },
+                lines: {
+                  // connectNulls: true,
+                },
+                zoomSlider: {
+                  show: showZoomSlider,
+                  showPreviewInSlider,
+                },
+              }}
               type='datetime'
               bars={bars}
-              xLabel={xLabel}
-              yLabel={yLabel}
-              yTickSuffix={yTickSuffix}
-              xTickRotateAngle={xTickAngle}
-              showGrid={showGrid}
-              showLegend={showLegend}
-              showZoomSlider={showZoomSlider}
-              showPreviewInSlider={showPreviewInSlider}
-              showValues={showValues}
               isLoading={isLoading}
               activeBarId={activeBarId}
               onClickBar={handleClickBar}

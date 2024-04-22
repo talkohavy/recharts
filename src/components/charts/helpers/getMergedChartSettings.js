@@ -1,3 +1,4 @@
+import { BRUSH_HEIGHT, LEGEND_HEIGHT } from '../constants';
 import { calculateXAxisLabelPositioning } from './calculateXAxisLabelPositioning';
 import { FORMATTERS, formatLabel } from './formatters';
 import { getTextWidth } from './getTextWidth';
@@ -64,6 +65,7 @@ function getMergedChartSettings({ chartType, settings, xAxisHeight, yAxisWidth, 
       stroke: '#666',
       yAxisId: 'left',
       padding: { top: 18 },
+      // dataKey: 'y'// <--- do NOT put dataKey on y axis of BarChart or LineChart! We are going to use the `name` of each Bars set.
     },
     grid: {
       show: settings?.grid?.show,
@@ -80,6 +82,8 @@ function getMergedChartSettings({ chartType, settings, xAxisHeight, yAxisWidth, 
       align: 'left', // <--- defaults to 'center'. Horizontal alignment.
       iconSize: 14, // <--- defaults to 14
       formatter: settings?.legend?.nameFormatter ?? ((value) => formatLabel(value, 14)),
+      height: LEGEND_HEIGHT,
+      // iconType: 'circle' // <--- defaults to 'line'
     },
     tooltip: {
       yTickSuffix: settings?.yAxis?.tickSuffix ?? '', // <--- Notice that I copy whatever the yAxis has.
@@ -89,6 +93,9 @@ function getMergedChartSettings({ chartType, settings, xAxisHeight, yAxisWidth, 
       show: settings?.zoomSlider?.show,
       showPreviewInSlider: settings?.zoomSlider?.showPreviewInSlider,
       stroke: '#4b5af1',
+      height: BRUSH_HEIGHT,
+      // gap: 1 // <--- Default to 1. `gap` is the refresh rate. 1 is smoothest.
+      // travellerWidth: 6
     },
     lines: {
       isAnimationActive: settings?.general?.isAnimationActive, // <--- rechart says it defaults to true in CSR and to false in SSR
@@ -99,6 +106,9 @@ function getMergedChartSettings({ chartType, settings, xAxisHeight, yAxisWidth, 
     bars: {
       xAxisId: 'bottom',
       yAxisId: 'left',
+      // minPointSize: 5, // <--- give a min height to the lowest value, so that it would still be visible.
+      // barSize: 40, // <--- it is best to leave this as automatically calculated
+      // background: { fill: barBackgroundOverlayColor } // <--- DO NOT put a background! This is what interrupted my onClick event from getting the right BarChart name!
     },
     referenceLines: {
       xAxisId: 'bottom',

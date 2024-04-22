@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import {
   Bar,
   BarChart as BarChartBase,
@@ -13,22 +13,20 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { getNiceTickValues } from 'recharts-scale';
-import { BRUSH_HEIGHT, BRUSH_ITEMS_PER_PAGE, LEGEND_HEIGHT } from '../constants';
+import { BRUSH_ITEMS_PER_PAGE } from '../constants';
 import { CustomizedAxisTick } from '../CustomAxisTick';
 import CustomizedLabel from '../CustomizedLabel';
 import CustomTooltip from '../CustomTooltip';
 import {
-  calculateLongestNiceTickWidth,
-  calculateXAxisLabelPositioning,
-  getDefaultSettings,
+  FORMATTERS,
+  calculateYAxisWidth,
   getHeight,
   getLengthOfLongestData,
+  getMergedChartSettings,
   getNamesObject,
   getTextWidth,
   getWidthOfLongestXLabel,
-  validateAxisValuesAreSameType,
-  validateUniqueNamesOnDataSets,
+  runValidationsOnAllSeries,
 } from '../helpers';
 import '../recharts.css';
 
@@ -47,28 +45,16 @@ const ACTIVE_BAR_COLOR = 'black'; // #82ca9d
 export default function BarChart(props) {
   const {
     type: xAxisType = 'category',
+    settings: settingsToMerge,
     bars,
-    showGrid,
-    showLegend,
-    showZoomSlider,
-    showPreviewInSlider,
-    showValues: showValuesGlobal,
-    gridColor = '#ddd',
-    xLabel,
-    xTickRotateAngle = 0,
-    xTickColor = '#666',
-    xHide,
-    yLabel,
-    yTickColor = '#666',
-    yTickSuffix = '',
-    yHide,
     referenceLines,
-    isAnimationActive,
     className,
     style,
     onClickBar,
     activeBarId,
   } = props;
+
+  useMemo(() => runValidationsOnAllSeries(bars), [bars]);
 
   const lengthOfLongestData = useMemo(() => getLengthOfLongestData(bars), [bars]);
 
@@ -77,7 +63,7 @@ export default function BarChart(props) {
   const [isLegendHovered, setIsLegendHovered] = useState(false);
   const [isBarTypeHovered, setIsBarTypeHovered] = useState(() => getNamesObject(bars));
 
-  const positiveXTickRotateAngle = Math.abs(xTickRotateAngle);
+  const positiveXTickRotateAngle = Math.abs(settingsToMerge?.xAxis?.tickAngle ?? 0);
 
   /** @type {Array<{x: number | string}>} */
   const transformedDataForRecharts = useMemo(() => {
@@ -93,14 +79,6 @@ export default function BarChart(props) {
     return Object.values(transformedDataByKey);
   }, [bars]);
 
-  useLayoutEffect(() => {
-    validateAxisValuesAreSameType(transformedDataForRecharts);
-  }, [transformedDataForRecharts]);
-
-  useLayoutEffect(() => {
-    validateUniqueNamesOnDataSets(bars);
-  }, [bars]);
-
   const maxYValue = useMemo(() => {
     let maxYValue = Number.NEGATIVE_INFINITY;
     bars.forEach((currentBarType) => {
@@ -112,38 +90,51 @@ export default function BarChart(props) {
     return maxYValue;
   }, [bars]);
 
-  const widthOfLongestYTickLabel = useMemo(() => {
-    const yTickCount = 5;
-    const domain = [0, maxYValue];
-    const allowDecimals = true;
-    const niceYTicks = getNiceTickValues(domain, yTickCount, allowDecimals);
-
-    const longestYTickWidth = calculateLongestNiceTickWidth(niceYTicks, yTickSuffix);
-
-    return longestYTickWidth;
-  }, [maxYValue, yTickSuffix]);
-
   const widthOfLongestXTickLabel = useMemo(
-    () => getWidthOfLongestXLabel({ transformedDataForRecharts, xAxisType }),
-    [transformedDataForRecharts, xAxisType],
+    () =>
+      getWidthOfLongestXLabel({
+        transformedDataForRecharts,
+        xTickFormatter: settingsToMerge?.xAxis?.tickFormatter ?? FORMATTERS[xAxisType],
+      }),
+    [transformedDataForRecharts, xAxisType, settingsToMerge?.xAxis?.tickFormatter],
   );
 
   const xAxisHeight = useMemo(
     () => getHeight({ angle: -positiveXTickRotateAngle, maxWidth: widthOfLongestXTickLabel }) ?? 40,
     [positiveXTickRotateAngle, widthOfLongestXTickLabel],
   );
-  const yAxisWidth = yLabel ? widthOfLongestYTickLabel + 18 : widthOfLongestYTickLabel + 8;
 
-  const yLabelFixPosition = useMemo(() => {
-    if (!yLabel) return undefined;
-    const width = getTextWidth({ text: yLabel });
+  const yAxisWidth = useMemo(() => {
+    const yAxisWidth = calculateYAxisWidth({
+      maxYValue,
+      yLabel: settingsToMerge?.yAxis?.label,
+      yTickSuffix: settingsToMerge?.yAxis?.tickSuffix,
+    });
 
-    return { value: yLabel, angle: -90, position: 'left', dy: -width / 2 };
-  }, [yLabel]);
+    let widthOfLongestFirstXTickLabel = 0;
+    bars.forEach((currentLine) => {
+      if (!currentLine.data.length) return;
+
+      const firstDataPointsXLength = getTextWidth({ text: currentLine.data[0].x.toString() });
+      if (widthOfLongestFirstXTickLabel < firstDataPointsXLength) {
+        widthOfLongestFirstXTickLabel = firstDataPointsXLength;
+      }
+    });
+
+    return yAxisWidth;
+
+    // const maxFirstHorizontalWidth = getWidth({
+    //   angle: -positiveXTickRotateAngle,
+    //   maxWidth: widthOfLongestFirstXTickLabel,
+    // });
+
+    // return Math.max(yAxisWidth, maxFirstHorizontalWidth);
+  }, [bars, maxYValue, settingsToMerge?.yAxis?.label, settingsToMerge?.yAxis?.tickSuffix]);
 
   const chartSettings = useMemo(
-    () => getDefaultSettings({ xLabel, yLabel, showGrid, gridColor }),
-    [xLabel, yLabel, showGrid, gridColor],
+    () =>
+      getMergedChartSettings({ settings: settingsToMerge, chartType: 'LineChart', xAxisType, xAxisHeight, yAxisWidth }),
+    [settingsToMerge, xAxisType, xAxisHeight, yAxisWidth],
   );
 
   return (
@@ -151,37 +142,22 @@ export default function BarChart(props) {
       {/* @ts-ignore */}
       <BarChartBase
         data={transformedDataForRecharts}
-        {...chartSettings.barChartBase}
         className={className}
         style={style}
+        {...chartSettings.barChartBase}
         // layout='horizontal' // <--- default is 'horizontal'
         // reverseStackOrder // <--- default is false. When true, stacked items will be rendered right to left. By default, stacked items are rendered left to right. Render direction affects SVG layering, not x position.
         // barCategoryGap='10%' // <--- gap between bars. Hard to make this generic. The default seems to do a pretty good job.
       >
         {/* MUST come before XAxis & YAxis */}
-        {showGrid && <CartesianGrid {...chartSettings.grid} />}
+        {chartSettings.grid.show && <CartesianGrid {...chartSettings.grid} />}
 
         <XAxis
           {...chartSettings.xAxis}
+          padding='gap' // <--- 'gap' is unique to BarChart. 'gap' gives the first and the last bar gap from the walls. 'no-gap' has both the first & last bars touch the walls.
           type={xAxisType === 'category' ? 'category' : 'number'} // <--- 'category' v.s. 'number'. What is the difference? Isn't it the same eventually? Well no, because consider a case where gaps exist. For instance, 0 1 2 4 5. A 'category' would place an even distance between 2 & 4, when in fact it's a double gap!
           scale={xAxisType === 'category' ? 'auto' : 'time'}
-          padding='gap' // <--- 'gap' gives the first and the last bar gap from the walls. 'no-gap' has both the first & last bars touch the walls.
-          tick={(tickProps) => <CustomizedAxisTick {...tickProps} axisType={xAxisType} />} // <--- passes everything as an argument! x, y, width, height, everything! You'll even need to handle the tick's positioning, and format the entire tick.
-          height={xAxisHeight}
-          angle={-positiveXTickRotateAngle}
-          hide={xHide}
-          color={xTickColor} // <--- this is the color of the tick's value!
-          label={{
-            value: xLabel,
-            angle: 0,
-            position: 'bottom',
-            dy: calculateXAxisLabelPositioning({
-              showLegend,
-              showZoomSlider,
-              chartType: 'BarChart',
-            }),
-            dx: -yAxisWidth / 2,
-          }}
+          tick={(tickProps) => <CustomizedAxisTick {...tickProps} xTickFormatter={chartSettings.xAxis.tickFormatter} />} // <--- passes everything as an argument! x, y, width, height, everything! You'll even need to handle the tick's positioning, and format the entire tick.
           // interval={10} // <--- defaults to preserveEnd.If set 0, all the ticks will be shown. If set preserveStart", "preserveEnd" or "preserveStartEnd", the ticks which is to be shown or hidden will be calculated automatically.
           // includeHidden // <--- defaults to false. Ensures that all data points within a chart contribute to its domain calculation, even when they are hidden.
           // unit=' cm' // <--- You CANNOT use this when using `tick`, which you are. A. because it doesn't render it, and B. because some ticks will not be displayed. You can use only when using the default tick renderer, and this will automatically add a unit suffix to your xAxis ticks.
@@ -194,28 +170,23 @@ export default function BarChart(props) {
         />
 
         {/* @ts-ignore */}
-        <YAxis
-          {...chartSettings.yAxis}
-          hide={yHide}
-          label={yLabelFixPosition}
-          color={yTickColor}
-          unit={yTickSuffix} // <--- you can add a unit suffix to your yAxis ticks!
-          width={yAxisWidth}
-          // dataKey='y'// <--- do NOT put dataKey on y axis of BarChart! We are going to use the `name` of each Bars set.
-        />
+        <YAxis {...chartSettings.yAxis} />
 
         <Tooltip
           content={(tooltipProps) => (
             // @ts-ignore
-            <CustomTooltip {...tooltipProps} xAxisType={xAxisType} yTickSuffix={yTickSuffix} />
+            <CustomTooltip
+              {...tooltipProps}
+              xValueFormatter={chartSettings.tooltip.xValueFormatter}
+              ySuffix={chartSettings.tooltip.yTickSuffix}
+            />
           )}
         />
 
-        {showLegend && (
+        {chartSettings.legend.show && (
           // @ts-ignore
           <Legend
             {...chartSettings.legend}
-            height={LEGEND_HEIGHT}
             onMouseEnter={(payload) => {
               setIsLegendHovered(true);
               setIsBarTypeHovered((prevState) => {
@@ -234,24 +205,20 @@ export default function BarChart(props) {
                 return newIsBarTypeHovered;
               });
             }}
-            // iconType='circle' // <--- defaults to 'line'
           />
         )}
 
-        {showZoomSlider && (
+        {chartSettings.zoomSlider.show && (
           <Brush
             {...chartSettings.zoomSlider}
-            height={BRUSH_HEIGHT}
             startIndex={startIndex.current} // <--- The default start index of brush. If the option is not set, the start index will be 0.
             endIndex={endIndex.current} // <---The default end index of brush. If the option is not set, the end index will be calculated by the length of data.
             onChange={(brushProps) => {
               startIndex.current = brushProps.startIndex;
               endIndex.current = brushProps.endIndex;
             }}
-            // gap={1} // <--- Default to 1. `gap` is the refresh rate. 1 is smoothest.
-            // travellerWidth={6}
           >
-            {showPreviewInSlider ? (
+            {chartSettings.zoomSlider.showPreviewInSlider ? (
               <BarChartBase data={transformedDataForRecharts}>
                 {bars.map(({ name }) => (
                   <Bar key={name} dataKey={name} isAnimationActive={false} fill='#999' />
@@ -296,17 +263,13 @@ export default function BarChart(props) {
           return (
             <Bar
               key={name}
-              {...chartSettings.bar}
+              {...chartSettings.bars}
               {...barProps}
               onClick={(props, index) => onClickBar({ ...props, barTypeIndex: index, name })}
-              isAnimationActive={isAnimationActive} // <--- rechart says it defaults to true in CSR and to false in SSR
               // onAnimationEnd={() => console.log('animation end!')}
-              // minPointSize={5} // <--- give a min height to the lowest value, so that it would still be visible.
-              // barSize={40} // <--- it is best to leave this as automatically calculated
               // label={{ position: 'top' }} // <--- Don't need! I'm using a custom label renderer instead (CustomizedLabel).
-              // background={{ fill: barBackgroundOverlayColor }} // <--- DO NOT put a background! This is what interrupted my onClick event from getting the right BarChart name!
             >
-              {showValuesGlobal && (
+              {chartSettings.general.showValues && (
                 <LabelList
                   dataKey={name}
                   fontSize={11}
