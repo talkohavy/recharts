@@ -98,7 +98,7 @@ function getMergedChartSettings({ chartType, settings, xAxisHeight, yAxisWidth, 
     },
     tooltip: {
       yTickSuffix: settings?.yAxis?.tickSuffix ?? '', // <--- Notice that I copy whatever the yAxis has.
-      xValueFormatter: settings?.xAxis?.tickFormatter ?? settings?.tooltip.xValueFormatter ?? FORMATTERS[xAxisType],
+      xValueFormatter: settings?.xAxis?.tickFormatter ?? settings?.tooltip?.xValueFormatter ?? FORMATTERS[xAxisType],
     },
     zoomSlider: {
       show: settings?.zoomSlider?.show,
