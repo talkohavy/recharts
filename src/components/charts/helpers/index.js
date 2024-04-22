@@ -8,5 +8,4 @@ export { getMergedChartSettings } from './getMergedChartSettings';
 export { getNamesObject } from './getNamesObject';
 export { getTextWidth } from './getTextWidth';
 export { getWidthOfLongestXLabel } from './getWidthOfLongestXLabel';
-export { validateAxisValuesAreSameType } from './validateAxisValuesAreSameType';
-export { validateUniqueNamesOnDataSets } from './validateUniqueNamesOnDataSets';
+export { runValidationsOnAllSeries } from './runValidationsOnAllSeries';

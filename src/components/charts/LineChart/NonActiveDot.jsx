@@ -9,13 +9,14 @@ export default function NonActiveDot(props) {
   const { showValue: showDotValue, dot } =
     data.find((dotData) => dotData.x === payload.x && dotData.y === payload[dataKey]) ?? {};
 
-  const dotProps = { r: dot?.r ?? r, fill: dot?.fill ?? stroke, opacity };
+  const dotProps = { r: dot?.r ?? r, fill: dot?.fill ?? stroke, stroke: dot?.stroke, opacity };
   const isValueVisible = showDotValue ?? showLineValues ?? showChartValues;
+  const dyTextAboveDot = -5 - dotProps.r;
 
   return (
     <svg>
       <circle cx={cx} cy={cy} {...dotProps} />
-      <text x={cx} y={cy} dy={-5 - dotProps.r} textAnchor='middle' fontSize={9}>
+      <text x={cx} y={cy} dy={dyTextAboveDot} textAnchor='middle' fontSize={9}>
         {isValueVisible && formatLabel(payload[dataKey])}
       </text>
     </svg>

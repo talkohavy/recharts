@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import {
   Brush,
   CartesianGrid,
@@ -23,8 +23,7 @@ import {
   getNamesObject,
   getTextWidth,
   getWidthOfLongestXLabel,
-  validateAxisValuesAreSameType,
-  validateUniqueNamesOnDataSets,
+  runValidationsOnAllSeries,
 } from '../helpers';
 import ActiveDot from './ActiveDot';
 import NonActiveDot from './NonActiveDot';
@@ -39,6 +38,8 @@ import '../recharts.css';
  */
 export default function LineChart(props) {
   const { type: xAxisType = 'category', settings: settingsToMerge, lines, referenceLines, className, style } = props;
+
+  useMemo(() => runValidationsOnAllSeries(lines), [lines]);
 
   const lengthOfLongestData = useMemo(() => getLengthOfLongestData(lines), [lines]);
 
@@ -61,14 +62,6 @@ export default function LineChart(props) {
     });
 
     return Object.values(transformedDataByKey);
-  }, [lines]);
-
-  useLayoutEffect(() => {
-    validateAxisValuesAreSameType(transformedDataForRecharts);
-  }, [transformedDataForRecharts]);
-
-  useLayoutEffect(() => {
-    validateUniqueNamesOnDataSets(lines);
   }, [lines]);
 
   const maxYValue = useMemo(() => {
@@ -105,6 +98,8 @@ export default function LineChart(props) {
 
     let widthOfLongestFirstXTickLabel = 0;
     lines.forEach((currentLine) => {
+      if (!currentLine.data.length) return;
+
       const firstDataPointsXLength = getTextWidth({ text: currentLine.data[0].x.toString() });
       if (widthOfLongestFirstXTickLabel < firstDataPointsXLength) {
         widthOfLongestFirstXTickLabel = firstDataPointsXLength;

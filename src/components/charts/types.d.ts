@@ -205,14 +205,16 @@ export type LineSeries = {
   color?: string;
   lineWidth?: number;
   curveType?: CurveType;
-  /**
-   * A suffix that will be added to the tooltip. If both `unit` & `yTickSuffix` are defined, `unit` is taken.
-   */
-  unit?: string;
   data: LineSeriesData;
   isDashed?: boolean;
   showValues?: boolean;
-  dots?: { r: number };
+  dots?: {
+    /**
+     * A dot's radius.
+     * @default 3
+     */
+    r: number;
+  };
   hide?: boolean;
 };
 
