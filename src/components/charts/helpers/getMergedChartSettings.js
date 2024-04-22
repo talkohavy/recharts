@@ -18,6 +18,8 @@ import { getTextWidth } from './getTextWidth';
  * }} props
  */
 function getMergedChartSettings({ chartType, settings, xAxisHeight, yAxisWidth, xAxisType }) {
+  const showGrid = settings?.grid?.show ?? true;
+
   return {
     general: {
       showValues: settings?.general?.showValues,
@@ -77,10 +79,10 @@ function getMergedChartSettings({ chartType, settings, xAxisHeight, yAxisWidth, 
       // dataKey: 'y'// <--- do NOT put dataKey on y axis of BarChart or LineChart! We are going to use the `name` of each Bars set.
     },
     grid: {
-      show: settings?.grid?.show,
+      show: showGrid,
       stroke: settings?.grid?.color ?? '#ddd',
-      horizontal: !!(settings?.grid?.show === true || settings?.grid?.showHorizontalLines),
-      vertical: !!(settings?.grid?.show === true || settings?.grid?.showVerticalLines),
+      horizontal: !!(showGrid === true || settings?.grid?.showHorizontalLines),
+      vertical: !!(showGrid === true || settings?.grid?.showVerticalLines),
       strokeDasharray: settings?.grid?.strokeDasharray ?? '5 5',
       syncWithTicks: true,
     },

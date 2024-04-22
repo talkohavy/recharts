@@ -131,7 +131,7 @@ export type ChartSettings = {
   };
   grid?: {
     /**
-     * @default false
+     * @default true
      */
     show?: boolean;
     /**

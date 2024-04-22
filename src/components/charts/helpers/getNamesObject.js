@@ -5,11 +5,12 @@
 
 /**
  * @param {Array<BarSeries> | Array<LineSeries>} data
+ * @param {any} defaultValue
  */
-function getNamesObject(data) {
+function getNamesObject(data, defaultValue = null) {
   const obj = {};
 
-  data.forEach(({ name }) => (obj[name] = null));
+  data.forEach(({ name }) => (obj[name] = defaultValue));
 
   return obj;
 }

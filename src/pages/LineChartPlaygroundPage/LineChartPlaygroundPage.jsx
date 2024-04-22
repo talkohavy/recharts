@@ -50,7 +50,7 @@ export default function LineChartPlaygroundPage() {
   const [showZoomSlider, setShowZoomSlider] = useState(false);
   const [showPreviewInSlider, setShowPreviewInSlider] = useState(false);
   const [showLegend, setShowLegend] = useState(false);
-  const [showGrid, setShowGrid] = useState(false);
+  const [showGrid, setShowGrid] = useState(true);
 
   return (
     <div className='flex size-full flex-col items-center justify-start gap-10 overflow-auto border border-black p-6'>
@@ -87,9 +87,9 @@ export default function LineChartPlaygroundPage() {
                   show: showGrid,
                   color: 'red',
                   // @ts-ignore
-                  showHorizontalLines: showGrid.showHorizontalLines,
+                  showHorizontalLines: showGrid?.showHorizontalLines,
                   // @ts-ignore
-                  showVerticalLines: showGrid.showVerticalLines,
+                  showVerticalLines: showGrid?.showVerticalLines,
                 },
                 legend: {
                   show: showLegend,

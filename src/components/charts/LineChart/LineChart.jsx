@@ -11,7 +11,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { BRUSH_ITEMS_PER_PAGE } from '../constants';
+import { BRUSH_ITEMS_PER_PAGE, DASHED_LINE } from '../constants';
 import { CustomizedAxisTick } from '../CustomAxisTick';
 import CustomTooltip from '../CustomTooltip';
 import {
@@ -47,6 +47,7 @@ export default function LineChart(props) {
   const endIndex = useRef(Math.min(BRUSH_ITEMS_PER_PAGE, lengthOfLongestData - 1));
   const [isLegendHovered, setIsLegendHovered] = useState(false);
   const [isLineHovered, setIsLineHovered] = useState(() => getNamesObject(lines));
+  const [visibleLines, setVisibleLines] = useState(() => getNamesObject(lines, true));
 
   const positiveXTickRotateAngle = Math.abs(settingsToMerge?.xAxis?.tickAngle ?? 0);
 
@@ -159,22 +160,31 @@ export default function LineChart(props) {
           <Legend
             {...chartSettings.legend}
             onMouseEnter={(payload) => {
+              const lineName = payload.dataKey;
+
+              if (!visibleLines[lineName]) return;
+
               setIsLegendHovered(true);
-              setIsLineHovered((prevState) => {
-                const newIsLineHovered = { ...prevState };
-                // @ts-ignore
-                newIsLineHovered[payload.dataKey] = true;
-                return newIsLineHovered;
-              });
+              // @ts-ignore
+              setIsLineHovered((prevState) => ({ ...prevState, [lineName]: true }));
             }}
             onMouseLeave={(payload) => {
+              const lineName = payload.dataKey;
+
+              if (!visibleLines[lineName]) return;
+
               setIsLegendHovered(false);
-              setIsLineHovered((prevState) => {
-                const newIsLineHovered = { ...prevState };
-                // @ts-ignore
-                newIsLineHovered[payload.dataKey] = false;
-                return newIsLineHovered;
-              });
+
+              // @ts-ignore
+              setIsLineHovered((prevState) => ({ ...prevState, [lineName]: false }));
+            }}
+            onClick={(payload) => {
+              const lineName = payload.dataKey;
+
+              if (visibleLines[lineName]) setIsLegendHovered(false);
+
+              // @ts-ignore
+              setVisibleLines((prevState) => ({ ...prevState, [lineName]: !prevState[lineName] }));
             }}
           />
         )}
@@ -191,13 +201,14 @@ export default function LineChart(props) {
           >
             {chartSettings.zoomSlider.showPreviewInSlider ? (
               <LineChartBase data={transformedDataForRecharts}>
-                {lines.map(({ name, curveType }) => (
+                {lines.map(({ name, curveType, isDashed }) => (
                   <Line
                     key={name}
                     dataKey={name}
                     type={curveType}
                     isAnimationActive={false}
                     dot={false}
+                    strokeDasharray={isDashed ? DASHED_LINE : undefined}
                     stroke='#999'
                   />
                 ))}
@@ -241,13 +252,14 @@ export default function LineChart(props) {
             // data, <--- don't put data here because if you do the line would not appear!
           };
 
-          if (isDashed) lineProps.strokeDasharray = '20 20'; // or '5 5'
+          if (isDashed) lineProps.strokeDasharray = DASHED_LINE;
 
           return (
             <Line
               key={name}
               {...chartSettings.lines}
               {...lineProps}
+              hide={!visibleLines[name]}
               dot={(dotProps) => (
                 <NonActiveDot
                   {...dotProps}
