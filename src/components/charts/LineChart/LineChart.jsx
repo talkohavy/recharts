@@ -21,6 +21,7 @@ import {
   getLengthOfLongestData,
   getMergedChartSettings,
   getNamesObject,
+  getTextWidth,
   getWidthOfLongestXLabel,
   validateAxisValuesAreSameType,
   validateUniqueNamesOnDataSets,
@@ -95,15 +96,30 @@ export default function LineChart(props) {
     [positiveXTickRotateAngle, widthOfLongestXTickLabel],
   );
 
-  const yAxisWidth = useMemo(
-    () =>
-      calculateYAxisWidth({
-        maxYValue,
-        yLabel: settingsToMerge?.yAxis?.label,
-        yTickSuffix: settingsToMerge?.yAxis?.tickSuffix,
-      }),
-    [maxYValue, settingsToMerge?.yAxis?.label, settingsToMerge?.yAxis?.tickSuffix],
-  );
+  const yAxisWidth = useMemo(() => {
+    const yAxisWidth = calculateYAxisWidth({
+      maxYValue,
+      yLabel: settingsToMerge?.yAxis?.label,
+      yTickSuffix: settingsToMerge?.yAxis?.tickSuffix,
+    });
+
+    let widthOfLongestFirstXTickLabel = 0;
+    lines.forEach((currentLine) => {
+      const firstDataPointsXLength = getTextWidth({ text: currentLine.data[0].x.toString() });
+      if (widthOfLongestFirstXTickLabel < firstDataPointsXLength) {
+        widthOfLongestFirstXTickLabel = firstDataPointsXLength;
+      }
+    });
+
+    return yAxisWidth;
+
+    // const maxFirstHorizontalWidth = getWidth({
+    //   angle: -positiveXTickRotateAngle,
+    //   maxWidth: widthOfLongestFirstXTickLabel,
+    // });
+
+    // return Math.max(yAxisWidth, maxFirstHorizontalWidth);
+  }, [lines, maxYValue, settingsToMerge?.yAxis?.label, settingsToMerge?.yAxis?.tickSuffix]);
 
   const chartSettings = useMemo(
     () =>
