@@ -1,5 +1,3 @@
-import { COLORS } from '../../../components/charts/constants';
-
 /**
  * @typedef {import('../../../components/charts/types').CurveType} CurveType
  * @typedef {import('../../../components/charts/types').LineSeries} LineSeries
@@ -11,16 +9,15 @@ import { COLORS } from '../../../components/charts/constants';
 const example3 = [
   {
     name: 'line1',
-    color: COLORS[4],
     curveType: 'monotone',
     isDashed: true,
     data: [
-      { x: 'Page A', y: 100 },
-      { x: 'Page B', y: 300 },
-      { x: 'Page C', y: 151, showValue: true, dot: { r: 12, fill: 'red', stroke: 'black' } },
-      { x: 'Page D', y: 200 },
-      { x: 'Page E', y: 80 },
-      { x: 'Page F', y: 180 },
+      { x: 100000, y: 100 },
+      { x: 200000, y: 300 },
+      { x: 300000, y: 151, showValue: true, dot: { r: 12, fill: 'red', stroke: 'black' } },
+      { x: 400000, y: 200 },
+      { x: 500000, y: 80 },
+      { x: 800000, y: 180, showValue: true, dot: { r: 12, fill: 'red', stroke: 'black' } },
     ],
   },
 ];
