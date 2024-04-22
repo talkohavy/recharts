@@ -63,7 +63,8 @@ export default function LineChart(props) {
     });
 
     return Object.values(transformedDataByKey);
-  }, [lines]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lines, settingsToMerge?.zoomSlider?.show]);
 
   const maxYValue = useMemo(() => {
     let maxYValue = Number.NEGATIVE_INFINITY;
