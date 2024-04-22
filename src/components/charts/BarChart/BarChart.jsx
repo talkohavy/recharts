@@ -62,6 +62,7 @@ export default function BarChart(props) {
   const endIndex = useRef(Math.min(BRUSH_ITEMS_PER_PAGE, lengthOfLongestData - 1));
   const [isLegendHovered, setIsLegendHovered] = useState(false);
   const [isBarTypeHovered, setIsBarTypeHovered] = useState(() => getNamesObject(bars));
+  const [visibleBars, setVisibleBars] = useState(() => getNamesObject(bars, true));
 
   const positiveXTickRotateAngle = Math.abs(settingsToMerge?.xAxis?.tickAngle ?? 0);
 
@@ -179,22 +180,31 @@ export default function BarChart(props) {
           <Legend
             {...chartSettings.legend}
             onMouseEnter={(payload) => {
+              const barName = payload.dataKey;
+
+              if (!visibleBars[barName]) return;
+
               setIsLegendHovered(true);
-              setIsBarTypeHovered((prevState) => {
-                const newIsBarTypeHovered = { ...prevState };
-                // @ts-ignore
-                newIsBarTypeHovered[payload.dataKey] = true;
-                return newIsBarTypeHovered;
-              });
+              // @ts-ignore
+              setIsBarTypeHovered((prevState) => ({ ...prevState, [barName]: true }));
             }}
             onMouseLeave={(payload) => {
+              const barName = payload.dataKey;
+
+              if (!visibleBars[barName]) return;
+
               setIsLegendHovered(false);
-              setIsBarTypeHovered((prevState) => {
-                const newIsBarTypeHovered = { ...prevState };
-                // @ts-ignore
-                newIsBarTypeHovered[payload.dataKey] = false;
-                return newIsBarTypeHovered;
-              });
+
+              // @ts-ignore
+              setIsBarTypeHovered((prevState) => ({ ...prevState, [barName]: false }));
+            }}
+            onClick={(payload) => {
+              const barName = payload.dataKey;
+
+              if (visibleBars[barName]) setIsLegendHovered(false);
+
+              // @ts-ignore
+              setVisibleBars((prevState) => ({ ...prevState, [barName]: !prevState[barName] }));
             }}
           />
         )}
@@ -256,6 +266,7 @@ export default function BarChart(props) {
               key={name}
               {...chartSettings.bars}
               {...barProps}
+              hide={!visibleBars[name]}
               onClick={(props, index) => onClickBar({ ...props, barTypeIndex: index, name })}
               // onAnimationEnd={() => console.log('animation end!')}
               // label={{ position: 'top' }} // <--- Don't need! I'm using a custom label renderer instead (CustomizedLabel).
