@@ -49,7 +49,7 @@ export default function SideBarLinkList() {
   );
 
   return (
-    <div className='flex flex-col items-start justify-start text-sm font-thin'>
+    <div className='flex animate-appear flex-col items-start justify-start text-sm font-thin'>
       {routes.map(({ to, text, isActive }) => (
         <SideBarLinkItem key={text} to={to} text={text} isActive={isActive} />
       ))}
