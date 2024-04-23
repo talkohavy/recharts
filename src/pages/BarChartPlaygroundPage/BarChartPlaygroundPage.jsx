@@ -110,7 +110,7 @@ export default function BarChartPlaygroundPage() {
   };
 
   return (
-    <div className='flex size-full flex-col items-center justify-start gap-10 overflow-auto border border-black p-6'>
+    <div className='flex size-full flex-col items-center justify-start gap-10 overflow-auto p-6'>
       <h1 className='self-center text-3xl font-bold'>BarChart Playground</h1>
 
       <div className='flex w-full flex-grow items-start justify-start gap-4 overflow-auto'>

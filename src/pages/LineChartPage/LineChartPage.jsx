@@ -13,7 +13,7 @@ import LineChartExample9 from './Examples/LineChartExample9';
 
 export default function HomePage() {
   return (
-    <div className='flex size-full flex-col items-start justify-start gap-10 overflow-auto border border-black p-6'>
+    <div className='flex size-full flex-col items-start justify-start gap-10 overflow-auto p-6'>
       <h1 className='self-center text-3xl font-bold'>LineChart Examples</h1>
 
       <div className='size-full space-y-10'>
