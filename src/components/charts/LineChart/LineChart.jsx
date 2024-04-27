@@ -125,6 +125,7 @@ export default function LineChart(props) {
   );
 
   return (
+    // minHeight={300}
     <ResponsiveContainer width='100%' height='100%'>
       <LineChartBase
         data={transformedDataForRecharts}
