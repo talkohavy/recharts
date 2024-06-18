@@ -151,18 +151,21 @@ export default function BarChart(props) {
         // barCategoryGap='10%' // <--- gap between bars. Hard to make this generic. The default seems to do a pretty good job.
       >
         {/* MUST come before XAxis & YAxis */}
-        {chartSettings.grid.show && <CartesianGrid {...chartSettings.grid} />}
+        {chartSettings.grid.show && <CartesianGrid {...chartSettings.grid.props} />}
 
         <XAxis
-          {...chartSettings.xAxis}
+          {...chartSettings.xAxis.props}
           padding='gap' // <--- 'gap' is unique to BarChart. 'gap' gives the first and the last bar gap from the walls. 'no-gap' has both the first & last bars touch the walls.
           type={xAxisType === 'category' ? 'category' : 'number'} // <--- 'category' v.s. 'number'. What is the difference? Isn't it the same eventually? Well no, because consider a case where gaps exist. For instance, 0 1 2 4 5. A 'category' would place an even distance between 2 & 4, when in fact it's a double gap!
           scale={xAxisType === 'category' ? 'auto' : 'time'}
-          tick={(tickProps) => <CustomizedAxisTick {...tickProps} xTickFormatter={chartSettings.xAxis.tickFormatter} />} // <--- passes everything as an argument! x, y, width, height, everything! You'll even need to handle the tick's positioning, and format the entire tick.
+          tick={(tickProps) => (
+            // passes everything as an argument! x, y, width, height, everything! You'll even need to handle the tick's positioning, and format the entire tick.
+            <CustomizedAxisTick {...tickProps} xTickFormatter={chartSettings.xAxis.props.tickFormatter} />
+          )}
         />
 
         {/* @ts-ignore */}
-        <YAxis {...chartSettings.yAxis} />
+        <YAxis {...chartSettings.yAxis.props} />
 
         <Tooltip
           content={(tooltipProps) => (
@@ -178,7 +181,7 @@ export default function BarChart(props) {
         {chartSettings.legend.show && (
           // @ts-ignore
           <Legend
-            {...chartSettings.legend}
+            {...chartSettings.legend.props}
             onMouseEnter={(payload) => {
               const barName = payload.dataKey;
 
@@ -211,7 +214,7 @@ export default function BarChart(props) {
 
         {chartSettings.zoomSlider.show && (
           <Brush
-            {...chartSettings.zoomSlider}
+            {...chartSettings.zoomSlider.props}
             startIndex={startIndex.current} // <--- The default start index of brush. If the option is not set, the start index will be 0.
             endIndex={endIndex.current} // <---The default end index of brush. If the option is not set, the end index will be calculated by the length of data.
             onChange={(brushProps) => {
@@ -243,7 +246,7 @@ export default function BarChart(props) {
           return (
             <ReferenceLine
               key={index}
-              {...chartSettings.referenceLines}
+              {...chartSettings.referenceLines.props}
               {...referenceLineProps}
               // isFront // <--- defaults to false. true will display it on top of bars in BarCharts, or lines in LineCharts.
             />
@@ -264,7 +267,7 @@ export default function BarChart(props) {
           return (
             <Bar
               key={name}
-              {...chartSettings.bars}
+              {...chartSettings.bars.props}
               {...barProps}
               hide={!visibleBars[name]}
               onClick={(props, index) => onClickBar({ ...props, barTypeIndex: index, name })}
