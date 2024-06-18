@@ -1,17 +1,19 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useIsCloseToEdges from '../../../hooks/useIsCloseToBottom';
 import PlayIcon from '../../svgs/playIcon';
 import { formatLabel } from '../helpers';
 
 export default function PieChartLegend({ pieChartData, setSlicesOverrides }) {
   const [isCloseToBottom, setIsCloseToBottom] = useState(false);
-  const [isCloseToTop, setIsCloseToTop] = useState(true);
+  const [isCloseToTop, setIsCloseToTop] = useState(false);
   const { handleElementScroll } = useIsCloseToEdges({
     isAlreadyAtBottom: isCloseToBottom,
     isAlreadyAtTop: isCloseToTop,
     setIsCloseToBottom,
     setIsCloseToTop,
   });
+  // @ts-ignore
+  useEffect(handleElementScroll, [handleElementScroll]);
 
   return (
     <div className='mr-5 flex max-h-44 flex-col items-center justify-between gap-1'>

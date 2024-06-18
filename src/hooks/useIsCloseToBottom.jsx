@@ -40,7 +40,7 @@ export default function useIsCloseToEdges(props) {
     setIsCloseToTop,
     bottomThreshold = 25,
     topThreshold = 25,
-    delayMs = 10,
+    delayMs = 0,
   } = props;
 
   // eslint-disable-next-line
@@ -55,17 +55,17 @@ export default function useIsCloseToEdges(props) {
       const distanceFromBottom = heightOfLongFilm - distanceBetweenTwoTopBars - heightOfLens; // <--- draw this on a piece of paper and you will understand!
       const distanceFromTop = distanceBetweenTwoTopBars;
 
-      // Case 1: switch closeToBottom to true, because switched from not being at the bottom to being below the bottom threshold.
+      // Case 1: switch closeToTop to true, because switched from being below the top, to being above the top threshold.
+      if (distanceFromTop <= topThreshold && isAlreadyAtTop === false) return setIsCloseToTop(true);
+
+      // Case 2: switch closeToTop to false, because switched from being at the top, to being below the top threshold.
+      if (distanceFromTop > topThreshold && isAlreadyAtTop === true) return setIsCloseToTop(false);
+
+      // Case 3: switch closeToBottom to true, because switched from not being at the bottom to being below the bottom threshold.
       if (distanceFromBottom <= bottomThreshold && !isAlreadyAtBottom) return setIsCloseToBottom(true);
 
-      // Case 2: switch closeToBottom to false, because switched from being at the bottom to being above the bottom threshold.
+      // Case 4: switch closeToBottom to false, because switched from being at the bottom to being above the bottom threshold.
       if (distanceFromBottom > bottomThreshold && isAlreadyAtBottom) return setIsCloseToBottom(false);
-
-      // Case 3: switch closeToTop to true, because switched from being below the top, to being above the top threshold.
-      if (distanceFromTop <= topThreshold && !isAlreadyAtTop) return setIsCloseToTop(true);
-
-      // Case 4: switch closeToTop to false, because switched from being at the top, to being below the top threshold.
-      if (distanceFromTop > topThreshold && isAlreadyAtTop) return setIsCloseToTop(false);
     }, delayMs),
     [isAlreadyAtBottom, isAlreadyAtTop],
   );

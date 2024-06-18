@@ -13,7 +13,7 @@ const lines = [
     color: 'black',
     curveType: 'monotone',
     data: [
-      { x: 'Page A', y: 100 },
+      { x: 'Page A very long', y: 100 },
       { x: 'Page B', y: 300 },
       { x: 'Page C', y: 150 },
       { x: 'Page D', y: 200 },
@@ -28,7 +28,7 @@ const lines = [
     curveType: 'monotone',
     isDashed: true,
     data: [
-      { x: 'Page A', y: 800 },
+      { x: 'Page A very long', y: 800 },
       { x: 'Page B', y: 100 },
       { x: 'Page C', y: 500, dot: { r: 15 } },
       // { x: 'Page D', y: 200 },
@@ -41,7 +41,7 @@ const lines = [
     color: 'green',
     curveType: 'monotone',
     data: [
-      { x: 'Page A', y: 200 },
+      { x: 'Page A very long', y: 200 },
       { x: 'Page B', y: 500 },
       { x: 'Page C', y: 100 },
       { x: 'Page D', y: 400 },
