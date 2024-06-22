@@ -265,8 +265,10 @@ export default function LineChart(props) {
               {...chartSettings.lines.props}
               {...lineProps}
               hide={!visibleLines[name]}
-              dot={(dotProps) => (
+              // This solves the pesky error of "Warning: A props object containing a "key" prop is being spread into JSX: let props = {key: someKey, r: ..., stroke: ..., strokeWidth: ..., opacity: ..., strokeDasharray: ..., fill: ..., width: ..., height: ..., value: ..., dataKey: ..., cx: ..., cy: ..., index: ..., payload: ..., data: ..., showChartValues: ..., showLineValues: ...};"
+              dot={({ key, ...dotProps }) => (
                 <NonActiveDot
+                  key={key}
                   {...dotProps}
                   data={data}
                   showChartValues={chartSettings.general.showValues}
