@@ -80,7 +80,6 @@ export type BaseChartProps = {
    * @default 'category'
    */
   type?: 'category' | 'number' | 'datetime';
-  yHide?: boolean;
   referenceLines?: Array<ReferenceLine>;
   className?: string;
   style?: any;
