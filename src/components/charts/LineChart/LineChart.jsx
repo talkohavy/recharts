@@ -131,7 +131,7 @@ export default function LineChart(props) {
         data={transformedDataForRecharts}
         className={className}
         style={style}
-        {...chartSettings.lineChartBase}
+        {...chartSettings.lineChartBase.props}
       >
         {/* MUST come before XAxis & YAxis */}
         {chartSettings.grid.show && <CartesianGrid {...chartSettings.grid.props} />}
