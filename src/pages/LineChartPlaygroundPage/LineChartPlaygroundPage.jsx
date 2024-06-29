@@ -58,7 +58,7 @@ export default function LineChartPlaygroundPage() {
 
       <div className='flex w-full flex-grow items-start justify-start gap-4 overflow-auto'>
         <div className='flex h-full w-3/5 grow flex-col items-start justify-start gap-6 overflow-auto rounded-md border p-6'>
-          <div className='h-md max-h-md w-full shrink-0'>
+          <div className='max-h-md min-h-[10px] w-full shrink-0'>
             {/* Write your BarChart Code Below Here */}
             <LineChartWithSpinner
               // @ts-ignore
