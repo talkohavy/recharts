@@ -16,8 +16,7 @@
     // Section 3: Modules
     // ------------------
     "module": "ESNext",
-    "moduleResolution": "Node",
-
+    "moduleResolution": "NodeNext",
     "resolveJsonModule": true,
     "baseUrl": "./",
     "typeRoots": ["node_modules/@types"],
