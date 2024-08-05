@@ -29,20 +29,22 @@ import {
   runValidationsOnAllSeries,
 } from '../helpers';
 import '../recharts.css';
+import { ACTIVE_BAR_COLOR, DEFAULT_BAR_COLOR } from './constants';
+import type { BarClickEventProps, BarSeries, BaseChartProps } from '../types';
 
-const DEFAULT_BAR_COLOR = '#355cff';
-const ACTIVE_BAR_COLOR = 'black'; // #82ca9d
+type BarChartProps = BaseChartProps & {
+  bars: Array<BarSeries>;
+  onClickBar?: (props: BarClickEventProps & { name: string; barTypeIndex: number }) => void;
+  /**
+   * Every Bar within the BarChart has an ID which is a string comprised of '[bar name]-[x value]'.
+   * @example
+   * const bars = [{ name: 'hello', data: [{x: 'Israel', y: 140}, x: 'France', y: 120]}];
+   * // The barIds are: 'hello-Israel' & 'hello-France'
+   */
+  activeBarId?: string;
+};
 
-/**
- * @typedef {import('../types').BarChartProps} BarChartProps
- * @typedef {import('../types').BarSeries} BarSeries
- * @typedef {import('../types').BarClickEventProps} BarClickEventProps
- */
-
-/**
- * @param {BarChartProps} props
- */
-export default function BarChart(props) {
+export default function BarChart(props: BarChartProps) {
   const {
     type: xAxisType = 'category',
     settings: settingsToMerge,
@@ -68,7 +70,7 @@ export default function BarChart(props) {
 
   /** @type {Array<{x: number | string}>} */
   const transformedDataForRecharts = useMemo(() => {
-    const transformedDataByKey = {};
+    const transformedDataByKey: Record<string, any> = {};
 
     bars.forEach((barType) => {
       barType.data.forEach(({ x, y }) => {
@@ -116,7 +118,7 @@ export default function BarChart(props) {
     bars.forEach((currentLine) => {
       if (!currentLine.data.length) return;
 
-      const firstDataPointsXLength = getTextWidth({ text: currentLine.data[0].x.toString() });
+      const firstDataPointsXLength = getTextWidth({ text: currentLine.data[0]!.x.toString() });
       if (widthOfLongestFirstXTickLabel < firstDataPointsXLength) {
         widthOfLongestFirstXTickLabel = firstDataPointsXLength;
       }
@@ -140,7 +142,6 @@ export default function BarChart(props) {
 
   return (
     <ResponsiveContainer width='100%' height='100%'>
-      {/* @ts-ignore */}
       <BarChartBase
         data={transformedDataForRecharts}
         className={className}
@@ -164,12 +165,10 @@ export default function BarChart(props) {
           )}
         />
 
-        {/* @ts-ignore */}
         <YAxis {...chartSettings.yAxis.props} />
 
         <Tooltip
           content={(tooltipProps) => (
-            // @ts-ignore
             <CustomTooltip
               {...tooltipProps}
               xValueFormatter={chartSettings.tooltip.xValueFormatter}
@@ -179,34 +178,30 @@ export default function BarChart(props) {
         />
 
         {chartSettings.legend.show && (
-          // @ts-ignore
           <Legend
             {...chartSettings.legend.props}
             onMouseEnter={(payload) => {
-              const barName = payload.dataKey;
+              const barName = payload.dataKey as string;
 
               if (!visibleBars[barName]) return;
 
               setIsLegendHovered(true);
-              // @ts-ignore
               setIsBarTypeHovered((prevState) => ({ ...prevState, [barName]: true }));
             }}
             onMouseLeave={(payload) => {
-              const barName = payload.dataKey;
+              const barName = payload.dataKey as string;
 
               if (!visibleBars[barName]) return;
 
               setIsLegendHovered(false);
 
-              // @ts-ignore
               setIsBarTypeHovered((prevState) => ({ ...prevState, [barName]: false }));
             }}
             onClick={(payload) => {
-              const barName = payload.dataKey;
+              const barName = payload.dataKey as string;
 
               if (visibleBars[barName]) setIsLegendHovered(false);
 
-              // @ts-ignore
               setVisibleBars((prevState) => ({ ...prevState, [barName]: !prevState[barName] }));
             }}
           />
@@ -218,8 +213,8 @@ export default function BarChart(props) {
             startIndex={startIndex.current} // <--- The default start index of brush. If the option is not set, the start index will be 0.
             endIndex={endIndex.current} // <---The default end index of brush. If the option is not set, the end index will be calculated by the length of data.
             onChange={(brushProps) => {
-              startIndex.current = brushProps.startIndex;
-              endIndex.current = brushProps.endIndex;
+              startIndex.current = brushProps.startIndex as number;
+              endIndex.current = brushProps.endIndex as number;
             }}
           >
             {chartSettings.zoomSlider.showPreviewInSlider ? (
@@ -233,7 +228,7 @@ export default function BarChart(props) {
         )}
 
         {referenceLines?.map(({ x, y, label, lineWidth, lineColor, isDashed }, index) => {
-          const referenceLineProps = {
+          const referenceLineProps: any = {
             x,
             y,
             label,
@@ -270,7 +265,7 @@ export default function BarChart(props) {
               {...chartSettings.bars.props}
               {...barProps}
               hide={!visibleBars[name]}
-              onClick={(props, index) => onClickBar({ ...props, barTypeIndex: index, name })}
+              onClick={(props, index) => onClickBar?.({ ...props, barTypeIndex: index, name })}
               // onAnimationEnd={() => console.log('animation end!')}
               // label={{ position: 'top' }} // <--- Don't need! I'm using a custom label renderer instead (CustomizedLabel).
             >

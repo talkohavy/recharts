@@ -2,22 +2,21 @@ import { BRUSH_HEIGHT, LEGEND_HEIGHT } from '../constants';
 import { calculateXAxisLabelPositioning } from './calculateXAxisLabelPositioning';
 import { FORMATTERS, formatLabel } from './formatters';
 import { getTextWidth } from './getTextWidth';
+import type { ChartSettings } from '../types';
+import type { HorizontalAlignmentType, VerticalAlignmentType } from 'recharts/types/component/DefaultLegendContent';
+import type { LayoutType } from 'recharts/types/util/types';
 
-/**
- * @typedef {import('../types').ChartSettings} ChartSettings
- */
-// * @returns {ChartSettings}
+type GetMergedChartSettingsProps = {
+  chartType: 'LineChart' | 'BarChart';
+  settings?: ChartSettings;
+  xAxisHeight: number;
+  yAxisWidth: number;
+  xAxisType: 'category' | 'number' | 'datetime';
+};
 
-/**
- * @param {{
- *   chartType: 'LineChart' | 'BarChart',
- *   settings: ChartSettings,
- *   xAxisHeight: number,
- *   yAxisWidth: number,
- *   xAxisType: 'category' | 'number' | 'datetime'
- * }} props
- */
-function getMergedChartSettings({ chartType, settings, xAxisHeight, yAxisWidth, xAxisType }) {
+function getMergedChartSettings(props: GetMergedChartSettingsProps) {
+  const { chartType, settings, xAxisHeight, yAxisWidth, xAxisType } = props;
+
   const showGrid = settings?.grid?.show ?? true;
   const showLegend = settings?.legend?.show ?? chartType === 'BarChart';
 
@@ -76,7 +75,7 @@ function getMergedChartSettings({ chartType, settings, xAxisHeight, yAxisWidth, 
             }
           : undefined,
         tickFormatter: settings?.yAxis?.tickFormatter ?? formatLabel,
-        type: 'number', // <--- defaults to 'number'. 'category' or 'number'.
+        type: 'number' as 'number' | 'category' | undefined, // <--- defaults to 'number'. 'category' or 'number'.
         stroke: '#666',
         yAxisId: 'left',
         padding: { top: 18 },
@@ -99,9 +98,9 @@ function getMergedChartSettings({ chartType, settings, xAxisHeight, yAxisWidth, 
     legend: {
       show: settings?.legend?.show ?? false,
       props: {
-        layout: 'horizontal', // <--- how to align items of the legend.
-        verticalAlign: 'bottom', // <--- pin legend to top, bottom or center.
-        align: 'left', // <--- defaults to 'center'. Horizontal alignment.
+        layout: 'horizontal' as LayoutType, // <--- how to align items of the legend.
+        verticalAlign: 'bottom' as VerticalAlignmentType, // <--- pin legend to top, bottom or center.
+        align: 'left' as HorizontalAlignmentType, // <--- defaults to 'center'. Horizontal alignment.
         iconSize: 14, // <--- defaults to 14
         formatter: settings?.legend?.nameFormatter ?? ((value) => formatLabel(value, 14)),
         height: LEGEND_HEIGHT,

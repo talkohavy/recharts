@@ -1,5 +1,3 @@
-import type { FC, ReactNode } from 'react';
-
 export type AxisLabelPosition =
   | 'insideLeft'
   | 'insideRight'
@@ -18,18 +16,6 @@ export type AxisLabelPosition =
   | 'center'
   | 'insideEnd'
   | 'insideStart';
-
-export type BarChartProps = BaseChartProps & {
-  bars: Array<BarSeries>;
-  onClickBar?: (props: BarClickEventProps & { name: string; barTypeIndex: number }) => void;
-  /**
-   * Every Bar within the BarChart has an ID which is a string comprised of '[bar name]-[x value]'.
-   * @example
-   * const bars = [{ name: 'hello', data: [{x: 'Israel', y: 140}, x: 'France', y: 120]}];
-   * // The barIds are: 'hello-Israel' & 'hello-France'
-   */
-  activeBarId?: string;
-};
 
 export type BarClickEventProps = {
   payload: { x: string | number };

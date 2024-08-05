@@ -1,14 +1,7 @@
-/**
- * @typedef {import('../types').BarSeries} BarSeries
- * @typedef {import('../types').LineSeries} LineSeries
- */
+import type { BarSeries, LineSeries } from '../types';
 
-/**
- * @param {Array<BarSeries> | Array<LineSeries>} data
- * @param {any} defaultValue
- */
-function getNamesObject(data, defaultValue = null) {
-  const obj = {};
+function getNamesObject(data: Array<BarSeries> | Array<LineSeries>, defaultValue: any = null) {
+  const obj: Record<string, any> = {};
 
   data.forEach(({ name }) => (obj[name] = defaultValue));
 
