@@ -3,9 +3,9 @@
     // -------------------
     // Section 1: Projects
     // -------------------
-    "composite": true, // Enable constraints that allow a TypeScript project to be used with project references.
-    "incremental": true, // Save .tsbuildinfo files to allow for incremental compilation of projects.
-    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo", // Specify the path to .tsbuildinfo incremental compilation file.
+    // "composite": true, // Enable constraints that allow a TypeScript project to be used with project references.
+    // "incremental": true, // Save .tsbuildinfo files to allow for incremental compilation of projects.
+    // "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo", // Specify the path to .tsbuildinfo incremental compilation file.
     // "disableSourceOfProjectReferenceRedirect": true,  // Disable preferring source files instead of declaration files when referencing composite projects.
     // "disableSolutionSearching": true,                 // Opt a project out of multi-project reference checking when editing.
     // "disableReferencedProjectLoad": true,             // Reduce the number of projects loaded automatically by TypeScript.
@@ -61,8 +61,8 @@
     // ---------------
     // Section 5: Emit
     // ---------------
-    "noEmit": true, // Disable emitting files from a compilation.
     "sourceMap": true, // defaults to `false`. Create source map files for emitted JavaScript files.
+    "noEmit": true, // Disable emitting files from a compilation.
     // "outDir": "./dist", // no need to have this! all the microservices are being used just as they are, and the only thing being bundled is the app-frontend, which gets bundled using vite, which already has an outDir set in its config file.
     // "declaration": true,                              /* Generate .d.ts files from TypeScript and JavaScript files in your project. */
     // "declarationMap": true,                           /* Create sourcemaps for d.ts files. */
@@ -99,6 +99,10 @@
     // Section 7: Type Checking
     // ------------------------
     /* Linting */
+    // "strictNullChecks": true,                         // <--- When type checking, take into account 'null' and 'undefined'.
+    // "strictFunctionTypes": true,                      // <--- When assigning functions, check to ensure parameters and the return values are subtype-compatible.
+    // "strictBindCallApply": true,                      // <--- Check that the arguments for 'bind', 'call', and 'apply' methods match the original function.
+    // "strictPropertyInitialization": true,             // <--- Check for class properties that are declared but not set in the constructor.
     "strict": true, // <--- Enable all strict type-checking options.
     "noImplicitAny": true, // <--- Enable error reporting for expressions and declarations with an implied 'any' type.
     "noImplicitThis": true, // <---Enable error reporting when 'this' is given the type 'any'.
@@ -111,13 +115,9 @@
     "noFallthroughCasesInSwitch": true, // <--- Enable error reporting for fallthrough cases in switch statements.
     "noUncheckedIndexedAccess": true, // <--- Add 'undefined' to a type when accessed using an index.
     "noImplicitOverride": true, // <--- Ensure overriding members in derived classes are marked with an override modifier.
-    "noPropertyAccessFromIndexSignature": false, // <--- settings this to true marks obj['firstName'] as an error, and recommends obj.firstName instead. Enforces using indexed accessors for keys declared using an indexed type.
+    "noPropertyAccessFromIndexSignature": true, // <--- Enforces using indexed accessors for keys declared using an indexed type.
     "allowUnusedLabels": false, // <--- Disable error reporting for unused labels.
     // "allowUnreachableCode": true,                     // <--- Disable error reporting for unreachable code.
-    // "strictNullChecks": true,                         // <--- When type checking, take into account 'null' and 'undefined'.
-    // "strictFunctionTypes": true,                      // <--- When assigning functions, check to ensure parameters and the return values are subtype-compatible.
-    // "strictBindCallApply": true,                      // <--- Check that the arguments for 'bind', 'call', and 'apply' methods match the original function.
-    // "strictPropertyInitialization": true,             // <--- Check for class properties that are declared but not set in the constructor.
 
     // -----------------------
     // Section 8: Completeness
@@ -127,5 +127,5 @@
   },
   "compileOnSave": true,
   "exclude": ["node_modules", "**/node_modules/*", "<node_internals>/**", "bin/**"],
-  "include": ["**/*/*.ts", "**/*.d.ts", "**/*.js", "**/*.jsx", "**/*.cjs", "*.ts", "*.d.ts", "*.js", "*.jsx", "*.cjs"]
+  "include": ["**/*.ts", "**/*.tsx", "**/*.d.ts", "**/*.js", "**/*.jsx", "**/*.cjs", "**/*.mjs"]
 }
