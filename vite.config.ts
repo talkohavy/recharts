@@ -1,3 +1,4 @@
+import path from 'node:path';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 
@@ -11,6 +12,12 @@ export default defineConfig({
     port: 3000,
     strictPort: true,
   },
+  resolve: {
+    alias: {
+      '@src': path.resolve(__dirname, 'src'),
+    },
+  },
+
   // build: {
   //   cssMinify: 'lightningcss',
   // },
