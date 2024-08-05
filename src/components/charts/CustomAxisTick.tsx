@@ -1,13 +1,6 @@
 import { getTextWidth } from './helpers';
 import type { LabelProps } from 'recharts';
 
-/**
- * @param {import('recharts').LabelProps & {
- *   payload: any,
- *   xTickFormatter: (value: any) => string
- * }} props
- */
-
 type CustomizedAxisTickProps = LabelProps & {
   payload: any;
   xTickFormatter: (value: any) => string;

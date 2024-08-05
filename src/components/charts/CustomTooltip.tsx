@@ -1,14 +1,12 @@
 import { formatLabel } from './helpers';
+import type { TooltipProps } from 'recharts';
 
-/** @typedef {import('recharts').TooltipProps<string,string>} TooltipProps */
+type CustomTooltipProps = TooltipProps<number | string | Array<number | string>, number | string> & {
+  ySuffix: string;
+  xValueFormatter: (value: any) => string;
+};
 
-/**
- * @param {TooltipProps & {
- *   ySuffix: string,
- *   xValueFormatter: (value: any) => string
- * }} props
- */
-export default function CustomTooltip(props) {
+export default function CustomTooltip(props: CustomTooltipProps) {
   const { active, payload, label, separator, xValueFormatter, ySuffix } = props;
 
   if (active && payload && payload.length) {
