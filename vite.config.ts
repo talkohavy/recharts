@@ -11,4 +11,16 @@ export default defineConfig({
     port: 3000,
     strictPort: true,
   },
+  // build: {
+  //   cssMinify: 'lightningcss',
+  // },
+  css: {
+    modules: {
+      localsConvention: 'camelCaseOnly',
+    },
+    // transformer: 'lightningcss',
+    // lightningcss: {
+    //   cssModules: {},
+    // },
+  },
 });

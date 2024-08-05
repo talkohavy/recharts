@@ -1,4 +1,6 @@
-import { formatLabel } from './helpers';
+import clsx from 'clsx';
+import { formatLabel } from '../helpers';
+import styles from './CustomizedLabel.module.scss';
 import type { LabelProps } from 'recharts';
 
 /**
@@ -20,7 +22,7 @@ export default function CustomizedLabel(props: LabelProps) {
       y={updatedYPosition}
       textAnchor='middle'
       dominantBaseline='middle'
-      className='pointer-events-none dark:fill-white'
+      className={clsx('chart-customized-label', styles.textLabel)}
       style={{ fontSize, fontWeight }}
     >
       {formatLabel(value)}

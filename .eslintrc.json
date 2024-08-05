@@ -4,6 +4,7 @@
   "rules": {
     "jsdoc/check-indentation": "off",
     "react/no-unstable-nested-components": "off",
-    "jsdoc/require-param": "off"
+    "jsdoc/require-param": "off",
+    "tailwindcss/no-custom-classname": "off"
   }
 }

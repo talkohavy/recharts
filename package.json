@@ -45,8 +45,10 @@
     "eslint-plugin-sort-exports": "^0.9.1",
     "eslint-plugin-tailwindcss": "^3.15.1",
     "husky": "^9.0.11",
+    "lightningcss": "^1.25.1",
     "postcss": "^8.4.35",
     "prettier": "^3.2.5",
+    "sass": "^1.77.8",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.3.3",
     "vite": "^5.3.5"
