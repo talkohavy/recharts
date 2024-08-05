@@ -1,4 +1,4 @@
-import { getTextWidth } from './helpers';
+import { getTextWidth } from '../helpers';
 import type { LabelProps } from 'recharts';
 
 type CustomizedAxisTickProps = LabelProps & {
@@ -6,7 +6,7 @@ type CustomizedAxisTickProps = LabelProps & {
   xTickFormatter: (value: any) => string;
 };
 
-export function CustomizedAxisTick(props: CustomizedAxisTickProps) {
+export default function CustomizedAxisTick(props: CustomizedAxisTickProps) {
   const { x, y, color, payload, angle, textAnchor, fontWeight, fontSize, xTickFormatter } = props;
 
   const formattedLabel = xTickFormatter(payload.value);

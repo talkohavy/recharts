@@ -14,7 +14,7 @@ import {
   YAxis,
 } from 'recharts';
 import { BRUSH_ITEMS_PER_PAGE } from '../constants';
-import { CustomizedAxisTick } from '../CustomAxisTick';
+import CustomizedAxisTick from '../CustomAxisTick';
 import CustomizedLabel from '../CustomizedLabel';
 import CustomTooltip from '../CustomTooltip';
 import {
