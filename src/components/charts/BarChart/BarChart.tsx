@@ -68,8 +68,7 @@ export default function BarChart(props: BarChartProps) {
 
   const positiveXTickRotateAngle = Math.abs(settingsToMerge?.xAxis?.tickAngle ?? 0);
 
-  /** @type {Array<{x: number | string}>} */
-  const transformedDataForRecharts = useMemo(() => {
+  const transformedDataForRecharts: Array<{ x: number | string }> = useMemo(() => {
     const transformedDataByKey: Record<string, any> = {};
 
     bars.forEach((barType) => {
@@ -147,7 +146,7 @@ export default function BarChart(props: BarChartProps) {
         className={className}
         style={style}
         {...chartSettings.barChartBase.props}
-        // layout='horizontal' // <--- default is 'horizontal'
+        // layout='vertical' // <--- default is 'horizontal'
         // reverseStackOrder // <--- default is false. When true, stacked items will be rendered right to left. By default, stacked items are rendered left to right. Render direction affects SVG layering, not x position.
         // barCategoryGap='10%' // <--- gap between bars. Hard to make this generic. The default seems to do a pretty good job.
       >
