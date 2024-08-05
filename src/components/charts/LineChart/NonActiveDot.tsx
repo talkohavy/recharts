@@ -1,8 +1,16 @@
 import { formatLabel } from '../helpers';
+import type { DotProps } from 'recharts';
 
-// /** @param {import('recharts').DotProps} props */
-export default function NonActiveDot(props) {
-  const { cx, cy, stroke, payload, r, dataKey, opacity, data, showChartValues, showLineValues } = props;
+type ActiveDotProps = DotProps & {
+  payload: any;
+  dataKey: string;
+  data: Array<any>;
+  showChartValues: boolean;
+  showLineValues: boolean;
+};
+
+export default function NonActiveDot(props: ActiveDotProps) {
+  const { cx, cy, payload, dataKey, data, r, stroke, opacity, showChartValues, showLineValues } = props;
 
   if (!payload[dataKey]) return;
 
