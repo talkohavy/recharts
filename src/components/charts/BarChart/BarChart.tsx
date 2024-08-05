@@ -146,7 +146,7 @@ export default function BarChart(props: BarChartProps) {
         data={transformedDataForRecharts}
         className={className}
         style={style}
-        {...chartSettings.barChartBase}
+        {...chartSettings.barChartBase.props}
         // layout='horizontal' // <--- default is 'horizontal'
         // reverseStackOrder // <--- default is false. When true, stacked items will be rendered right to left. By default, stacked items are rendered left to right. Render direction affects SVG layering, not x position.
         // barCategoryGap='10%' // <--- gap between bars. Hard to make this generic. The default seems to do a pretty good job.

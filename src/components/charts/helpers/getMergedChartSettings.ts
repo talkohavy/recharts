@@ -4,7 +4,7 @@ import { FORMATTERS, formatLabel } from './formatters';
 import { getTextWidth } from './getTextWidth';
 import type { ChartSettings } from '../types';
 import type { HorizontalAlignmentType, VerticalAlignmentType } from 'recharts/types/component/DefaultLegendContent';
-import type { LayoutType } from 'recharts/types/util/types';
+import type { LayoutType, StackOffsetType } from 'recharts/types/util/types';
 
 type GetMergedChartSettingsProps = {
   chartType: 'LineChart' | 'BarChart';
@@ -158,7 +158,7 @@ function getMergedChartSettings(props: GetMergedChartSettingsProps) {
           left: settings?.yAxis?.label ? 12 : 0,
           bottom: settings?.xAxis?.label ? 20 : 0,
         },
-        stackOffset: 'sign', // <--- sign knows how to deal with negative values, while default stackOffset just hides them (doesn't show them).
+        stackOffset: 'sign' as StackOffsetType, // <--- sign knows how to deal with negative values, while default stackOffset just hides them (doesn't show them).
       },
     },
   };
