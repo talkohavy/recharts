@@ -1,16 +1,16 @@
 const EXTRA_GAP_BETWEEN_TICKS_AND_LABEL = 10;
 
+type GetHeightProps = {
+  angle: number;
+  maxWidth: number;
+};
+
 /**
  * @description
  * Gets the horizontal width of a rotated text.
  * The angle is in degrees.
- * @param {{
- *   angle: number,
- *   maxWidth?: number,
- * }} props
- * @returns {number | undefined}
  */
-function getHeight(props) {
+function getHeight(props: GetHeightProps): number | undefined {
   const { angle: thetaInDegrees, maxWidth } = props;
 
   if (!thetaInDegrees) return;
@@ -25,17 +25,17 @@ function getHeight(props) {
   return Math.abs(Math.sin(fixedThetaInRadians) * hypotenuse);
 }
 
+type GetWidthProps = {
+  angle: number;
+  maxWidth: number;
+};
+
 /**
  * @description
  * Gets the horizontal width of a rotated text.
  * The angle is in degrees.
- * @param {{
- *   angle: number,
- *   maxWidth?: number,
- * }} props
- * @returns {number | undefined}
  */
-function getWidth(props) {
+function getWidth(props: GetWidthProps): number | undefined {
   const { angle: thetaInDegrees, maxWidth } = props;
 
   if (!thetaInDegrees) return;

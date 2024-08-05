@@ -1,5 +1,12 @@
-// /** @param {import('recharts').DotProps} props */
-export default function ActiveDot(props) {
+import type { DotProps } from 'recharts';
+
+type ActiveDotProps = DotProps & {
+  payload: any;
+  dataKey: string;
+  data: Array<any>;
+};
+
+export default function ActiveDot(props: ActiveDotProps) {
   const { cx, cy, payload, dataKey, fill, r, data } = props;
 
   if (!payload[dataKey]) return;

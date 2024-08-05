@@ -9,7 +9,7 @@ import type { LayoutType } from 'recharts/types/util/types';
 type GetMergedChartSettingsProps = {
   chartType: 'LineChart' | 'BarChart';
   settings?: ChartSettings;
-  xAxisHeight: number;
+  xAxisHeight?: number;
   yAxisWidth: number;
   xAxisType: 'category' | 'number' | 'datetime';
 };

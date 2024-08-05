@@ -181,10 +181,6 @@ export type CurveType =
   | 'stepBefore'
   | 'stepAfter';
 
-export type LineChartProps = BaseChartProps & {
-  lines: Array<LineSeries>;
-};
-
 export type LineSeries = {
   name: string;
   color?: string;

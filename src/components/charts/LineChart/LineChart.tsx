@@ -28,15 +28,13 @@ import {
 import ActiveDot from './ActiveDot';
 import NonActiveDot from './NonActiveDot';
 import '../recharts.css';
+import type { BaseChartProps, LineSeries } from '../types';
 
-/**
- * @typedef {import('../types').LineChartProps} LineChartProps
- */
+type LineChartProps = BaseChartProps & {
+  lines: Array<LineSeries>;
+};
 
-/**
- * @param {LineChartProps} props
- */
-export default function LineChart(props) {
+export default function LineChart(props: LineChartProps) {
   const { type: xAxisType = 'category', settings: settingsToMerge, lines, referenceLines, className, style } = props;
 
   useMemo(() => runValidationsOnAllSeries(lines), [lines]);
@@ -53,7 +51,7 @@ export default function LineChart(props) {
 
   /** @type {Array<{x: number | string}>} */
   const transformedDataForRecharts = useMemo(() => {
-    const transformedDataByKey = {};
+    const transformedDataByKey: Record<string, any> = {};
 
     lines.forEach((currentLine) => {
       currentLine.data.forEach(({ x, y }) => {
@@ -102,7 +100,7 @@ export default function LineChart(props) {
     lines.forEach((currentLine) => {
       if (!currentLine.data.length) return;
 
-      const firstDataPointsXLength = getTextWidth({ text: currentLine.data[0].x.toString() });
+      const firstDataPointsXLength = getTextWidth({ text: currentLine.data[0]!.x.toString() });
       if (widthOfLongestFirstXTickLabel < firstDataPointsXLength) {
         widthOfLongestFirstXTickLabel = firstDataPointsXLength;
       }
@@ -165,7 +163,7 @@ export default function LineChart(props) {
           <Legend
             {...chartSettings.legend.props}
             onMouseEnter={(payload) => {
-              const lineName = payload.dataKey;
+              const lineName = payload.dataKey as string;
 
               if (!visibleLines[lineName]) return;
 
@@ -174,7 +172,7 @@ export default function LineChart(props) {
               setIsLineHovered((prevState) => ({ ...prevState, [lineName]: true }));
             }}
             onMouseLeave={(payload) => {
-              const lineName = payload.dataKey;
+              const lineName = payload.dataKey as string;
 
               if (!visibleLines[lineName]) return;
 
@@ -184,7 +182,7 @@ export default function LineChart(props) {
               setIsLineHovered((prevState) => ({ ...prevState, [lineName]: false }));
             }}
             onClick={(payload) => {
-              const lineName = payload.dataKey;
+              const lineName = payload.dataKey as string;
 
               if (visibleLines[lineName]) setIsLegendHovered(false);
 
@@ -200,8 +198,8 @@ export default function LineChart(props) {
             startIndex={startIndex.current} // <--- The default start index of brush. If the option is not set, the start index will be 0.
             endIndex={endIndex.current} // <---The default end index of brush. If the option is not set, the end index will be calculated by the length of data.
             onChange={(brushProps) => {
-              startIndex.current = brushProps.startIndex;
-              endIndex.current = brushProps.endIndex;
+              startIndex.current = brushProps.startIndex as number;
+              endIndex.current = brushProps.endIndex as number;
             }}
           >
             {chartSettings.zoomSlider.showPreviewInSlider ? (
@@ -223,7 +221,7 @@ export default function LineChart(props) {
         )}
 
         {referenceLines?.map(({ x, y, label, lineWidth, lineColor, isDashed }, index) => {
-          const referenceLineProps = {
+          const referenceLineProps: any = {
             x,
             y,
             label,
@@ -246,7 +244,7 @@ export default function LineChart(props) {
         {lines.map((line) => {
           const { name, color, data, lineWidth, curveType, isDashed, dots, showValues: showLineValues, hide } = line;
 
-          const lineProps = {
+          const lineProps: any = {
             hide,
             dataKey: name,
             stroke: color ?? 'black',
@@ -275,7 +273,7 @@ export default function LineChart(props) {
                   showLineValues={showLineValues}
                 />
               )}
-              activeDot={(dotProps) => (
+              activeDot={(dotProps: any) => (
                 <ActiveDot
                   {...dotProps}
                   data={data}
