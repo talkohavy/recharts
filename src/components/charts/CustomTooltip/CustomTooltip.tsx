@@ -1,4 +1,6 @@
-import { formatLabel } from './helpers';
+import clsx from 'clsx';
+import { formatLabel } from '../helpers';
+import styles from './CustomTooltip.module.scss';
 import type { TooltipProps } from 'recharts';
 
 type CustomTooltipProps = TooltipProps<number | string | Array<number | string>, number | string> & {
@@ -13,9 +15,10 @@ export default function CustomTooltip(props: CustomTooltipProps) {
     const formattedXLabel = xValueFormatter(label);
 
     return (
-      <div className='whitespace-nowrap rounded-md border border-neutral-400 bg-white bg-opacity-90 p-2.5 pb-3'>
-        <p className='font-bold'>{formattedXLabel}</p>
-        <ul className='pt-1 text-blue-600'>
+      <div className={clsx('chart-custom-tooltip', styles.customTooltip)}>
+        <p className={styles.customTooltipHeader}>{formattedXLabel}</p>
+
+        <ul className={styles.customTooltipItemsList}>
           {payload.map(({ name, value, color, unit }, index) => {
             const formattedValue = formatLabel(value);
 
