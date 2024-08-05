@@ -1,25 +1,29 @@
 import { formatLabel } from './helpers';
+import type { LabelProps } from 'recharts';
 
-/** @param {import('recharts').LabelProps} props */
-export default function CustomizedLabel(props) {
-  // The color of each bar is stored in 'fill'
+/**
+ * @description
+ * NOTE!!! The color of each bar is stored in 'fill'.
+ */
+export default function CustomizedLabel(props: LabelProps) {
   const { x, y, width, height, value, fontSize, fontWeight, position } = props;
-  // if stackedBar, put number in middle of Bar, else - put above.
-  const updatedYPosition = position === 'center' ? +y + +height / 2 : +y - 10;
+
+  // if it's a stackedBar, put number in middle of Bar, else - put above.
+  const updatedYPosition = position === 'center' ? +y! + +height! / 2 : +y! - 10;
+
+  // This calculation below assumes that textAnchor will always be set to 'end'.
+  const xPosition = +x! + +width! / 2;
 
   return (
-    <g>
-      <text
-        // This calculation below assumes that textAnchor will always be set to 'end'.
-        x={+x + +width / 2}
-        y={updatedYPosition}
-        textAnchor='middle'
-        dominantBaseline='middle'
-        className='pointer-events-none dark:fill-white'
-        style={{ fontSize, fontWeight }}
-      >
-        {formatLabel(value)}
-      </text>
-    </g>
+    <text
+      x={xPosition}
+      y={updatedYPosition}
+      textAnchor='middle'
+      dominantBaseline='middle'
+      className='pointer-events-none dark:fill-white'
+      style={{ fontSize, fontWeight }}
+    >
+      {formatLabel(value)}
+    </text>
   );
 }
