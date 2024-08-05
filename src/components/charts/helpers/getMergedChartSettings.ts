@@ -1,4 +1,4 @@
-import { BRUSH_HEIGHT, LEGEND_HEIGHT } from '../constants';
+import { BRUSH_HEIGHT, LEGEND_HEIGHT, X_AXIS_BOTTOM_ID, Y_AXIS_LEFT_ID } from '../constants';
 import { calculateXAxisLabelPositioning } from './calculateXAxisLabelPositioning';
 import { FORMATTERS, formatLabel } from './formatters';
 import { getTextWidth } from './getTextWidth';
@@ -46,7 +46,7 @@ function getMergedChartSettings(props: GetMergedChartSettingsProps) {
         height: xAxisHeight,
         textAnchor: 'end', // <--- CustomizedAxisTick assumes this will always be set to 'end'. We calculate x with it. It's easier to render angled xAxis ticks that way.
         stroke: '#666', // <--- this is the color of the xAxis line itself!
-        xAxisId: 'bottom',
+        xAxisId: X_AXIS_BOTTOM_ID,
         padding: { right: 40 }, // <--- you can use this to remove padding between: A. The first bar and the Y axis; B. The last bar and the chart axis. I'm using 40 to have the last dot always visible in case the last data point is a large red dot - 40 would make it visible.
         tickFormatter: settings?.xAxis?.tickFormatter ?? FORMATTERS[xAxisType], // <--- only passes the string value as an argument.
         // tickSize: 6, // <--- defaults to 6. The length of tick line.
@@ -125,14 +125,14 @@ function getMergedChartSettings(props: GetMergedChartSettingsProps) {
       props: {
         isAnimationActive: settings?.general?.isAnimationActive, // <--- rechart says it defaults to true in CSR and to false in SSR
         connectNulls: settings?.lines?.connectNulls,
-        xAxisId: 'bottom',
-        yAxisId: 'left',
+        xAxisId: X_AXIS_BOTTOM_ID,
+        yAxisId: Y_AXIS_LEFT_ID,
       },
     },
     bars: {
       props: {
-        xAxisId: 'bottom',
-        yAxisId: 'left',
+        xAxisId: X_AXIS_BOTTOM_ID,
+        yAxisId: Y_AXIS_LEFT_ID,
         // minPointSize: 5, // <--- give a min height to the lowest value, so that it would still be visible.
         // barSize: 40, // <--- it is best to leave this as automatically calculated
         // background: { fill: barBackgroundOverlayColor } // <--- DO NOT put a background! This is what interrupted my onClick event from getting the right BarChart name!
@@ -140,8 +140,8 @@ function getMergedChartSettings(props: GetMergedChartSettingsProps) {
     },
     referenceLines: {
       props: {
-        xAxisId: 'bottom',
-        yAxisId: 'left',
+        xAxisId: X_AXIS_BOTTOM_ID,
+        yAxisId: Y_AXIS_LEFT_ID,
       },
     },
     lineChartBase: {

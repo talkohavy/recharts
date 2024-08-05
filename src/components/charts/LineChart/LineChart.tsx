@@ -12,7 +12,7 @@ import {
   YAxis,
 } from 'recharts';
 import { BRUSH_ITEMS_PER_PAGE, DASHED_LINE } from '../constants';
-import { CustomizedAxisTick } from '../CustomAxisTick';
+import CustomizedAxisTick from '../CustomAxisTick';
 import CustomTooltip from '../CustomTooltip';
 import {
   FORMATTERS,
